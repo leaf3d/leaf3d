@@ -26,3 +26,9 @@
 *.exe
 *.out
 *.app
+
+# Build files
+Build*
+
+# QtCreator, Cmake
+*.user
