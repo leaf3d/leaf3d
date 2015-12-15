@@ -19,8 +19,8 @@ include_directories(${GLEW_INCLUDE_DIR})
 
 # Set necessary libs.
 set(LEAF3D_REQUIRED_LIBS
-	${GLEW_LIBRARIES}
-	${OPENGL_LIBRARY}
+    ${GLEW_LIBRARIES}
+    ${OPENGL_LIBRARY}
 )
 
 # Set binaries output folder.
@@ -43,4 +43,9 @@ endif(MSVC)
 # Add source targets.
 add_subdirectory(Engine)
 add_subdirectory(Examples)
+add_subdirectory(Tests)
+
+# Unit testing.
+ENABLE_TESTING()
+ADD_TEST(leaf3d Tests/leaf3dTests)
 
