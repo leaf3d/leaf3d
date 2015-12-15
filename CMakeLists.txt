@@ -46,6 +46,6 @@ add_subdirectory(Examples)
 add_subdirectory(Tests)
 
 # Unit testing.
-ENABLE_TESTING()
-ADD_TEST(leaf3d Tests/leaf3dTests)
+enable_testing()
+add_test(leaf3d Tests/leaf3dTests)
 
