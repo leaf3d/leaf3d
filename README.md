@@ -1,4 +1,4 @@
 ![leaf3d](http://leaf3d.github.io/website/images/logo.png "leaf3d")
 ===================================================================
 
-An *lightweight* **rendering engine** based on **modern OpenGL**.
+A *lightweight* **rendering engine** based on **modern OpenGL**.
