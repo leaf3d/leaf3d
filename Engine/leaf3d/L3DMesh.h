@@ -27,25 +27,24 @@
 
 namespace l3d
 {
+    class L3DBuffer;
     class L3DMaterial;
 
     class L3DMesh : public L3DResource
     {
     private:
-        GLuint          m_vbo;
-        GLuint          m_ebo;
+        L3DBuffer*      m_vertexBuffer;
+        L3DBuffer*      m_indexBuffer;
         L3DMaterial*    m_material;
         VertexFormat    m_vertexFormat;
-        DrawType        m_drawType;
         DrawPrimitive   m_drawPrimitive;
-        unsigned int    m_vertexCount;
-        unsigned int    m_indexCount;
 
     public:
         L3DMat4 trans;
 
     public:
         L3DMesh(
+            L3DRenderer* renderer,
             float* vertices,
             unsigned int vertexCount,
             unsigned int* indices,
@@ -55,29 +54,29 @@ namespace l3d
             const DrawType& drawType = L3D_DRAW_STATIC,
             const DrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
         );
-        ~L3DMesh();
+        L3DMesh(
+            L3DRenderer *renderer,
+            L3DBuffer* vertexBuffer,
+            L3DBuffer* indexBuffer,
+            L3DMaterial* material,
+            const VertexFormat &VertexFormat,
+            const DrawType &drawType,
+            const DrawPrimitive &drawPrimitive
+        );
+        ~L3DMesh() {}
 
+        L3DBuffer*      vertexBuffer() const { return m_vertexBuffer; }
+        L3DBuffer*      indexBuffer() const { return m_indexBuffer; }
         L3DMaterial*    material() const { return m_material; }
         VertexFormat    vertexFormat() const { return m_vertexFormat; }
-        DrawType        drawType() const { return m_drawType; }
         DrawPrimitive   drawPrimitive() const { return m_drawPrimitive; }
-        unsigned int    vertexCount() const { return m_vertexCount; }
-        unsigned int    indexCount() const { return m_indexCount; }
+        unsigned int    vertexCount() const;
+        unsigned int    indexCount() const;
 
         void translate(const L3DVec3& trans);
         void rotate(
             float radians,
             const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
-        );
-
-    private:
-        void enableVertexAttribute(
-            GLuint attrib,
-            GLint size,
-            GLenum type,
-            GLsizei stride,
-            void* startPtr = 0,
-            GLboolean normalized = GL_FALSE
         );
     };
 }

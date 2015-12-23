@@ -19,21 +19,24 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
+#include <leaf3d/L3DRenderer.h>
 #include <leaf3d/L3DCamera.h>
 
 using namespace l3d;
 
 L3DCamera::L3DCamera(
+    L3DRenderer* renderer,
+    const char* name,
     const L3DMat4& view,
     const L3DMat4& proj
-) : L3DResource(L3D_CAMERA),
+) : L3DResource(L3D_CAMERA, renderer),
     view(view),
     proj(proj)
 {
-}
+    // TODO: id as hash of name.
+    // this->setId(hash(name));
 
-L3DCamera::~L3DCamera()
-{
+    if (renderer) renderer->addCamera(this);
 }
 
 void L3DCamera::translate(const L3DVec3& trans)

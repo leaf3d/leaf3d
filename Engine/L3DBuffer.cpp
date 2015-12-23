@@ -19,39 +19,32 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
-#include <leaf3d/L3DTexture.h>
 #include <leaf3d/L3DRenderer.h>
+#include <leaf3d/L3DBuffer.h>
 
 using namespace l3d;
 
-L3DTexture::L3DTexture(
+L3DBuffer::L3DBuffer(
     L3DRenderer* renderer,
-    const TextureType& type,
-    const ImageFormat& format,
-    unsigned char* data,
-    unsigned int width,
-    unsigned int height,
-    unsigned int depth
-) : L3DResource(L3D_TEXTURE, renderer),
+    const BufferType& type,
+    void* data,
+    unsigned int size,
+    unsigned int stride,
+    const DrawType& drawType
+) : L3DResource(L3D_BUFFER, renderer),
     m_type(type),
-    m_format(format),
-    m_data(data),
-    m_width(width),
-    m_height(height),
-    m_depth(depth)
+    m_data(0),
+    m_size(size),
+    m_stride(stride),
+    m_drawType(drawType)
 {
     if (data)
-    {
-        unsigned int size = width * format * sizeof(unsigned char);
-        if (height) size *= height;
-        if (depth) size *= depth;
-        m_data = (unsigned char*)memcpy(malloc(size), data, size);
-    }
+        m_data = memcpy(malloc(size), data, size);
 
-    if (renderer) renderer->addTexture(this);
+    if (renderer) renderer->addBuffer(this);
 }
 
-L3DTexture::~L3DTexture()
+L3DBuffer::~L3DBuffer()
 {
     free(m_data);
 }

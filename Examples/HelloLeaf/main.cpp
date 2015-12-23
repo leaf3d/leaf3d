@@ -50,9 +50,6 @@ int main()
     glfwMakeContextCurrent(window);
 
     // Init leaf3d.
-    //
-    // L3DRenderer* renderer = new L3DRenderer();
-    // renderer->init();
     if (l3dInit() != L3D_TRUE) {
         fprintf(stderr, "Failed to initialize leaf3d\n");
         return -2;
@@ -61,8 +58,6 @@ int main()
     // ----------------------------- RESOURCES ----------------------------- //
 
     // Create and compile the vertex shader.
-    //
-    // L3DShader* vertexShader = renderer->loadShader(L3D_SHADER_VERTEX, GLSL(...));
     L3DHandle vertexShader = l3dLoadShader(L3D_SHADER_VERTEX, GLSL(
         uniform mat4 trans;
         uniform mat4 view;
@@ -80,43 +75,30 @@ int main()
     ));
 
     // Create and compile the fragment shader.
-    //
-    // L3DShader* fragmentShader = renderer->loadShader(L3D_SHADER_FRAGMENT, GLSL(...));
     L3DHandle fragmentShader = l3dLoadShader(L3D_SHADER_FRAGMENT, GLSL(
-        uniform sampler2D tex0;
+        uniform sampler2D albedoMap;
 
         in vec2 Texcoord0;
 
         void main() {
-            gl_FragColor = texture(tex0, Texcoord0);
+            gl_FragColor = texture(albedoMap, Texcoord0);
         }
     ));
 
     // Link the final shader program.
-    //
-    // L3DShaderProgram* shaderProgram = renderer->loadShaderProgram(vertexShader, fragmentShader);
     L3DHandle shaderProgram = l3dLoadShaderProgram(vertexShader, fragmentShader);
 
     // Load a texture.
-    //
-    // L3DTexture* texture = renderer->loadTexture(L3D_TEXTURE_2D, ...);
     int width, height, comp = 0;
     unsigned char* img = stbi_load("Content/logo.png", &width, &height, &comp, 0);
-
     L3DHandle texture = l3dLoadTexture(L3D_TEXTURE_2D, comp == 4 ? L3D_RGBA : L3D_RGB, img, width, height, 0);
-
     stbi_image_free(img);
 
     // Load a material.
-    //
-    // L3DMaterial* material = renderer->loadMaterial("logo", shaderProgram);
-    // material->setUniform("tex0", texture);
     L3DHandle material = l3dLoadMaterial("logo", shaderProgram);
-    l3dSetMaterialUniformI(material, "tex0", texture.data.id);
+    l3dAddTextureToMaterial(material, "albedoMap", texture);
 
     // Load a simple textured quad.
-    //
-    // L3DMesh* logo = renderer->loadMesh(vertices, 4, indices, 6, ...);
     GLfloat vertices[] = {
     //  Position      Texcoords
         -1.0f,  1.0f, 0.0f, 0.0f, // Top-left
@@ -131,8 +113,6 @@ int main()
     L3DHandle logo = l3dLoadMesh(vertices, 4, indices, 6, material, L3D_POS2_UV2);
 
     // Create a camera.
-    //
-    // L3DCamera* camera = renderer->loadCamera();
     L3DHandle camera = l3dLoadCamera();
 
     // ---------------------------- RENDERING ------------------------------ //
@@ -143,13 +123,9 @@ int main()
         glfwPollEvents();
 
         // Apply a rotation to the quad.
-        //
-        // logo->rotate((float)sin(glfwGetTime()) * 0.05f));
         l3dRotateMesh(logo, (float)sin(glfwGetTime()) * 0.05f);
 
         // Render current frame.
-        //
-        // renderer->renderFrame(camera);
         l3dRenderFrame(camera);
 
         // Swap buffers.
@@ -159,8 +135,6 @@ int main()
     // ---------------------------- TERMINATE ----------------------------- //
 
     // Terminate leaf3d.
-    //
-    // renderer->terminate();
     l3dTerminate();
 
     // Terminate GLFW.

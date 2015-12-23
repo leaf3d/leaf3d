@@ -5,6 +5,7 @@ set(LEAF3D_SOURCES
     leaf3d/platform.h
     leaf3d/types.h
     leaf3d/L3DResource.h
+    leaf3d/L3DBuffer.h
     leaf3d/L3DTexture.h
     leaf3d/L3DShader.h
     leaf3d/L3DShaderProgram.h
@@ -14,6 +15,8 @@ set(LEAF3D_SOURCES
     leaf3d/L3DMesh.h
     leaf3d/L3DRenderer.h
     leaf3d/leaf3d.h
+    L3DResource.cpp
+    L3DBuffer.cpp
     L3DTexture.cpp
     L3DShader.cpp
     L3DShaderProgram.cpp

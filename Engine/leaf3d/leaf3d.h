@@ -55,30 +55,37 @@ L3DHandle l3dLoadShaderProgram(
     const L3DHandle& geometryShader = L3D_INVALID_HANDLE
 );
 
-L3DHandle l3dLoadMaterial(
-    const char* name,
-    const L3DHandle& shaderProgram
-);
-
-void l3dSetMaterialUniformI(
+void l3dSetShaderProgramUniformI(
     const L3DHandle& target,
     const char* name,
     int value
 );
 
-void l3dSetMaterialUniformF(
+void l3dSetShaderProgramUniformF(
     const L3DHandle& target,
     const char* name,
     float value
 );
 
-void l3dSetMaterialUniformMat4F(
+void l3dSetShaderProgramUniformMat4F(
     const L3DHandle& target,
     const char* name,
     const L3DMat4& value
 );
 
+L3DHandle l3dLoadMaterial(
+    const char* name,
+    const L3DHandle& shaderProgram
+);
+
+void l3dAddTextureToMaterial(
+    const L3DHandle& target,
+    const char* name,
+    const L3DHandle& texture
+);
+
 L3DHandle l3dLoadCamera(
+    const char* name = "Default",
     const L3DMat4& view = glm::lookAt(
         glm::vec3(0.0f, 0.0f, 5.0f),
         glm::vec3(0.0f, 0.0f, 0.0f),

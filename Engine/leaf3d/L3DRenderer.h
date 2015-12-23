@@ -29,6 +29,7 @@
 namespace l3d
 {
     class L3DResource;
+    class L3DBuffer;
     class L3DTexture;
     class L3DShader;
     class L3DShaderProgram;
@@ -37,6 +38,7 @@ namespace l3d
     class L3DLight;
     class L3DMesh;
 
+    typedef std::map<unsigned int, L3DBuffer*>          L3DBufferPool;
     typedef std::map<unsigned int, L3DTexture*>         L3DTexturePool;
     typedef std::map<unsigned int, L3DShader*>          L3DShaderPool;
     typedef std::map<unsigned int, L3DShaderProgram*>   L3DShaderProgramPool;
@@ -48,6 +50,7 @@ namespace l3d
     class L3DRenderer
     {
     private:
+        L3DBufferPool           m_buffers;
         L3DTexturePool          m_textures;
         L3DShaderPool           m_shaders;
         L3DShaderProgramPool    m_shaderPrograms;
@@ -67,8 +70,31 @@ namespace l3d
         // Rendering.
         void renderFrame(L3DCamera* camera);
 
+        // Add resources to renderer.
+        void addResource(L3DResource* resource);
+        void addBuffer(L3DBuffer* buffer);
+        void addTexture(L3DTexture* texture);
+        void addShader(L3DShader* shader);
+        void addShaderProgram(L3DShaderProgram* shaderProgram);
+        void addMaterial(L3DMaterial* material);
+        void addCamera(L3DCamera* camera);
+        void addLight(L3DLight* light);
+        void addMesh(L3DMesh* mesh);
+
+        // Remove resources from renderer.
+        void removeResource(L3DResource* resource);
+        void removeBuffer(L3DBuffer* buffer);
+        void removeTexture(L3DTexture* texture);
+        void removeShader(L3DShader* shader);
+        void removeShaderProgram(L3DShaderProgram* shaderProgram);
+        void removeMaterial(L3DMaterial* material);
+        void removeCamera(L3DCamera* camera);
+        void removeLight(L3DLight* light);
+        void removeMesh(L3DMesh* mesh);
+
         // Convert handle to resource pointer.
         L3DResource*        getResource(const L3DHandle& handle) const;
+        L3DBuffer*          getBuffer(const L3DHandle& handle) const;
         L3DTexture*         getTexture(const L3DHandle& handle) const;
         L3DShader*          getShader(const L3DHandle& handle) const;
         L3DShaderProgram*   getShaderProgram(const L3DHandle& handle) const;
@@ -78,6 +104,7 @@ namespace l3d
         L3DMesh*            getMesh(const L3DHandle& handle) const;
 
         // Return size of internal resource pools.
+        unsigned int    bufferCount() const { return m_buffers.size(); }
         unsigned int    textureCount() const { return m_textures.size(); }
         unsigned int    shaderCount() const { return m_shaders.size(); }
         unsigned int    shaderProgramCount() const { return m_shaderPrograms.size(); }
@@ -86,43 +113,14 @@ namespace l3d
         unsigned int    lightCount() const { return m_lights.size(); }
         unsigned int    meshCount() const { return m_meshes.size(); }
 
-        // Loaders for different types of resources.
-        L3DTexture* loadTexture(
-            const TextureType& type,
-            const ImageFormat& format,
-            unsigned char* data,
-            unsigned int width,
-            unsigned int height = 0,
-            unsigned int depth = 0
-        );
-        L3DShader* loadShader(
-            const ShaderType& type,
-            const char* code
-        );
-        L3DShaderProgram* loadShaderProgram(
-            L3DShader* vertexShader,
-            L3DShader* fragmentShader,
-            L3DShader* geometryShader = L3D_NULLPTR
-        );
-        L3DMaterial* loadMaterial(
-            const char* name,
-            L3DShaderProgram* shaderProgram
-        );
-        L3DCamera* loadCamera(
-            const L3DMat4& view,
-            const L3DMat4& projection
-        );
-        L3DLight* loadLight(
-        );
-        L3DMesh* loadMesh(
-            float* vertices,
-            unsigned int vertexCount,
-            unsigned int* indices,
-            unsigned int indexCount,
-            L3DMaterial* material,
-            const VertexFormat& VertexFormat,
-            const DrawType& drawType = L3D_DRAW_STATIC,
-            const DrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
+    private:
+        void enableVertexAttribute(
+            GLuint attrib,
+            GLint size,
+            GLenum type,
+            GLsizei stride,
+            void* startPtr = 0,
+            GLboolean normalized = GL_FALSE
         );
     };
 }

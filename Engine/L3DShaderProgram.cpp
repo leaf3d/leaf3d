@@ -19,41 +19,44 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
+#include <leaf3d/L3DRenderer.h>
 #include <leaf3d/L3DShader.h>
 #include <leaf3d/L3DShaderProgram.h>
 
 using namespace l3d;
 
 L3DShaderProgram::L3DShaderProgram(
+    L3DRenderer* renderer,
     L3DShader* vertexShader,
     L3DShader* fragmentShader,
-    L3DShader* geometryShader
-) : L3DResource(L3D_SHADER_PROGRAM)
+    L3DShader* geometryShader,
+    const L3DUniformMap& uniforms
+) : L3DResource(L3D_SHADER_PROGRAM, renderer),
+    m_vertexShader(vertexShader),
+    m_fragmentShader(fragmentShader),
+    m_geometryShader(geometryShader),
+    m_uniforms(uniforms)
 {
-    GLuint id = glCreateProgram();
-
-    if (vertexShader)
-        glAttachShader(id, vertexShader->id());
-
-    if (fragmentShader)
-        glAttachShader(id, fragmentShader->id());
-
-    if (geometryShader)
-        glAttachShader(id, geometryShader->id());
-
-    glLinkProgram(id);
-    glUseProgram(id);
-
-    this->setId(id);
+    if (renderer) renderer->addShaderProgram(this);
 }
 
-L3DShaderProgram::~L3DShaderProgram()
+void L3DShaderProgram::setUniform(const char* name, int value)
 {
-    glDeleteProgram(this->id());
+    L3DUniformValue real_value;
+    real_value.valueI = value;
+    m_uniforms[name] = real_value;
 }
 
-int L3DShaderProgram::getAttribLocation(const char* name)
+void L3DShaderProgram::setUniform(const char* name, float value)
 {
-    glUseProgram(this->id());
-    return glGetAttribLocation(this->id(), name);
+    L3DUniformValue real_value;
+    real_value.valueF = value;
+    m_uniforms[name] = real_value;
+}
+
+void L3DShaderProgram::setUniform(const char* name, const L3DMat4& value)
+{
+    L3DUniformValue real_value;
+    memcpy(real_value.valueMat4, glm::value_ptr(value), 16 * sizeof(float));
+    m_uniforms[name] = real_value;
 }

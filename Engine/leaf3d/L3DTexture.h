@@ -29,8 +29,17 @@ namespace l3d
 {
     class L3DTexture : public L3DResource
     {
+    protected:
+        TextureType     m_type;
+        ImageFormat     m_format;
+        unsigned char*  m_data;
+        unsigned int    m_width;
+        unsigned int    m_height;
+        unsigned int    m_depth;
+
     public:
         L3DTexture(
+            L3DRenderer* renderer,
             const TextureType& type,
             const ImageFormat& format,
             unsigned char* data,
@@ -39,6 +48,13 @@ namespace l3d
             unsigned int depth = 0
         );
         ~L3DTexture();
+
+        TextureType     type() const { return m_type; }
+        ImageFormat     format() const { return m_format; }
+        unsigned char*  data() const { return m_data; }
+        unsigned int    width() const { return m_width; }
+        unsigned int    height() const { return m_height; }
+        unsigned int    depth() const { return m_depth; }
     };
 }
 

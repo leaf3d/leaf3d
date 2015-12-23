@@ -27,27 +27,32 @@
 
 namespace l3d
 {
+    class L3DRenderer;
+
     class L3DResource
     {
     private:
-        L3DHandle m_handle;
+        L3DHandle       m_handle;
+        L3DRenderer*    m_renderer;
 
     public:
-        L3DHandle               handle() const { return m_handle; }
-        ResourceType    type() const { return (ResourceType)m_handle.data.type; }
-        unsigned int            id() const { return m_handle.data.id; }
+        virtual ~L3DResource();
+
+        L3DHandle       handle() const { return m_handle; }
+        ResourceType    resourceType() const { return (ResourceType)m_handle.data.type; }
+        unsigned int    id() const { return m_handle.data.id; }
+        L3DRenderer*    renderer() const { return m_renderer; }
 
     protected:
-        L3DResource() {}
+        L3DResource(L3DRenderer* renderer = L3D_NULLPTR);
         L3DResource(
-            const ResourceType& type
-        )
-        {
-            m_handle.data.type = type;
-            m_handle.data.id = 0;
-        }
+            const ResourceType& type,
+            L3DRenderer* renderer  = L3D_NULLPTR
+        );
 
-        void setId(unsigned int id) { m_handle.data.id = id; }
+        void setId(unsigned int id);
+
+        friend class L3DRenderer;
     };
 }
 

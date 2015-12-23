@@ -19,15 +19,14 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
+#include <leaf3d/L3DRenderer.h>
 #include <leaf3d/L3DLight.h>
 
 using namespace l3d;
 
 L3DLight::L3DLight(
-) : L3DResource(L3D_LIGHT)
+    L3DRenderer* renderer
+) : L3DResource(L3D_LIGHT, renderer)
 {
-}
-
-L3DLight::~L3DLight()
-{
+    if (renderer) renderer->addLight(this);
 }

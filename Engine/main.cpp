@@ -77,7 +77,8 @@ L3DHandle l3dLoadTexture(
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DTexture* texture = _renderer->loadTexture(
+    L3DTexture* texture = new L3DTexture(
+        _renderer,
         type,
         format,
         data,
@@ -99,7 +100,8 @@ L3DHandle l3dLoadShader(
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShader* shader = _renderer->loadShader(
+    L3DShader* shader = new L3DShader(
+        _renderer,
         type,
         code
     );
@@ -118,7 +120,8 @@ L3DHandle l3dLoadShaderProgram(
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram* shaderProgram = _renderer->loadShaderProgram(
+    L3DShaderProgram* shaderProgram = new L3DShaderProgram(
+        _renderer,
         _renderer->getShader(vertexShader),
         _renderer->getShader(fragmentShader),
         _renderer->getShader(geometryShader)
@@ -130,6 +133,45 @@ L3DHandle l3dLoadShaderProgram(
     return L3D_INVALID_HANDLE;
 }
 
+void l3dSetShaderProgramUniformlI(
+    const L3DHandle& target,
+    const char* name,
+    int value
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
+    if (shaderProgram)
+        shaderProgram->setUniform(name, value);
+}
+
+void l3dSetShaderProgramUniformF(
+    const L3DHandle& target,
+    const char* name,
+    float value
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
+    if (shaderProgram)
+        shaderProgram->setUniform(name, value);
+}
+
+void l3dSetShaderProgramUniformMat4F(
+    const L3DHandle& target,
+    const char* name,
+    const L3DMat4& value
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
+    if (shaderProgram)
+        shaderProgram->setUniform(name, value);
+}
+
 L3DHandle l3dLoadMaterial(
     const char* name,
     const L3DHandle& shaderProgram
@@ -137,7 +179,8 @@ L3DHandle l3dLoadMaterial(
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMaterial* material = _renderer->loadMaterial(
+    L3DMaterial* material = new L3DMaterial(
+        _renderer,
         name,
         _renderer->getShaderProgram(shaderProgram)
     );
@@ -148,53 +191,32 @@ L3DHandle l3dLoadMaterial(
     return L3D_INVALID_HANDLE;
 }
 
-void l3dSetMaterialUniformI(
+void l3dAddTextureToMaterial(
     const L3DHandle& target,
     const char* name,
-    int value
+    const L3DHandle& texture
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
     L3DMaterial* material = _renderer->getMaterial(target);
     if (material)
-        material->setUniform(name, value);
-}
+        material->textures[name] = _renderer->getTexture(texture);
 
-void l3dSetMaterialUniformF(
-    const L3DHandle& target,
-    const char* name,
-    float value
-)
-{
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
-
-    L3DMaterial* material = _renderer->getMaterial(target);
-    if (material)
-        material->setUniform(name, value);
-}
-
-void l3dSetMaterialUniformMat4F(
-    const L3DHandle& target,
-    const char* name,
-    const L3DMat4& value
-)
-{
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
-
-    L3DMaterial* material = _renderer->getMaterial(target);
-    if (material)
-        material->setUniform(name, value);
+    return;
 }
 
 L3DHandle l3dLoadCamera(
+    const char* name,
     const L3DMat4& view,
     const L3DMat4& projection
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DCamera* camera = _renderer->loadCamera(
+    L3DCamera* camera = new L3DCamera(
+        _renderer,
+        name,
         view,
         projection
     );
@@ -299,7 +321,8 @@ L3DHandle l3dLoadMesh(
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMesh* mesh = _renderer->loadMesh(
+    L3DMesh* mesh = new L3DMesh(
+        _renderer,
         vertices,
         vertexCount,
         indices,

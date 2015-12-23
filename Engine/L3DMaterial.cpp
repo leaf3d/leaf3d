@@ -19,59 +19,20 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
+#include <leaf3d/L3DRenderer.h>
 #include <leaf3d/L3DShaderProgram.h>
 #include <leaf3d/L3DMaterial.h>
 
 using namespace l3d;
 
 L3DMaterial::L3DMaterial(
+    L3DRenderer* renderer,
     const char* name,
     L3DShaderProgram* shaderProgram
-) : L3DResource(L3D_MATERIAL),
+) : L3DResource(L3D_MATERIAL, renderer),
     m_name(name),
     m_shaderProgram(shaderProgram)
 {
-    // TODO: id as hash of name.
-    // this->setId(hash(name));
-}
-
-L3DMaterial::~L3DMaterial()
-{
-}
-
-void L3DMaterial::setUniform(const char* name, int value)
-{
-    L3DShaderProgram* shaderProgram = this->shaderProgram();
-
-    if (shaderProgram)
-    {
-        glUseProgram(shaderProgram->id());
-        GLint unifLoc = glGetUniformLocation(shaderProgram->id(), name);
-        glUniform1f(unifLoc, value);
-    }
-}
-
-void L3DMaterial::setUniform(const char* name, const float value)
-{
-    L3DShaderProgram* shaderProgram = this->shaderProgram();
-
-    if (shaderProgram)
-    {
-        glUseProgram(shaderProgram->id());
-        GLint unifLoc = glGetUniformLocation(shaderProgram->id(), name);
-        glUniform1f(unifLoc, value);
-    }
-}
-
-void L3DMaterial::setUniform(const char* name, const L3DMat4& value)
-{
-    L3DShaderProgram* shaderProgram = this->shaderProgram();
-
-    if (shaderProgram)
-    {
-        glUseProgram(shaderProgram->id());
-        GLint unifLoc = glGetUniformLocation(shaderProgram->id(), name);
-        glUniformMatrix4fv(unifLoc, 1, GL_FALSE, glm::value_ptr(value));
-    }
+    if (renderer) renderer->addMaterial(this);
 }
 

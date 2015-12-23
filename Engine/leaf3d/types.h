@@ -60,7 +60,7 @@ namespace l3d
 
     enum ImageFormat
     {
-        L3D_RGB = 0,
+        L3D_RGB = 3,
         L3D_RGBA
     };
 
@@ -79,13 +79,20 @@ namespace l3d
 
     enum ResourceType
     {
-        L3D_TEXTURE = 0,
+        L3D_BUFFER = 0,
+        L3D_TEXTURE,
         L3D_SHADER,
         L3D_SHADER_PROGRAM,
         L3D_MATERIAL,
         L3D_CAMERA,
         L3D_LIGHT,
         L3D_MESH
+    };
+
+    enum BufferType
+    {
+        L3D_BUFFER_VERTEX = 0,
+        L3D_BUFFER_INDEX
     };
 
     enum TextureType

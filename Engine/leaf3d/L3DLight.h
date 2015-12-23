@@ -31,8 +31,9 @@ namespace l3d
     {
     public:
         L3DLight(
+            L3DRenderer* renderer
         );
-        ~L3DLight();
+        ~L3DLight() {}
     };
 }
 

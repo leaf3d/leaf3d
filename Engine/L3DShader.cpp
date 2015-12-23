@@ -19,38 +19,18 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
+#include <leaf3d/L3DRenderer.h>
 #include <leaf3d/L3DShader.h>
 
 using namespace l3d;
 
 L3DShader::L3DShader(
+    L3DRenderer* renderer,
     const ShaderType& type,
     const char* code
-) : L3DResource(L3D_SHADER)
+) : L3DResource(L3D_SHADER, renderer),
+    m_type(type),
+    m_code(code)
 {
-    GLuint gl_type = 0;
-
-    switch (type)
-    {
-    case L3D_SHADER_VERTEX:
-        gl_type = GL_VERTEX_SHADER;
-        break;
-    case L3D_SHADER_FRAGMENT:
-        gl_type = GL_FRAGMENT_SHADER;
-        break;
-    case L3D_SHADER_GEOMETRY:
-        gl_type = GL_GEOMETRY_SHADER;
-        break;
-    }
-
-    GLuint id = glCreateShader(gl_type);
-    glShaderSource(id, 1, &code, L3D_NULLPTR);
-    glCompileShader(id);
-
-    this->setId(id);
-}
-
-L3DShader::~L3DShader()
-{
-    glDeleteShader(this->id());
+    if (renderer) renderer->addShader(this);
 }

@@ -30,11 +30,14 @@ namespace l3d
     class L3DCamera : public L3DResource
     {
     public:
+        const char* m_name;
         L3DMat4 view;
         L3DMat4 proj;
 
     public:
         L3DCamera(
+            L3DRenderer* renderer,
+            const char* name = "Default",
             const L3DMat4& view = glm::lookAt(
                 glm::vec3(0.0f, 0.0f, 5.0f),
                 glm::vec3(0.0f, 0.0f, 0.0f),
@@ -42,7 +45,9 @@ namespace l3d
             ),
             const L3DMat4& proj = glm::perspective(45.0f, 1.0f, 1.0f, 10.0f)
         );
-        ~L3DCamera();
+        ~L3DCamera() {}
+
+        const char* name() const { return m_name; }
 
         void translate(const L3DVec3& trans);
         void rotate(

@@ -19,39 +19,31 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
-#include <leaf3d/L3DTexture.h>
+#include <leaf3d/L3DResource.h>
 #include <leaf3d/L3DRenderer.h>
 
 using namespace l3d;
 
-L3DTexture::L3DTexture(
-    L3DRenderer* renderer,
-    const TextureType& type,
-    const ImageFormat& format,
-    unsigned char* data,
-    unsigned int width,
-    unsigned int height,
-    unsigned int depth
-) : L3DResource(L3D_TEXTURE, renderer),
-    m_type(type),
-    m_format(format),
-    m_data(data),
-    m_width(width),
-    m_height(height),
-    m_depth(depth)
+L3DResource::~L3DResource()
 {
-    if (data)
-    {
-        unsigned int size = width * format * sizeof(unsigned char);
-        if (height) size *= height;
-        if (depth) size *= depth;
-        m_data = (unsigned char*)memcpy(malloc(size), data, size);
-    }
-
-    if (renderer) renderer->addTexture(this);
+    if (m_renderer) m_renderer->removeResource(this);
 }
 
-L3DTexture::~L3DTexture()
+L3DResource::L3DResource(L3DRenderer* renderer)
+  : m_renderer(renderer)
 {
-    free(m_data);
+}
+
+L3DResource::L3DResource(
+    const ResourceType& type,
+    L3DRenderer* renderer
+) : m_renderer(renderer)
+{
+    m_handle.data.type = type;
+    m_handle.data.id = 0;
+}
+
+void L3DResource::setId(unsigned int id)
+{
+    m_handle.data.id = id;
 }

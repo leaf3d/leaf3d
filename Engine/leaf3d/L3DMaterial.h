@@ -23,11 +23,24 @@
 #define L3D_L3DMATERIAL_H
 #pragma once
 
+#include <string>
+#include <map>
 #include "leaf3d/L3DResource.h"
 
 namespace l3d
 {
+    class L3DTexture;
     class L3DShaderProgram;
+
+    struct _strcmp
+    {
+       bool operator()(char const *a, char const *b)
+       {
+          return std::strcmp(a, b) < 0;
+       }
+    };
+
+    typedef std::map<const char*, L3DTexture*, _strcmp> L3DTextureRegistry;
 
     class L3DMaterial : public L3DResource
     {
@@ -36,18 +49,18 @@ namespace l3d
         L3DShaderProgram* m_shaderProgram;
 
     public:
+        L3DTextureRegistry textures;
+
+    public:
         L3DMaterial(
+            L3DRenderer* renderer,
             const char* name,
             L3DShaderProgram* shaderProgram
         );
-        ~L3DMaterial();
+        ~L3DMaterial() {}
 
         const char* name() const { return m_name; }
         L3DShaderProgram* shaderProgram() const { return m_shaderProgram; }
-
-        void setUniform(const char* name, int value);
-        void setUniform(const char* name, float value);
-        void setUniform(const char* name, const L3DMat4& value);
     };
 }
 
