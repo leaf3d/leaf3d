@@ -60,8 +60,8 @@ namespace l3d
             L3DBuffer* indexBuffer,
             L3DMaterial* material,
             const VertexFormat &VertexFormat,
-            const DrawType &drawType,
-            const DrawPrimitive &drawPrimitive
+            const DrawType& drawType = L3D_DRAW_STATIC,
+            const DrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
         );
         ~L3DMesh() {}
 

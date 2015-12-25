@@ -56,9 +56,6 @@ namespace l3d
 
         template<typename T>
         T*              data() const { return static_cast<T*>(m_data); }
-
-        void setStride(unsigned int bytes) { m_stride = bytes; }
-        void setDrawType(const DrawType& drawType) { m_drawType = drawType; }
     };
 }
 

@@ -63,23 +63,21 @@ L3DMesh::L3DMesh(
     const DrawType& drawType,
     const DrawPrimitive& drawPrimitive
 ) : L3DResource(L3D_MESH, renderer),
-    m_vertexBuffer(vertexBuffer),
-    m_indexBuffer(indexBuffer),
+    m_vertexBuffer(0),
+    m_indexBuffer(0),
     m_material(material),
     m_vertexFormat(vertexFormat),
     m_drawPrimitive(drawPrimitive)
 {
-    if (vertexBuffer)
-    {
-        vertexBuffer->setStride(vertexFormat);
-        vertexBuffer->setDrawType(drawType);
-    }
+    if (vertexBuffer
+        && vertexBuffer->stride() == vertexFormat * sizeof(float)
+        && vertexBuffer->drawType() == drawType)
+        m_vertexBuffer = vertexBuffer;
 
-    if (indexBuffer)
-    {
-        indexBuffer->setStride(sizeof(unsigned int));
-        indexBuffer->setDrawType(drawType);
-    }
+    if (indexBuffer
+        && indexBuffer->stride() == sizeof(unsigned int)
+        && indexBuffer->drawType() == drawType)
+        m_indexBuffer = indexBuffer;
 
     if (renderer) renderer->addMesh(this);
 }
