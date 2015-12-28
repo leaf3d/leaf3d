@@ -24,7 +24,7 @@
 #include <GLFW/glfw3.h>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb_image.h>
+#include <stb/stb_image.h>
 
 #define WINDOW_SIZE 640
 
@@ -122,11 +122,11 @@ int main()
         // Poll window events.
         glfwPollEvents();
 
-        // Apply a rotation to the quad.
-        l3dRotateMesh(logo, (float)sin(glfwGetTime()) * 0.05f);
-
         // Render current frame.
         l3dRenderFrame(camera);
+
+        // Apply a rotation to the camera.
+        l3dRotateCamera(camera, (float)sin(glfwGetTime()) * 0.05f);
 
         // Swap buffers.
         glfwSwapBuffers(window);

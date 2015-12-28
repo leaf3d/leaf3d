@@ -9,34 +9,34 @@
 #=============================================================================
 
 FIND_PATH(GLFW_INCLUDE_DIR glfw3.h
-	HINTS
-	$ENV{GLFWDIR}
-	PATH_SUFFIXES include/GL include
-	PATHS
-	~/Library/Frameworks
-	/Library/Frameworks
-	/usr/local/include/GLFW
-	/usr/include/GLFW
-	/sw # Fink
-	/opt/local # DarwinPorts
-	/opt/csw # Blastwave
-	/opt
+        HINTS
+        $ENV{GLFWDIR}
+        PATH_SUFFIXES include/GL include
+        PATHS
+        ~/Library/Frameworks
+        /Library/Frameworks
+        /usr/local/include/GLFW
+        /usr/include/GLFW
+        /sw # Fink
+        /opt/local # DarwinPorts
+        /opt/csw # Blastwave
+        /opt
 )
 
 #MESSAGE("GLFW_INCLUDE_DIR is ${GLFW_INCLUDE_DIR}")
 
 FIND_LIBRARY(GLFW_LIBRARY
-	NAMES glfw3 GLFW
-	HINTS
-	$ENV{GLFWDIR}
-	PATH_SUFFIXES lib64 lib
-	PATHS
-	/sw
-	/usr
-	/usr/local
-	/opt/local
-	/opt/csw
-	/opt
+        NAMES glfw3 GLFW
+        HINTS
+        $ENV{GLFWDIR}
+        PATH_SUFFIXES lib64 lib
+        PATHS
+        /sw
+        /usr
+        /usr/local
+        /opt/local
+        /opt/csw
+        /opt
 )
 
 SET(GLFW_FOUND FALSE)
@@ -46,9 +46,9 @@ IF(NOT GLFW_LIBRARY OR FORCE_DOWNLOAD_GLFW)
     # It uses CMake's "ExternalProject_Add" target.
     MESSAGE(STATUS "Preparing external GLFW project")
     INCLUDE(ExternalProject)
-    ExternalProject_Add(project_glfw 
-        URL http://sourceforge.net/projects/glfw/files/glfw/3.0.4/glfw-3.0.4.zip
-        URL_MD5 3949775a24ae921c8de8b948236f3c9a
+    ExternalProject_Add(project_glfw
+        URL https://github.com/glfw/glfw/archive/3.1.2.zip
+        URL_MD5 e16780a9a7fda3c289dc097d6d2c0efa
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> -DGLFW_BUILD_DOCS:BOOL=OFF -DGLFW_BUILD_EXAMPLES:BOOL=OFF -DGLFW_BUILD_TESTS:BOOL=OFF
         LOG_DOWNLOAD 1
         LOG_UPDATE 1
@@ -63,17 +63,17 @@ IF(NOT GLFW_LIBRARY OR FORCE_DOWNLOAD_GLFW)
     SET(GLFW_INCLUDE_DIR
         ${install_dir}/src/project_glfw/include
     )
-    
+
     IF(WIN32)
-	    SET(GLFW_LIBRARY
-	        ${install_dir}/lib/glfw3.lib
-	    )
-	ELSE(WIN32)
-	    SET(GLFW_LIBRARY
-	        ${install_dir}/lib/libglfw3.a
-	    )
-	ENDIF(WIN32)
-    
+            SET(GLFW_LIBRARY
+                ${install_dir}/lib/glfw3.lib
+            )
+        ELSE(WIN32)
+            SET(GLFW_LIBRARY
+                ${install_dir}/lib/libglfw3.a
+            )
+        ENDIF(WIN32)
+
 ENDIF(NOT GLFW_LIBRARY OR FORCE_DOWNLOAD_GLFW)
 
 #MESSAGE("GLFW_LIBRARY is ${GLFW_LIBRARY}")
@@ -110,14 +110,17 @@ IF(GLFW_LIBRARY)
     SET(MINGW32_LIBRARY mingw32 CACHE STRING "mwindows for MinGW")
     SET(GLFW_LIBRARIES ${MINGW32_LIBRARY} ${GLFW_LIBRARIES})
     ENDIF(MINGW)
-    
+
     # For Unix, GLFW should be linked to X11-releated libraries.
     IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     FIND_LIBRARY(X11_LIBRARY X11)
     FIND_LIBRARY(Xrandr_LIBRARY Xrandr)
     FIND_LIBRARY(Xxf86vm_LIBRARY Xxf86vm)
     FIND_LIBRARY(Xi_LIBRARY Xi)
-    SET(GLFW_LIBRARIES ${GLFW_LIBRARIES} ${X11_LIBRARY} ${Xrandr_LIBRARY} ${Xxf86vm_LIBRARY} ${Xi_LIBRARY})
+    FIND_LIBRARY(Xinearama_LIBRARY Xinerama)
+    FIND_LIBRARY(Xcursor_LIBRARY Xcursor)
+    FIND_LIBRARY(DL_LIBRARY dl)
+    SET(GLFW_LIBRARIES ${GLFW_LIBRARIES} ${X11_LIBRARY} ${Xrandr_LIBRARY} ${Xxf86vm_LIBRARY} ${Xi_LIBRARY} ${Xinearama_LIBRARY} ${Xcursor_LIBRARY} ${DL_LIBRARY})
     ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
     # Set the final string here so the GUI reflects the final state.

@@ -8,7 +8,7 @@ set(${PROJECT_NAME}_MINOR_VERSION 1)
 set(${PROJECT_NAME}_PATCH_LEVEL 0)
 
 # Add local repository for FindXXX.cmake modules.
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake/Modules/" ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/External/" ${CMAKE_MODULE_PATH})
 
 # Look for OpenGL.
 find_package(OpenGL REQUIRED)
@@ -33,19 +33,24 @@ if(${CMAKE_CFG_INTDIR} STREQUAL ".")
     endif(NOT LEAF3D_OUTPUT_PATH_SUFFIX)
 endif(${CMAKE_CFG_INTDIR} STREQUAL ".")
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${LEAF3D_OUTPUT_PATH_PREFIX}/${CMAKE_SYSTEM_NAME}/${LEAF3D_OUTPUT_PATH_SUFFIX}
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY
+    ${LEAF3D_OUTPUT_PATH_PREFIX}/${CMAKE_SYSTEM_NAME}/${LEAF3D_OUTPUT_PATH_SUFFIX}
     CACHE STRING "Where binaries and shared lib files go" FORCE)
 
-if(MSVC)
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup ")
-endif(MSVC)
-
-# Add source targets.
+# Engine target.
 add_subdirectory(Engine)
-add_subdirectory(Examples)
-add_subdirectory(Tests)
 
-# Unit testing.
-enable_testing()
-add_test(leaf3d Tests/leaf3dTests)
+# Samples target.
+option (L3D_BUILD_SAMPLES "If the official samples are built as well." ON)
+if (L3D_BUILD_SAMPLES)
+    add_subdirectory(Examples)
+endif (L3D_BUILD_SAMPLES)
+
+# Tests target.
+option (L3D_BUILD_TESTS "If the official tests are built as well." ON)
+if (L3D_BUILD_TESTS)
+    add_subdirectory(Tests)
+    enable_testing()
+    add_test(leaf3d Tests/leaf3dTests)
+endif (L3D_BUILD_TESTS)
 
