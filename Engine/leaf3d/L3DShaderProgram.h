@@ -30,14 +30,17 @@ namespace l3d
 {
     class L3DShader;
 
-    typedef union
+    class L3DUniform
     {
-        float valueF;
-        int valueI;
-        float valueMat4[16];
-    } L3DUniformValue;
+    public:
+        L3DUniformValue value;
+        UniformType     type;
 
-    typedef std::map<const char*,L3DUniformValue> L3DUniformMap;
+    public:
+        bool is(const UniformType& type) const { return this->type == type; }
+    };
+
+    typedef std::map<const char*,L3DUniform> L3DUniformMap;
 
     class L3DShaderProgram : public L3DResource
     {
@@ -63,8 +66,12 @@ namespace l3d
         L3DUniformMap uniforms() const { return m_uniforms; }
         unsigned int uniformCount() const { return m_uniforms.size(); }
 
-        void setUniform(const char* name, int value);
         void setUniform(const char* name, float value);
+        void setUniform(const char* name, int value);
+        void setUniform(const char* name, unsigned int value);
+        void setUniform(const char* name, const L3DVec2& value);
+        void setUniform(const char* name, const L3DVec3& value);
+        void setUniform(const char* name, const L3DVec4& value);
         void setUniform(const char* name, const L3DMat4& value);
     };
 }

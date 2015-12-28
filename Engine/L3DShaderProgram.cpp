@@ -40,23 +40,58 @@ L3DShaderProgram::L3DShaderProgram(
     if (renderer) renderer->addShaderProgram(this);
 }
 
-void L3DShaderProgram::setUniform(const char* name, int value)
-{
-    L3DUniformValue real_value;
-    real_value.valueI = value;
-    m_uniforms[name] = real_value;
-}
-
 void L3DShaderProgram::setUniform(const char* name, float value)
 {
-    L3DUniformValue real_value;
-    real_value.valueF = value;
-    m_uniforms[name] = real_value;
+    L3DUniform uniform;
+    uniform.value.valueF = value;
+    uniform.type = L3D_UNIFORM_FLOAT;
+    m_uniforms[name] = uniform;
+}
+
+void L3DShaderProgram::setUniform(const char* name, int value)
+{
+    L3DUniform uniform;
+    uniform.value.valueI = value;
+    uniform.type = L3D_UNIFORM_INT;
+    m_uniforms[name] = uniform;
+}
+
+void L3DShaderProgram::setUniform(const char* name, unsigned int value)
+{
+    L3DUniform uniform;
+    uniform.value.valueUI = value;
+    uniform.type = L3D_UNIFORM_UINT;
+    m_uniforms[name] = uniform;
+}
+
+void L3DShaderProgram::setUniform(const char* name, const L3DVec2& value)
+{
+    L3DUniform uniform;
+    memcpy(uniform.value.valueVec2, glm::value_ptr(value), 2 * sizeof(float));
+    uniform.type = L3D_UNIFORM_VEC2;
+    m_uniforms[name] = uniform;
+}
+
+void L3DShaderProgram::setUniform(const char* name, const L3DVec3& value)
+{
+    L3DUniform uniform;
+    memcpy(uniform.value.valueVec3, glm::value_ptr(value), 3 * sizeof(float));
+    uniform.type = L3D_UNIFORM_VEC3;
+    m_uniforms[name] = uniform;
+}
+
+void L3DShaderProgram::setUniform(const char* name, const L3DVec4& value)
+{
+    L3DUniform uniform;
+    memcpy(uniform.value.valueVec4, glm::value_ptr(value), 4 * sizeof(float));
+    uniform.type = L3D_UNIFORM_VEC4;
+    m_uniforms[name] = uniform;
 }
 
 void L3DShaderProgram::setUniform(const char* name, const L3DMat4& value)
 {
-    L3DUniformValue real_value;
-    memcpy(real_value.valueMat4, glm::value_ptr(value), 16 * sizeof(float));
-    m_uniforms[name] = real_value;
+    L3DUniform uniform;
+    memcpy(uniform.value.valueMat4, glm::value_ptr(value), 16 * sizeof(float));
+    uniform.type = L3D_UNIFORM_MAT4;
+    m_uniforms[name] = uniform;
 }

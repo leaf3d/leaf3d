@@ -233,7 +233,31 @@ void L3DRenderer::renderFrame(L3DCamera* camera)
                 ++i;
             }
 
-            // Update matrices.
+            // Bind uniforms.
+            L3DUniformMap uniforms = shaderProgram->uniforms();
+            for (L3DUniformMap::iterator unif_it = uniforms.begin(); unif_it!=uniforms.end(); ++unif_it)
+            {
+                L3DUniform uniform = unif_it->second;
+                GLint gl_location = glGetUniformLocation(shaderProgram->id(), unif_it->first);
+
+                switch (uniform.type)
+                {
+                case L3D_UNIFORM_FLOAT:
+                    glUniform1f(gl_location, uniform.value.valueF);
+                    break;
+                case L3D_UNIFORM_INT:
+                    glUniform1i(gl_location, uniform.value.valueI);
+                    break;
+                case L3D_UNIFORM_UINT:
+                    glUniform1ui(gl_location, uniform.value.valueUI);
+                    break;
+                case L3D_UNIFORM_MAT4:
+                    glUniformMatrix4fv(gl_location, 1, GL_FALSE, uniform.value.valueMat4);
+                    break;
+                }
+            }
+
+            // Bind matrices.
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "view"), 1, GL_FALSE, glm::value_ptr(camera->view));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "proj"), 1, GL_FALSE, glm::value_ptr(camera->proj));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "trans"), 1, GL_FALSE, glm::value_ptr(mesh->trans));
