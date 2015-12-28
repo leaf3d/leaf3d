@@ -99,18 +99,7 @@ int main()
     l3dAddTextureToMaterial(material, "albedoMap", texture);
 
     // Load a simple textured quad.
-    GLfloat vertices[] = {
-    //  Position      Texcoords
-        -1.0f,  1.0f, 0.0f, 0.0f, // Top-left
-         1.0f,  1.0f, 1.0f, 0.0f, // Top-right
-         1.0f, -1.0f, 1.0f, 1.0f, // Bottom-right
-        -1.0f, -1.0f, 0.0f, 1.0f  // Bottom-left
-    };
-    GLuint indices[] = {
-         0, 1, 2,
-         2, 3, 0
-    };
-    L3DHandle logo = l3dLoadMesh(vertices, 4, indices, 6, material, L3D_POS2_UV2);
+    L3DHandle logo = l3dLoadQuad(material);
 
     // Create a camera.
     L3DHandle camera = l3dLoadCamera();

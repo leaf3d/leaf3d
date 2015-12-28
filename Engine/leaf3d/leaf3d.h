@@ -134,6 +134,10 @@ L3DHandle l3dLoadMesh(
     const DrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
 );
 
+L3DHandle l3dLoadQuad(
+    const L3DHandle& material
+);
+
 L3DMat4 l3dGetMeshTrans(
     const L3DHandle& target
 );
