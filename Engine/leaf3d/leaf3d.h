@@ -87,11 +87,11 @@ void l3dAddTextureToMaterial(
 L3DHandle l3dLoadCamera(
     const char* name = "Default",
     const L3DMat4& view = glm::lookAt(
-        glm::vec3(0.0f, 0.0f, 5.0f),
+        glm::vec3(0.0f, 0.0f, 8.0f),
         glm::vec3(0.0f, 0.0f, 0.0f),
         glm::vec3(0.0f, 1.0f, 0.0f)
     ),
-    const L3DMat4& proj = glm::perspective(45.0f, 1.0f, 1.0f, 10.0f)
+    const L3DMat4& proj = glm::perspective(45.0f, 1.0f, 1.0f, 100.0f)
 );
 
 L3DMat4 l3dGetCameraView(

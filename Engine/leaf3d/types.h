@@ -50,7 +50,7 @@ namespace l3d
         L3D_POS2_UV2 = 4,
         L3D_POS3_UV2 = 5,
         L3D_POS2_COL3_UV2 = 7,
-        L3D_POS3_COL3_UV2 = 8,
+        L3D_POS3_NOR3_UV2 = 8,
         L3D_POS3_NOR3_COL3_UV2 = 10,
         L3D_POS3_NOR3_TAN3_COL3_UV2 = 15,
         L3D_POS3_NOR3_TAN3_BTAN3_COL3_UV2 = 17,

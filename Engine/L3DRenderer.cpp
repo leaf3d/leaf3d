@@ -194,7 +194,10 @@ void L3DRenderer::renderFrame(L3DCamera* camera)
 
     // Clear the screen.
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Set depth test.
+    glEnable(GL_DEPTH_TEST);
 
     // Set blending mode.
     glEnable(GL_BLEND);
@@ -517,9 +520,9 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
                     this->enableVertexAttribute(colAttrib, 3, GL_FLOAT, 7*sizeof(GLfloat), (void*)(2*sizeof(GLfloat)));
                     this->enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 7*sizeof(GLfloat), (void*)(5*sizeof(GLfloat)));
                     break;
-                case L3D_POS3_COL3_UV2:
+                case L3D_POS3_NOR3_UV2:
                     this->enableVertexAttribute(posAttrib, 3, GL_FLOAT, 8*sizeof(GLfloat), 0);
-                    this->enableVertexAttribute(colAttrib, 3, GL_FLOAT, 8*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
+                    this->enableVertexAttribute(norAttrib, 3, GL_FLOAT, 8*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
                     this->enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 8*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
                     break;
                 case L3D_POS3_NOR3_COL3_UV2:
