@@ -63,14 +63,14 @@ int main()
         uniform mat4 view;
         uniform mat4 proj;
 
-        in vec2 position;
+        in vec3 position;
         in vec2 texcoord0;
 
         out vec2 Texcoord0;
 
         void main() {
             Texcoord0 = texcoord0;
-            gl_Position = proj * view * trans * vec4(position, 0.0, 1.0);
+            gl_Position = proj * view * trans * vec4(position, 1.0);
         }
     ));
 
@@ -100,6 +100,7 @@ int main()
 
     // Load a simple textured quad.
     L3DHandle logo = l3dLoadQuad(material);
+    l3dScaleMesh(logo, L3DVec3(2.0f, 2.0f, 2.0f));
 
     // Create a camera.
     L3DHandle camera = l3dLoadCamera();

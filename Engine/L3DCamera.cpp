@@ -39,9 +39,9 @@ L3DCamera::L3DCamera(
     if (renderer) renderer->addCamera(this);
 }
 
-void L3DCamera::translate(const L3DVec3& trans)
+void L3DCamera::translate(const L3DVec3& movement)
 {
-    this->view = glm::translate(this->view, trans);
+    this->view = glm::translate(this->view, movement);
 }
 
 void L3DCamera::rotate(

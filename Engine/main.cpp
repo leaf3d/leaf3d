@@ -286,7 +286,7 @@ void l3dSetCameraProj(
 
 void l3dTranslateCamera(
     const L3DHandle& target,
-    const L3DVec3& trans
+    const L3DVec3& movement
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
@@ -294,7 +294,7 @@ void l3dTranslateCamera(
     L3DCamera* camera = _renderer->getCamera(target);
 
     if (camera)
-        camera->translate(trans);
+        camera->translate(movement);
 }
 
 void l3dRotateCamera(
@@ -347,19 +347,79 @@ L3DHandle l3dLoadQuad(
 )
 {
     GLfloat vertices[] = {
-    //  Position      Texcoords
-        -1.0f,  1.0f, 0.0f, 0.0f, // Top-left
-         1.0f,  1.0f, 1.0f, 0.0f, // Top-right
-         1.0f, -1.0f, 1.0f, 1.0f, // Bottom-right
-        -1.0f, -1.0f, 0.0f, 1.0f  // Bottom-left
+    //  Position       Texcoords
+        -0.5f,  0.5f,  0.0f, 0.0f, // Top-left
+         0.5f,  0.5f,  1.0f, 0.0f, // Top-right
+         0.5f, -0.5f,  1.0f, 1.0f, // Bottom-right
+        -0.5f, -0.5f,  0.0f, 1.0f  // Bottom-left
     };
 
     GLuint indices[] = {
-         0, 1, 2,
-         2, 3, 0
+        0, 1, 2,
+        2, 3, 0
     };
 
     return l3dLoadMesh(vertices, 4, indices, 6, material, L3D_POS2_UV2);
+}
+
+L3DHandle l3dLoadCube(
+    const L3DHandle &material
+)
+{
+    GLfloat vertices[] = {
+    //  Position              Texcoords
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, // Front Top-left
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // Front Top-right
+         0.5f, -0.5f,  0.5f,  1.0f, 1.0f, // Front Bottom-right
+        -0.5f, -0.5f,  0.5f,  0.0f, 1.0f, // Front Bottom-left
+
+        -0.5f,  0.5f, -0.5f,  1.0f, 0.0f, // Back Top-left
+         0.5f,  0.5f, -0.5f,  0.0f, 0.0f, // Back Top-right
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // Back Bottom-right
+        -0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // Back Bottom-left
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, // Left Top-left
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // Left Top-right
+        -0.5f, -0.5f,  0.5f,  1.0f, 1.0f, // Left Bottom-left
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // Left Bottom-right
+
+         0.5f,  0.5f,  0.5f,  0.0f, 0.0f, // Right Top-left
+         0.5f,  0.5f, -0.5f,  1.0f, 0.0f, // Right Top-right
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // Right Bottom-left
+         0.5f, -0.5f,  0.5f,  0.0f, 1.0f, // Right Bottom-right
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 0.0f, // Top Top-left
+         0.5f,  0.5f, -0.5f,  1.0f, 0.0f, // Top Top-right
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // Top Bottom-left
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // Top Bottom-right
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // Bottom Top-left
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // Bottom Top-right
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // Bottom Bottom-left
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // Bottom Bottom-right
+    };
+
+    GLuint indices[] = {
+        0, 1, 2,
+        2, 3, 0,
+
+        4, 5, 6,
+        6, 7, 4,
+
+        8, 9, 10,
+        10, 11, 8,
+
+        12, 13, 14,
+        14, 15, 12,
+
+        16, 17, 18,
+        18, 19, 16,
+
+        20, 21, 22,
+        22, 23, 20,
+    };
+
+    return l3dLoadMesh(vertices, 24, indices, 36, material, L3D_POS3_UV2);
 }
 
 L3DMat4 l3dGetMeshTrans(
@@ -391,7 +451,7 @@ void l3dSetMeshTrans(
 
 void l3dTranslateMesh(
     const L3DHandle& target,
-    const L3DVec3& trans
+    const L3DVec3& movement
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
@@ -399,7 +459,7 @@ void l3dTranslateMesh(
     L3DMesh* mesh = _renderer->getMesh(target);
 
     if (mesh)
-        mesh->translate(trans);
+        mesh->translate(movement);
 }
 
 void l3dRotateMesh(
@@ -414,6 +474,19 @@ void l3dRotateMesh(
 
     if (mesh)
         mesh->rotate(radians, direction);
+}
+
+void l3dScaleMesh(
+    const L3DHandle& target,
+    const L3DVec3& factor
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DMesh* mesh = _renderer->getMesh(target);
+
+    if (mesh)
+        mesh->scale(factor);
 }
 
 L3DHandle l3dLoadForwardRenderQueue()

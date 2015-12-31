@@ -92,9 +92,9 @@ unsigned int L3DMesh::indexCount() const
     return m_indexBuffer ? m_indexBuffer->count() : 0;
 }
 
-void L3DMesh::translate(const L3DVec3& trans)
+void L3DMesh::translate(const L3DVec3& movement)
 {
-    this->trans = glm::translate(this->trans, trans);
+    this->trans = glm::translate(this->trans, movement);
 }
 
 void L3DMesh::rotate(
@@ -103,4 +103,11 @@ void L3DMesh::rotate(
 )
 {
     this->trans = glm::rotate(this->trans, radians, direction);
+}
+
+void L3DMesh::scale(
+    const L3DVec3& factor
+)
+{
+    this->trans = glm::scale(this->trans, factor);
 }

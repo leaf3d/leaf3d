@@ -49,7 +49,7 @@ namespace l3d
 
         const char* name() const { return m_name; }
 
-        void translate(const L3DVec3& trans);
+        void translate(const L3DVec3& movement);
         void rotate(
             float radians,
             const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)

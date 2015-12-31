@@ -115,7 +115,7 @@ void l3dSetCameraProj(
 
 void l3dTranslateCamera(
     const L3DHandle& target,
-    const L3DVec3& trans
+    const L3DVec3& movement
 );
 
 void l3dRotateCamera(
@@ -139,6 +139,10 @@ L3DHandle l3dLoadQuad(
     const L3DHandle& material
 );
 
+L3DHandle l3dLoadCube(
+    const L3DHandle& material
+);
+
 L3DMat4 l3dGetMeshTrans(
     const L3DHandle& target
 );
@@ -150,13 +154,18 @@ void l3dSetMeshTrans(
 
 void l3dTranslateMesh(
     const L3DHandle& target,
-    const L3DVec3& trans
+    const L3DVec3& movement
 );
 
 void l3dRotateMesh(
     const L3DHandle& target,
     float radians,
     const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
+);
+
+void l3dScaleMesh(
+    const L3DHandle& target,
+    const L3DVec3& factor
 );
 
 L3DHandle l3dLoadForwardRenderQueue();

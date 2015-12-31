@@ -73,11 +73,12 @@ namespace l3d
         unsigned int    vertexCount() const;
         unsigned int    indexCount() const;
 
-        void translate(const L3DVec3& trans);
+        void translate(const L3DVec3& movement);
         void rotate(
             float radians,
             const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
         );
+        void scale(const L3DVec3& factor);
     };
 }
 
