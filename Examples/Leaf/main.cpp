@@ -104,6 +104,9 @@ int main()
     // Create a camera.
     L3DHandle camera = l3dLoadCamera();
 
+    // Create a forward rendering pipeline.
+    L3DHandle renderQueue = l3dLoadForwardRenderQueue();
+
     // ---------------------------- RENDERING ------------------------------ //
 
     while(!glfwWindowShouldClose(window))
@@ -112,7 +115,7 @@ int main()
         glfwPollEvents();
 
         // Render current frame.
-        l3dRenderFrame(camera);
+        l3dRenderFrame(camera, renderQueue);
 
         // Apply a rotation to the camera.
         l3dRotateCamera(camera, (float)sin(glfwGetTime()) * 0.05f);

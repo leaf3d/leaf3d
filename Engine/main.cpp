@@ -28,6 +28,7 @@
 #include <leaf3d/L3DCamera.h>
 #include <leaf3d/L3DLight.h>
 #include <leaf3d/L3DMesh.h>
+#include <leaf3d/L3DRenderQueue.h>
 
 using namespace l3d;
 
@@ -56,13 +57,15 @@ int l3dTerminate()
 }
 
 void l3dRenderFrame(
-    const L3DHandle& camera
+    const L3DHandle& camera,
+    const L3DHandle& renderQueue
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
     _renderer->renderFrame(
-        _renderer->getCamera(camera)
+        _renderer->getCamera(camera),
+        _renderer->getRenderQueue(renderQueue)
     );
 }
 
@@ -411,4 +414,24 @@ void l3dRotateMesh(
 
     if (mesh)
         mesh->rotate(radians, direction);
+}
+
+L3DHandle l3dLoadForwardRenderQueue()
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DRenderQueue* renderQueue = new L3DRenderQueue(
+        _renderer,
+        "ForwardRendering"
+    );
+
+    renderQueue->addClearBuffersCommand();
+    renderQueue->addSetDepthTestCommand();
+    renderQueue->addSetBlendCommand();
+    renderQueue->addDrawMeshesCommand();
+
+    if (renderQueue)
+      return renderQueue->handle();
+
+    return L3D_INVALID_HANDLE;
 }

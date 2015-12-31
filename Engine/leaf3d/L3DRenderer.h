@@ -37,6 +37,7 @@ namespace l3d
     class L3DCamera;
     class L3DLight;
     class L3DMesh;
+    class L3DRenderQueue;
 
     typedef std::map<unsigned int, L3DBuffer*>          L3DBufferPool;
     typedef std::map<unsigned int, L3DTexture*>         L3DTexturePool;
@@ -46,6 +47,7 @@ namespace l3d
     typedef std::map<unsigned int, L3DCamera*>          L3DCameraPool;
     typedef std::map<unsigned int, L3DLight*>           L3DLightPool;
     typedef std::map<unsigned int, L3DMesh*>            L3DMeshPool;
+    typedef std::map<unsigned int, L3DRenderQueue*>     L3DRenderQueuePool;
 
     class L3DRenderer
     {
@@ -58,6 +60,7 @@ namespace l3d
         L3DCameraPool           m_cameras;
         L3DLightPool            m_lights;
         L3DMeshPool             m_meshes;
+        L3DRenderQueuePool      m_renderQueues;
 
     public:
         L3DRenderer();
@@ -68,7 +71,10 @@ namespace l3d
         int terminate();
 
         // Rendering.
-        void renderFrame(L3DCamera* camera);
+        void renderFrame(
+            L3DCamera* camera,
+            L3DRenderQueue* renderQueue
+        );
 
         // Add resources to renderer.
         void addResource(L3DResource* resource);
@@ -80,6 +86,7 @@ namespace l3d
         void addCamera(L3DCamera* camera);
         void addLight(L3DLight* light);
         void addMesh(L3DMesh* mesh);
+        void addRenderQueue(L3DRenderQueue* renderQueue);
 
         // Remove resources from renderer.
         void removeResource(L3DResource* resource);
@@ -91,6 +98,7 @@ namespace l3d
         void removeCamera(L3DCamera* camera);
         void removeLight(L3DLight* light);
         void removeMesh(L3DMesh* mesh);
+        void removeRenderQueue(L3DRenderQueue* renderQueue);
 
         // Convert handle to resource pointer.
         L3DResource*        getResource(const L3DHandle& handle) const;
@@ -102,6 +110,7 @@ namespace l3d
         L3DCamera*          getCamera(const L3DHandle& handle) const;
         L3DLight*           getLight(const L3DHandle& handle) const;
         L3DMesh*            getMesh(const L3DHandle& handle) const;
+        L3DRenderQueue*     getRenderQueue(const L3DHandle& handle) const;
 
         // Return size of internal resource pools.
         unsigned int    bufferCount() const { return m_buffers.size(); }
@@ -112,16 +121,24 @@ namespace l3d
         unsigned int    cameraCount() const { return m_cameras.size(); }
         unsigned int    lightCount() const { return m_lights.size(); }
         unsigned int    meshCount() const { return m_meshes.size(); }
+        unsigned int    renderQueueCount() const { return m_renderQueues.size(); }
 
-    private:
-        void enableVertexAttribute(
-            GLuint attrib,
-            GLint size,
-            GLenum type,
-            GLsizei stride,
-            void* startPtr = 0,
-            GLboolean normalized = GL_FALSE
+    protected:
+        // Render actions.
+        void clearBuffers(
+            bool colorBuffer = true,
+            bool depthBuffer = true,
+            bool stencilBuffer = true,
+            const L3DVec4& clearColor = L3DVec4(1, 1, 1, 1)
         );
+        void setDepthTest(bool enable = true);
+        void setStencilTest(bool enable = true);
+        void setBlend(
+            bool enable = true,
+            const BlendFactor& srcFactor = L3D_SRC_ALPHA,
+            const BlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
+        );
+        void drawMeshes(L3DCamera* camera);
     };
 }
 

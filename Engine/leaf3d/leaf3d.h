@@ -32,7 +32,8 @@ int l3dInit();
 int l3dTerminate();
 
 void l3dRenderFrame(
-    const L3DHandle& camera
+    const L3DHandle& camera,
+    const L3DHandle& renderQueue
 );
 
 L3DHandle l3dLoadTexture(
@@ -157,5 +158,7 @@ void l3dRotateMesh(
     float radians,
     const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
 );
+
+L3DHandle l3dLoadForwardRenderQueue();
 
 #endif // L3D_LEAF3D_H

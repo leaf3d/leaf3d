@@ -100,6 +100,24 @@ namespace l3d
         float* valueMat4;
     };
 
+    enum BlendFactor
+    {
+        L3D_ZERO,
+        L3D_ONE,
+        L3D_SRC_COLOR,
+        L3D_ONE_MINUS_SRC_COLOR,
+        L3D_DST_COLOR,
+        L3D_ONE_MINUS_DST_COLOR,
+        L3D_SRC_ALPHA,
+        L3D_ONE_MINUS_SRC_ALPHA,
+        L3D_DST_ALPHA,
+        L3D_ONE_MINUS_DST_ALPHA,
+        L3D_CONSTANT_COLOR,
+        L3D_ONE_MINUS_CONSTANT_COLOR,
+        L3D_CONSTANT_ALPHA,
+        L3D_ONE_MINUS_CONSTANT_ALPHA
+    };
+
     enum ResourceType
     {
         L3D_BUFFER = 0,
@@ -109,7 +127,8 @@ namespace l3d
         L3D_MATERIAL,
         L3D_CAMERA,
         L3D_LIGHT,
-        L3D_MESH
+        L3D_MESH,
+        L3D_RENDER_QUEUE
     };
 
     enum BufferType
@@ -130,6 +149,16 @@ namespace l3d
         L3D_SHADER_VERTEX = 0,
         L3D_SHADER_FRAGMENT,
         L3D_SHADER_GEOMETRY
+    };
+
+    enum RenderCommandType
+    {
+        L3D_INVALID_RENDER_COMMAND = 0,
+        L3D_CLEAR_BUFFERS,
+        L3D_SET_DEPTH_TEST,
+        L3D_SET_STENCIL_TEST,
+        L3D_SET_BLEND,
+        L3D_DRAW_MESHES
     };
 
     // Almost-opaque resource handle:

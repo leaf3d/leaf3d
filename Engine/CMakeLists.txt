@@ -13,6 +13,7 @@ set(LEAF3D_SOURCES
     leaf3d/L3DCamera.h
     leaf3d/L3DLight.h
     leaf3d/L3DMesh.h
+    leaf3d/L3DRenderQueue.h
     leaf3d/L3DRenderer.h
     leaf3d/leaf3d.h
     L3DResource.cpp
@@ -24,6 +25,7 @@ set(LEAF3D_SOURCES
     L3DCamera.cpp
     L3DLight.cpp
     L3DMesh.cpp
+    L3DRenderQueue.cpp
     L3DRenderer.cpp
     main.cpp
 )
