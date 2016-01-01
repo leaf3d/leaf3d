@@ -963,7 +963,7 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
             // Bind matrices.
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "view"), 1, GL_FALSE, glm::value_ptr(camera->view));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "proj"), 1, GL_FALSE, glm::value_ptr(camera->proj));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "trans"), 1, GL_FALSE, glm::value_ptr(mesh->trans));
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "model"), 1, GL_FALSE, glm::value_ptr(mesh->trans));
 
             // Render geometry.
             if (index_count > 0)

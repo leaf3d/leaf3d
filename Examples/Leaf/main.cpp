@@ -59,7 +59,7 @@ int main()
 
     // Create and compile the vertex shader.
     L3DHandle vertexShader = l3dLoadShader(L3D_SHADER_VERTEX, GLSL(
-        uniform mat4 trans;
+        uniform mat4 model;
         uniform mat4 view;
         uniform mat4 proj;
 
@@ -70,7 +70,7 @@ int main()
 
         void main() {
             Texcoord0 = texcoord0;
-            gl_Position = proj * view * trans * vec4(position, 1.0);
+            gl_Position = proj * view * model * vec4(position, 1.0);
         }
     ));
 
