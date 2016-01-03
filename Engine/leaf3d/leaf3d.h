@@ -62,13 +62,49 @@ void l3dSetShaderProgramUniformI(
     int value
 );
 
+void l3dSetShaderProgramUniformUI(
+    const L3DHandle& target,
+    const char* name,
+    unsigned int value
+);
+
+void l3dSetShaderProgramUniformB(
+    const L3DHandle& target,
+    const char* name,
+    bool value
+);
+
 void l3dSetShaderProgramUniformF(
     const L3DHandle& target,
     const char* name,
     float value
 );
 
-void l3dSetShaderProgramUniformMat4F(
+void l3dSetShaderProgramUniformVec2(
+    const L3DHandle& target,
+    const char* name,
+    const L3DVec2& value
+);
+
+void l3dSetShaderProgramUniformVec3(
+    const L3DHandle& target,
+    const char* name,
+    const L3DVec3& value
+);
+
+void l3dSetShaderProgramUniformVec4(
+    const L3DHandle& target,
+    const char* name,
+    const L3DVec4& value
+);
+
+void l3dSetShaderProgramUniformMat3(
+    const L3DHandle& target,
+    const char* name,
+    const L3DMat3& value
+);
+
+void l3dSetShaderProgramUniformMat4(
     const L3DHandle& target,
     const char* name,
     const L3DMat4& value
@@ -76,7 +112,11 @@ void l3dSetShaderProgramUniformMat4F(
 
 L3DHandle l3dLoadMaterial(
     const char* name,
-    const L3DHandle& shaderProgram
+    const L3DHandle& shaderProgram,
+    const L3DVec3& ambient = L3DVec3(1.0f, 1.0f, 1.0f),
+    const L3DVec3& diffuse = L3DVec3(1.0f, 1.0f, 1.0f),
+    const L3DVec3& specular = L3DVec3(1.0f, 1.0f, 1.0f),
+    float shininess = 50.0f
 );
 
 void l3dAddTextureToMaterial(
@@ -131,16 +171,19 @@ L3DHandle l3dLoadMesh(
     unsigned int indexCount,
     const L3DHandle& material,
     const VertexFormat& VertexFormat,
+    const L3DMat4& transMatrix = L3DMat4(),
     const DrawType& drawType = L3D_DRAW_STATIC,
     const DrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
 );
 
 L3DHandle l3dLoadQuad(
-    const L3DHandle& material
+    const L3DHandle& material,
+    const L3DVec2& texMulFactor = L3DVec2(1, 1)
 );
 
 L3DHandle l3dLoadCube(
-    const L3DHandle& material
+    const L3DHandle& material,
+    const L3DVec2& texMulFactor = L3DVec2(1, 1)
 );
 
 L3DMat4 l3dGetMeshTrans(
@@ -168,6 +211,11 @@ void l3dScaleMesh(
     const L3DVec3& factor
 );
 
-L3DHandle l3dLoadForwardRenderQueue();
+L3DHandle l3dLoadLight(
+    const L3DVec3& position,
+    const L3DVec4& color = L3DVec4(1, 1, 1, 1)
+);
+
+L3DHandle l3dLoadForwardRenderQueue(const L3DVec4& clearColor = L3DVec4(1, 1, 1, 1));
 
 #endif // L3D_LEAF3D_H

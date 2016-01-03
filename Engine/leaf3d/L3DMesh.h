@@ -32,15 +32,15 @@ namespace l3d
 
     class L3DMesh : public L3DResource
     {
+    public:
+        L3DMat4         transMatrix;
+
     private:
         L3DBuffer*      m_vertexBuffer;
         L3DBuffer*      m_indexBuffer;
         L3DMaterial*    m_material;
         VertexFormat    m_vertexFormat;
         DrawPrimitive   m_drawPrimitive;
-
-    public:
-        L3DMat4 trans;
 
     public:
         L3DMesh(
@@ -51,6 +51,7 @@ namespace l3d
             unsigned int indexCount,
             L3DMaterial* material,
             const VertexFormat& VertexFormat,
+            const L3DMat4& transMatrix = L3DMat4(),
             const DrawType& drawType = L3D_DRAW_STATIC,
             const DrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
         );
@@ -60,6 +61,7 @@ namespace l3d
             L3DBuffer* indexBuffer,
             L3DMaterial* material,
             const VertexFormat &VertexFormat,
+            const L3DMat4& transMatrix = L3DMat4(),
             const DrawType& drawType = L3D_DRAW_STATIC,
             const DrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
         );

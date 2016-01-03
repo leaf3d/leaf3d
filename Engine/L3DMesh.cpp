@@ -36,9 +36,11 @@ L3DMesh::L3DMesh(
     unsigned int indexCount,
     L3DMaterial* material,
     const VertexFormat& vertexFormat,
+    const L3DMat4& transMatrix,
     const DrawType& drawType,
     const DrawPrimitive& drawPrimitive
 ) : L3DResource(L3D_MESH, renderer),
+    transMatrix(transMatrix),
     m_vertexBuffer(0),
     m_indexBuffer(0),
     m_material(material),
@@ -60,9 +62,11 @@ L3DMesh::L3DMesh(
     L3DBuffer* indexBuffer,
     L3DMaterial* material,
     const VertexFormat& vertexFormat,
+    const L3DMat4& transMatrix,
     const DrawType& drawType,
     const DrawPrimitive& drawPrimitive
 ) : L3DResource(L3D_MESH, renderer),
+    transMatrix(transMatrix),
     m_vertexBuffer(0),
     m_indexBuffer(0),
     m_material(material),
@@ -94,7 +98,7 @@ unsigned int L3DMesh::indexCount() const
 
 void L3DMesh::translate(const L3DVec3& movement)
 {
-    this->trans = glm::translate(this->trans, movement);
+    transMatrix = glm::translate(this->transMatrix, movement);
 }
 
 void L3DMesh::rotate(
@@ -102,12 +106,12 @@ void L3DMesh::rotate(
     const L3DVec3& direction
 )
 {
-    this->trans = glm::rotate(this->trans, radians, direction);
+    this->transMatrix = glm::rotate(this->transMatrix, radians, direction);
 }
 
 void L3DMesh::scale(
     const L3DVec3& factor
 )
 {
-    this->trans = glm::scale(this->trans, factor);
+    this->transMatrix = glm::scale(this->transMatrix, factor);
 }

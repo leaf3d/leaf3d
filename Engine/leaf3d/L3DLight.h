@@ -30,8 +30,14 @@ namespace l3d
     class L3DLight : public L3DResource
     {
     public:
+        L3DVec3 position;
+        L3DVec4 color;
+
+    public:
         L3DLight(
-            L3DRenderer* renderer
+            L3DRenderer* renderer,
+            const L3DVec3& position,
+            const L3DVec4& color = L3DVec4(1, 1, 1, 1)
         );
         ~L3DLight() {}
     };

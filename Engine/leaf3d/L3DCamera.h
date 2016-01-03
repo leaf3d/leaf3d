@@ -48,6 +48,7 @@ namespace l3d
         ~L3DCamera() {}
 
         const char* name() const { return m_name; }
+        L3DMat3 calculateNormalMatrix(const L3DMat4& modelMatrix) const;
 
         void translate(const L3DVec3& movement);
         void rotate(

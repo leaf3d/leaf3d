@@ -69,9 +69,11 @@ namespace l3d
         void setUniform(const char* name, float value);
         void setUniform(const char* name, int value);
         void setUniform(const char* name, unsigned int value);
+        void setUniform(const char* name, bool value);
         void setUniform(const char* name, const L3DVec2& value);
         void setUniform(const char* name, const L3DVec3& value);
         void setUniform(const char* name, const L3DVec4& value);
+        void setUniform(const char* name, const L3DMat3& value);
         void setUniform(const char* name, const L3DMat4& value);
     };
 }

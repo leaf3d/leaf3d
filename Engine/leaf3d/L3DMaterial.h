@@ -49,13 +49,21 @@ namespace l3d
         L3DShaderProgram* m_shaderProgram;
 
     public:
+        L3DVec3 ambient;
+        L3DVec3 diffuse;
+        L3DVec3 specular;
+        float shininess;
         L3DTextureRegistry textures;
 
     public:
         L3DMaterial(
             L3DRenderer* renderer,
             const char* name,
-            L3DShaderProgram* shaderProgram
+            L3DShaderProgram* shaderProgram,
+            const L3DVec3& ambient = L3DVec3(1.0f, 1.0f, 1.0f),
+            const L3DVec3& diffuse = L3DVec3(1.0f, 1.0f, 1.0f),
+            const L3DVec3& specular = L3DVec3(1.0f, 1.0f, 1.0f),
+            float shininess = 50.0f
         );
         ~L3DMaterial() {}
 

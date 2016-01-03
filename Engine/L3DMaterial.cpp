@@ -28,9 +28,17 @@ using namespace l3d;
 L3DMaterial::L3DMaterial(
     L3DRenderer* renderer,
     const char* name,
-    L3DShaderProgram* shaderProgram
+    L3DShaderProgram* shaderProgram,
+    const L3DVec3& ambient,
+    const L3DVec3& diffuse,
+    const L3DVec3& specular,
+    float shininess
 ) : L3DResource(L3D_MATERIAL, renderer),
     m_name(name),
+    ambient(ambient),
+    diffuse(diffuse),
+    specular(specular),
+    shininess(shininess),
     m_shaderProgram(shaderProgram)
 {
     if (renderer) renderer->addMaterial(this);

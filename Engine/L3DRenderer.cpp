@@ -179,6 +179,48 @@ static void _enableVertexAttribute(
     glVertexAttribPointer(attrib, size, type, normalized, stride, startPtr);
 }
 
+static void _setUniform(
+    GLuint shaderProgram,
+    const char* name,
+    const L3DUniform& uniform
+)
+{
+    GLint gl_location = glGetUniformLocation(shaderProgram, name);
+
+    switch (uniform.type)
+    {
+    case L3D_UNIFORM_FLOAT:
+        glUniform1f(gl_location, uniform.value.valueF);
+        break;
+    case L3D_UNIFORM_INT:
+        glUniform1i(gl_location, uniform.value.valueI);
+        break;
+    case L3D_UNIFORM_UINT:
+        glUniform1ui(gl_location, uniform.value.valueUI);
+        break;
+    case L3D_UNIFORM_BOOL:
+        glUniform1ui(gl_location, uniform.value.valueB);
+        break;
+    case L3D_UNIFORM_VEC2:
+        glUniform2fv(gl_location, 1, uniform.value.valueVec2);
+        break;
+    case L3D_UNIFORM_VEC3:
+        glUniform3fv(gl_location, 1, uniform.value.valueVec3);
+        break;
+    case L3D_UNIFORM_VEC4:
+        glUniform4fv(gl_location, 1, uniform.value.valueVec4);
+        break;
+    case L3D_UNIFORM_MAT3:
+        glUniformMatrix3fv(gl_location, 1, GL_FALSE, uniform.value.valueMat3);
+        break;
+    case L3D_UNIFORM_MAT4:
+        glUniformMatrix4fv(gl_location, 1, GL_FALSE, uniform.value.valueMat4);
+        break;
+    default:
+        break;
+    }
+}
+
 L3DRenderer::L3DRenderer()
 {
 }
@@ -389,8 +431,8 @@ void L3DRenderer::addTexture(L3DTexture* texture)
         }
 
         glGenerateMipmap(gl_type);
-        glTexParameteri(gl_type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTexParameteri(gl_type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexParameteri(gl_type, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(gl_type, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 
@@ -922,48 +964,44 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
             glUseProgram(shaderProgram->id());
 
             // Bind textures.
-            unsigned int i = 0;
-            for (L3DTextureRegistry::iterator tex_it = material->textures.begin(); tex_it!=material->textures.end(); ++tex_it)
+            if (material->textures.size() > 0)
             {
-                L3DTexture* texture = tex_it->second;
-                GLenum gl_type = _toOpenGL(texture->type());
-                GLint gl_sampler = glGetUniformLocation(shaderProgram->id(), tex_it->first);
+                unsigned int i = 0;
+                for (L3DTextureRegistry::iterator tex_it = material->textures.begin(); tex_it!=material->textures.end(); ++tex_it)
+                {
+                    L3DTexture* texture = tex_it->second;
+                    GLenum gl_type = _toOpenGL(texture->type());
+                    GLint gl_sampler = glGetUniformLocation(shaderProgram->id(), tex_it->first);
 
-                glActiveTexture(GL_TEXTURE0 + i);
-                glBindTexture(gl_type, texture->id());
-                glUniform1i(gl_sampler, i);
+                    glActiveTexture(GL_TEXTURE0 + i);
+                    glBindTexture(gl_type, texture->id());
+                    glUniform1i(gl_sampler, i);
 
-                ++i;
+                    ++i;
+                }
+            }
+            else
+            {
+                glBindTexture(GL_TEXTURE_1D, 0);
+                glBindTexture(GL_TEXTURE_2D, 0);
+                glBindTexture(GL_TEXTURE_3D, 0);
             }
 
             // Bind uniforms.
             L3DUniformMap uniforms = shaderProgram->uniforms();
             for (L3DUniformMap::iterator unif_it = uniforms.begin(); unif_it!=uniforms.end(); ++unif_it)
-            {
-                L3DUniform uniform = unif_it->second;
-                GLint gl_location = glGetUniformLocation(shaderProgram->id(), unif_it->first);
-
-                switch (uniform.type)
-                {
-                case L3D_UNIFORM_FLOAT:
-                    glUniform1f(gl_location, uniform.value.valueF);
-                    break;
-                case L3D_UNIFORM_INT:
-                    glUniform1i(gl_location, uniform.value.valueI);
-                    break;
-                case L3D_UNIFORM_UINT:
-                    glUniform1ui(gl_location, uniform.value.valueUI);
-                    break;
-                case L3D_UNIFORM_MAT4:
-                    glUniformMatrix4fv(gl_location, 1, GL_FALSE, uniform.value.valueMat4);
-                    break;
-                }
-            }
+                _setUniform(shaderProgram->id(), unif_it->first, unif_it->second);
 
             // Bind matrices.
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "view"), 1, GL_FALSE, glm::value_ptr(camera->view));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "proj"), 1, GL_FALSE, glm::value_ptr(camera->proj));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "model"), 1, GL_FALSE, glm::value_ptr(mesh->trans));
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "model"), 1, GL_FALSE, glm::value_ptr(mesh->transMatrix));
+            glUniformMatrix3fv(glGetUniformLocation(shaderProgram->id(), "normalMatrix"), 1, GL_FALSE, glm::value_ptr(camera->calculateNormalMatrix(mesh->transMatrix)));
+
+            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "material.ambient"), 1,  glm::value_ptr(material->ambient));
+            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "material.diffuse"), 1,  glm::value_ptr(material->diffuse));
+            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "material.specular"), 1,  glm::value_ptr(material->specular));
+            glUniform1f(glGetUniformLocation(shaderProgram->id(), "material.shininess"), material->shininess);
 
             // Render geometry.
             if (index_count > 0)

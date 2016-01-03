@@ -22,3 +22,4 @@ set(LEAF3D_EXAMPLES_REQUIRED_LIBS
 
 add_subdirectory(Leaf)
 add_subdirectory(Frankie)
+add_subdirectory(Lamp)

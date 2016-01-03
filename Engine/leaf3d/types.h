@@ -41,6 +41,7 @@ namespace l3d
     typedef glm::vec2 L3DVec2;
     typedef glm::vec3 L3DVec3;
     typedef glm::vec4 L3DVec4;
+    typedef glm::mat3 L3DMat3;
     typedef glm::mat4 L3DMat4;
 
     enum VertexFormat
@@ -83,9 +84,11 @@ namespace l3d
         L3D_UNIFORM_FLOAT,
         L3D_UNIFORM_INT,
         L3D_UNIFORM_UINT,
+        L3D_UNIFORM_BOOL,
         L3D_UNIFORM_VEC2,
         L3D_UNIFORM_VEC3,
         L3D_UNIFORM_VEC4,
+        L3D_UNIFORM_MAT3,
         L3D_UNIFORM_MAT4
     };
 
@@ -94,9 +97,11 @@ namespace l3d
         float valueF;
         int valueI;
         unsigned int valueUI;
+        bool valueB;
         float* valueVec2;
         float* valueVec3;
         float* valueVec4;
+        float* valueMat3;
         float* valueMat4;
     };
 

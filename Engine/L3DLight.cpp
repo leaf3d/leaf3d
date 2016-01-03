@@ -25,8 +25,12 @@
 using namespace l3d;
 
 L3DLight::L3DLight(
-    L3DRenderer* renderer
-) : L3DResource(L3D_LIGHT, renderer)
+    L3DRenderer* renderer,
+    const L3DVec3& position,
+    const L3DVec4& color
+) : L3DResource(L3D_LIGHT, renderer),
+    position(position),
+    color(color)
 {
     if (renderer) renderer->addLight(this);
 }
