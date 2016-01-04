@@ -21,10 +21,8 @@
 
 #include <stdio.h>
 #include <leaf3d/leaf3d.h>
+#include <leaf3d/leaf3dut.h>
 #include <GLFW/glfw3.h>
-
-#define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
 
 #define WINDOW_SIZE 640
 
@@ -55,44 +53,19 @@ int main()
         return -2;
     }
 
+    // Init leaf3dut.
+    if (l3dutInit() != L3D_TRUE) {
+        fprintf(stderr, "Failed to initialize leaf3dut\n");
+        return -3;
+    }
+
     // ----------------------------- RESOURCES ----------------------------- //
 
-    // Create and compile the vertex shader.
-    L3DHandle vertexShader = l3dLoadShader(L3D_SHADER_VERTEX, GLSL(
-        uniform mat4 model;
-        uniform mat4 view;
-        uniform mat4 proj;
-
-        in vec3 position;
-        in vec2 texcoord0;
-
-        out vec2 Texcoord0;
-
-        void main() {
-            Texcoord0 = texcoord0;
-            gl_Position = proj * view * model * vec4(position, 1.0);
-        }
-    ));
-
-    // Create and compile the fragment shader.
-    L3DHandle fragmentShader = l3dLoadShader(L3D_SHADER_FRAGMENT, GLSL(
-        uniform sampler2D albedoMap;
-
-        in vec2 Texcoord0;
-
-        void main() {
-            gl_FragColor = texture(albedoMap, Texcoord0);
-        }
-    ));
-
-    // Link the final shader program.
-    L3DHandle shaderProgram = l3dLoadShaderProgram(vertexShader, fragmentShader);
+    // Load a shader program.
+    L3DHandle shaderProgram = l3dutLoadShaderProgram("basic.vert", "simpletexture.frag");
 
     // Load a texture.
-    int width, height, comp = 0;
-    unsigned char* img = stbi_load("Content/logo.png", &width, &height, &comp, 0);
-    L3DHandle texture = l3dLoadTexture(L3D_TEXTURE_2D, comp == 4 ? L3D_RGBA : L3D_RGB, img, width, height, 0);
-    stbi_image_free(img);
+    L3DHandle texture = l3dutLoadTexture2D("logo.png");
 
     // Load a material.
     L3DHandle material = l3dLoadMaterial("logo", shaderProgram);
@@ -126,6 +99,9 @@ int main()
     }
 
     // ---------------------------- TERMINATE ----------------------------- //
+
+    // Terminate leaf3dut.
+    l3dutTerminate();
 
     // Terminate leaf3d.
     l3dTerminate();

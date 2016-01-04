@@ -4,5 +4,4 @@ add_executable(Frankie WIN32 MACOSX_BUNDLE
 
 target_link_libraries(Frankie
     ${LEAF3D_EXAMPLES_REQUIRED_LIBS}
-    ${ASSIMP_LIBRARIES}
 )

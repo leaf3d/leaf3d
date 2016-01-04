@@ -27,7 +27,15 @@ set(LEAF3D_SOURCES
     L3DMesh.cpp
     L3DRenderQueue.cpp
     L3DRenderer.cpp
-    main.cpp
+    leaf3d.cpp
 )
+
+if (L3D_BUILD_UTILITY)
+    set(LEAF3D_SOURCES
+        ${LEAF3D_SOURCES}
+        leaf3d/leaf3dut.h
+        leaf3dut.cpp
+    )
+endif (L3D_BUILD_UTILITY)
 
 add_library(leaf3d SHARED ${LEAF3D_SOURCES})

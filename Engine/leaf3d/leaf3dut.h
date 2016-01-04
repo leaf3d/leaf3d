@@ -19,24 +19,36 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
-#include <leaf3d/L3DRenderer.h>
-#include <leaf3d/L3DShader.h>
+#ifndef L3D_LEAF3DUT_H
+#define L3D_LEAF3DUT_H
+#pragma once
+
+#include "leaf3d/types.h"
 
 using namespace l3d;
 
-L3DShader::L3DShader(
-    L3DRenderer* renderer,
-    const ShaderType& type,
-    const char* code
-) : L3DResource(L3D_SHADER, renderer),
-    m_type(type),
-    m_code(0)
-{
-    if (code)
-    {
-        unsigned int size = strlen(code) + 1;
-        m_code = (const char*)memcpy(malloc(size), code, size);
-    }
 
-    if (renderer) renderer->addShader(this);
-}
+int l3dutInit(const char* rootPath = "Content/");
+
+int l3dutTerminate();
+
+L3DHandle l3dutLoadTexture2D(const char* filename);
+
+L3DHandle l3dutLoadShader(
+    const ShaderType& type,
+    const char* filename
+);
+
+L3DHandle l3dutLoadShaderProgram(
+    const char* vertexShaderFilename,
+    const char* fragmentShaderFilename,
+    const char* geometryShaderFilename = 0
+);
+
+L3DHandle* l3dutLoadMeshes(
+    const char* filename,
+    const L3DHandle& shaderProgram,
+    unsigned int* meshCount
+);
+
+#endif // L3D_LEAF3DUT_H

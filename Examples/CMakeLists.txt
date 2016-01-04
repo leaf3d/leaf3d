@@ -8,16 +8,12 @@ file(COPY Content DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
 find_package(GLFW REQUIRED)
 include_directories(${GLFW_INCLUDE_DIR})
 
-# Look for Assimp.
-find_package(Assimp REQUIRED)
-include_directories(${ASSIMP_INCLUDE_DIR})
-
 # Set necessary libs.
 set(LEAF3D_EXAMPLES_REQUIRED_LIBS
     leaf3d
     ${GLFW_LIBRARIES}
+    ${LEAF3DUT_REQUIRED_LIBS}
     ${LEAF3D_REQUIRED_LIBS}
-    png
 )
 
 add_subdirectory(Leaf)
