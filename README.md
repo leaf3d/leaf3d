@@ -3,4 +3,4 @@
 
 A *lightweight* **rendering engine** based on **modern OpenGL**.
 
-![Example](http://leaf3d.github.io/website/images/l3d_frankie.png "Example")
+![Overview](http://leaf3d.github.io/website/images/l3d_overview.png "leaf3d")
