@@ -37,8 +37,8 @@ void l3dRenderFrame(
 );
 
 L3DHandle l3dLoadTexture(
-    const TextureType& type,
-    const ImageFormat& format,
+    const L3DTextureType& type,
+    const L3DImageFormat& format,
     unsigned char* data,
     unsigned int width,
     unsigned int height,
@@ -46,7 +46,7 @@ L3DHandle l3dLoadTexture(
 );
 
 L3DHandle l3dLoadShader(
-    const ShaderType& type,
+    const L3DShaderType& type,
     const char* code
 );
 
@@ -116,7 +116,7 @@ L3DHandle l3dLoadMaterial(
     const L3DVec3& ambient = L3DVec3(1.0f, 1.0f, 1.0f),
     const L3DVec3& diffuse = L3DVec3(1.0f, 1.0f, 1.0f),
     const L3DVec3& specular = L3DVec3(1.0f, 1.0f, 1.0f),
-    float shininess = 50.0f
+    float shininess = 32.0f
 );
 
 void l3dAddTextureToMaterial(
@@ -170,10 +170,10 @@ L3DHandle l3dLoadMesh(
     unsigned int* indices,
     unsigned int indexCount,
     const L3DHandle& material,
-    const VertexFormat& VertexFormat,
+    const L3DVertexFormat& L3DVertexFormat,
     const L3DMat4& transMatrix = L3DMat4(),
-    const DrawType& drawType = L3D_DRAW_STATIC,
-    const DrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
+    const L3DDrawType& drawType = L3D_DRAW_STATIC,
+    const L3DDrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
 );
 
 L3DHandle l3dLoadQuad(
@@ -213,7 +213,18 @@ void l3dScaleMesh(
 
 L3DHandle l3dLoadLight(
     const L3DVec3& position,
-    const L3DVec4& color = L3DVec4(1, 1, 1, 1)
+    const L3DVec4& color = L3DVec4(1, 1, 1, 1),
+    const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f)
+);
+
+void l3dToggleLight(
+    const L3DHandle& target,
+    bool on
+);
+
+void l3dTranslateLight(
+    const L3DHandle& target,
+    const L3DVec3& movement
 );
 
 L3DHandle l3dLoadForwardRenderQueue(const L3DVec4& clearColor = L3DVec4(1, 1, 1, 1));

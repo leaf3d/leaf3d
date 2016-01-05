@@ -31,14 +31,14 @@ namespace l3d
     class L3DRenderCommand
     {
     protected:
-        RenderCommandType m_type;
+        L3DRenderCommandType m_type;
 
     public:
-        RenderCommandType type() const { return m_type; }
+        L3DRenderCommandType type() const { return m_type; }
 
     protected:
         L3DRenderCommand() : m_type(L3D_INVALID_RENDER_COMMAND) {}
-        L3DRenderCommand(const RenderCommandType& type) : m_type(type) {}
+        L3DRenderCommand(const L3DRenderCommandType& type) : m_type(type) {}
     };
 
     typedef std::vector<L3DRenderCommand*> L3DRenderCommandList;
@@ -92,14 +92,14 @@ namespace l3d
     {
     public:
         bool enable;
-        BlendFactor srcFactor;
-        BlendFactor dstFactor;
+        L3DBlendFactor srcFactor;
+        L3DBlendFactor dstFactor;
 
     public:
         L3DSetBlendCommand(
             bool enable = true,
-            const BlendFactor& srcFactor = L3D_SRC_ALPHA,
-            const BlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
+            const L3DBlendFactor& srcFactor = L3D_SRC_ALPHA,
+            const L3DBlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
         ) : L3DRenderCommand(L3D_SET_BLEND),
             enable(enable),
             srcFactor(srcFactor),
@@ -143,8 +143,8 @@ namespace l3d
         );
         void addSetBlendCommand(
             bool enable = true,
-            const BlendFactor& srcFactor = L3D_SRC_ALPHA,
-            const BlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
+            const L3DBlendFactor& srcFactor = L3D_SRC_ALPHA,
+            const L3DBlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
         );
         void addDrawMeshesCommand();
     };

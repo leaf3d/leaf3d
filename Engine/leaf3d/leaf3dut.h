@@ -35,7 +35,7 @@ int l3dutTerminate();
 L3DHandle l3dutLoadTexture2D(const char* filename);
 
 L3DHandle l3dutLoadShader(
-    const ShaderType& type,
+    const L3DShaderType& type,
     const char* filename
 );
 

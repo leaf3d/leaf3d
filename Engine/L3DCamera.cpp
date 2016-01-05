@@ -30,6 +30,7 @@ L3DCamera::L3DCamera(
     const L3DMat4& view,
     const L3DMat4& proj
 ) : L3DResource(L3D_CAMERA, renderer),
+    m_name(name),
     view(view),
     proj(proj)
 {
@@ -39,9 +40,15 @@ L3DCamera::L3DCamera(
     if (renderer) renderer->addCamera(this);
 }
 
+L3DVec3 L3DCamera::transformInViewSpace(const L3DVec3& pos) const
+{
+    L3DVec4 result = this->view * glm::vec4(pos, 1);
+    return L3DVec3(result) / result.w;
+}
+
 L3DMat3 L3DCamera::calculateNormalMatrix(const L3DMat4& modelMatrix) const
 {
-    return glm::mat3(glm::transpose(glm::inverse(L3DMat3(view * modelMatrix))));
+    return glm::mat3(glm::transpose(glm::inverse(L3DMat3(this->view * modelMatrix))));
 }
 
 void L3DCamera::translate(const L3DVec3& movement)

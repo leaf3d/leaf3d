@@ -26,7 +26,7 @@ using namespace l3d;
 
 L3DShader::L3DShader(
     L3DRenderer* renderer,
-    const ShaderType& type,
+    const L3DShaderType& type,
     const char* code
 ) : L3DResource(L3D_SHADER, renderer),
     m_type(type),

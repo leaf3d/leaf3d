@@ -39,14 +39,14 @@ namespace l3d
         virtual ~L3DResource();
 
         L3DHandle       handle() const { return m_handle; }
-        ResourceType    resourceType() const { return (ResourceType)m_handle.data.type; }
+        L3DResourceType    resourceType() const { return (L3DResourceType)m_handle.data.type; }
         unsigned int    id() const { return m_handle.data.id; }
         L3DRenderer*    renderer() const { return m_renderer; }
 
     protected:
         L3DResource(L3DRenderer* renderer = L3D_NULLPTR);
         L3DResource(
-            const ResourceType& type,
+            const L3DResourceType& type,
             L3DRenderer* renderer  = L3D_NULLPTR
         );
 

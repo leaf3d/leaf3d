@@ -32,15 +32,7 @@ namespace l3d
     class L3DTexture;
     class L3DShaderProgram;
 
-    struct _strcmp
-    {
-       bool operator()(char const *a, char const *b)
-       {
-          return std::strcmp(a, b) < 0;
-       }
-    };
-
-    typedef std::map<const char*, L3DTexture*, _strcmp> L3DTextureRegistry;
+    typedef std::map<std::string,L3DTexture*> L3DTextureRegistry;
 
     class L3DMaterial : public L3DResource
     {
@@ -63,7 +55,7 @@ namespace l3d
             const L3DVec3& ambient = L3DVec3(1.0f, 1.0f, 1.0f),
             const L3DVec3& diffuse = L3DVec3(1.0f, 1.0f, 1.0f),
             const L3DVec3& specular = L3DVec3(1.0f, 1.0f, 1.0f),
-            float shininess = 50.0f
+            float shininess = 32.0f
         );
         ~L3DMaterial() {}
 

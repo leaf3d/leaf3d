@@ -66,7 +66,7 @@ L3DHandle l3dutLoadTexture2D(const char* filename)
     return texture;
 }
 
-L3DHandle l3dutLoadShader(const ShaderType& type, const char* filename)
+L3DHandle l3dutLoadShader(const L3DShaderType& type, const char* filename)
 {
     if (!filename)
         return L3D_INVALID_HANDLE;
@@ -139,7 +139,7 @@ L3DHandle* l3dutLoadMeshes(
 
         std::vector<float> vertices;
         std::vector<unsigned int> indices;
-        VertexFormat vertexFormat = L3D_POS3_UV2;
+        L3DVertexFormat vertexFormat = L3D_POS3_UV2;
 
         for (int j = 0; j < mesh->mNumVertices; ++j)
         {
@@ -186,7 +186,7 @@ L3DHandle* l3dutLoadMeshes(
                 mat->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilename);
                 L3DHandle texture = l3dutLoadTexture2D(textureFilename.C_Str());
 
-                l3dAddTextureToMaterial(material, "albedoMap", texture);
+                l3dAddTextureToMaterial(material, "u_diffuseMap", texture);
             }
         }
 

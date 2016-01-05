@@ -35,7 +35,7 @@ L3DResource::L3DResource(L3DRenderer* renderer)
 }
 
 L3DResource::L3DResource(
-    const ResourceType& type,
+    const L3DResourceType& type,
     L3DRenderer* renderer
 ) : m_renderer(renderer)
 {

@@ -70,8 +70,8 @@ void l3dRenderFrame(
 }
 
 L3DHandle l3dLoadTexture(
-    const TextureType& type,
-    const ImageFormat& format,
+    const L3DTextureType& type,
+    const L3DImageFormat& format,
     unsigned char* data,
     unsigned int width,
     unsigned int height,
@@ -97,7 +97,7 @@ L3DHandle l3dLoadTexture(
 }
 
 L3DHandle l3dLoadShader(
-    const ShaderType& type,
+    const L3DShaderType& type,
     const char* code
 )
 {
@@ -403,10 +403,10 @@ L3DHandle l3dLoadMesh(
     unsigned int* indices,
     unsigned int indexCount,
     const L3DHandle& material,
-    const VertexFormat& vertexFormat,
+    const L3DVertexFormat& vertexFormat,
     const L3DMat4& transMatrix,
-    const DrawType& drawType,
-    const DrawPrimitive& drawPrimitive
+    const L3DDrawType& drawType,
+    const L3DDrawPrimitive& drawPrimitive
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
@@ -581,7 +581,8 @@ void l3dScaleMesh(
 
 L3DHandle l3dLoadLight(
     const L3DVec3& position,
-    const L3DVec4& color
+    const L3DVec4& color,
+    const L3DLightAttenuation& attenuation
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
@@ -589,13 +590,40 @@ L3DHandle l3dLoadLight(
     L3DLight* light = new L3DLight(
         _renderer,
         position,
-        color
+        color,
+        attenuation
     );
 
     if (light)
         return light->handle();
 
     return L3D_INVALID_HANDLE;
+}
+
+void l3dToggleLight(
+    const L3DHandle& target,
+    bool on
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DLight* light = _renderer->getLight(target);
+
+    if (light)
+        light->isOn = on;
+}
+
+void l3dTranslateLight(
+    const L3DHandle& target,
+    const L3DVec3& movement
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DLight* light = _renderer->getLight(target);
+
+    if (light)
+        light->translate(movement);
 }
 
 L3DHandle l3dLoadForwardRenderQueue(const L3DVec4& clearColor)

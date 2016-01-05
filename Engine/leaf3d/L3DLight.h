@@ -32,14 +32,29 @@ namespace l3d
     public:
         L3DVec3 position;
         L3DVec4 color;
+        L3DLightAttenuation attenuation;
+        bool isOn;
 
     public:
         L3DLight(
             L3DRenderer* renderer,
             const L3DVec3& position,
-            const L3DVec4& color = L3DVec4(1, 1, 1, 1)
+            const L3DVec4& color = L3DVec4(1, 1, 1, 1),
+            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
+            bool on = true
+        );
+        L3DLight(
+            L3DRenderer* renderer,
+            const L3DVec3& position,
+            float kc,
+            float kl,
+            float kq,
+            const L3DVec4& color = L3DVec4(1, 1, 1, 1),
+            bool on = true
         );
         ~L3DLight() {}
+
+        void translate(const L3DVec3& movement);
     };
 }
 

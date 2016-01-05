@@ -24,6 +24,7 @@
 #pragma once
 
 #include <map>
+#include <string>
 #include "leaf3d/L3DResource.h"
 
 namespace l3d
@@ -34,13 +35,13 @@ namespace l3d
     {
     public:
         L3DUniformValue value;
-        UniformType     type;
+        L3DUniformType     type;
 
     public:
-        bool is(const UniformType& type) const { return this->type == type; }
+        bool is(const L3DUniformType& type) const { return this->type == type; }
     };
 
-    typedef std::map<const char*,L3DUniform> L3DUniformMap;
+    typedef std::map<std::string,L3DUniform> L3DUniformMap;
 
     class L3DShaderProgram : public L3DResource
     {

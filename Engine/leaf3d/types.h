@@ -44,7 +44,7 @@ namespace l3d
     typedef glm::mat3 L3DMat3;
     typedef glm::mat4 L3DMat4;
 
-    enum VertexFormat
+    enum L3DVertexFormat
     {
         L3D_POS2 = 2,
         L3D_POS3 = 3,
@@ -60,26 +60,26 @@ namespace l3d
         L3D_POS3_NOR3_TAN3_BTAN3_COL3_UV2_UV2_UV2_UV2 = 25
     };
 
-    enum ImageFormat
+    enum L3DImageFormat
     {
         L3D_RGB = 3,
         L3D_RGBA
     };
 
-    enum DrawType
+    enum L3DDrawType
     {
         L3D_DRAW_STATIC = 0,
         L3D_DRAW_DYNAMIC
     };
 
-    enum DrawPrimitive
+    enum L3DDrawPrimitive
     {
         L3D_DRAW_POINTS = 0,
         L3D_DRAW_LINES,
         L3D_DRAW_TRIANGLES
     };
 
-    enum UniformType
+    enum L3DUniformType
     {
         L3D_UNIFORM_FLOAT,
         L3D_UNIFORM_INT,
@@ -105,7 +105,7 @@ namespace l3d
         float* valueMat4;
     };
 
-    enum BlendFactor
+    enum L3DBlendFactor
     {
         L3D_ZERO,
         L3D_ONE,
@@ -123,7 +123,7 @@ namespace l3d
         L3D_ONE_MINUS_CONSTANT_ALPHA
     };
 
-    enum ResourceType
+    enum L3DResourceType
     {
         L3D_BUFFER = 0,
         L3D_TEXTURE,
@@ -136,27 +136,27 @@ namespace l3d
         L3D_RENDER_QUEUE
     };
 
-    enum BufferType
+    enum L3DBufferType
     {
         L3D_BUFFER_VERTEX = 0,
         L3D_BUFFER_INDEX
     };
 
-    enum TextureType
+    enum L3DTextureType
     {
         L3D_TEXTURE_1D = 0,
         L3D_TEXTURE_2D,
         L3D_TEXTURE_3D
     };
 
-    enum ShaderType
+    enum L3DShaderType
     {
         L3D_SHADER_VERTEX = 0,
         L3D_SHADER_FRAGMENT,
         L3D_SHADER_GEOMETRY
     };
 
-    enum RenderCommandType
+    enum L3DRenderCommandType
     {
         L3D_INVALID_RENDER_COMMAND = 0,
         L3D_CLEAR_BUFFERS,
@@ -164,6 +164,19 @@ namespace l3d
         L3D_SET_STENCIL_TEST,
         L3D_SET_BLEND,
         L3D_DRAW_MESHES
+    };
+
+    struct L3DLightAttenuation
+    {
+        L3DLightAttenuation(
+            float kc,
+            float kl,
+            float kq
+        ) : kc(kc), kl(kl), kq(kq) {}
+
+        float kc;
+        float kl;
+        float kq;
     };
 
     // Almost-opaque resource handle:

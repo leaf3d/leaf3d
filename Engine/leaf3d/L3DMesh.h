@@ -39,8 +39,8 @@ namespace l3d
         L3DBuffer*      m_vertexBuffer;
         L3DBuffer*      m_indexBuffer;
         L3DMaterial*    m_material;
-        VertexFormat    m_vertexFormat;
-        DrawPrimitive   m_drawPrimitive;
+        L3DVertexFormat    m_vertexFormat;
+        L3DDrawPrimitive   m_drawPrimitive;
 
     public:
         L3DMesh(
@@ -50,28 +50,28 @@ namespace l3d
             unsigned int* indices,
             unsigned int indexCount,
             L3DMaterial* material,
-            const VertexFormat& VertexFormat,
+            const L3DVertexFormat& L3DVertexFormat,
             const L3DMat4& transMatrix = L3DMat4(),
-            const DrawType& drawType = L3D_DRAW_STATIC,
-            const DrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
+            const L3DDrawType& drawType = L3D_DRAW_STATIC,
+            const L3DDrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
         );
         L3DMesh(
             L3DRenderer *renderer,
             L3DBuffer* vertexBuffer,
             L3DBuffer* indexBuffer,
             L3DMaterial* material,
-            const VertexFormat &VertexFormat,
+            const L3DVertexFormat &L3DVertexFormat,
             const L3DMat4& transMatrix = L3DMat4(),
-            const DrawType& drawType = L3D_DRAW_STATIC,
-            const DrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
+            const L3DDrawType& drawType = L3D_DRAW_STATIC,
+            const L3DDrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES
         );
         ~L3DMesh() {}
 
         L3DBuffer*      vertexBuffer() const { return m_vertexBuffer; }
         L3DBuffer*      indexBuffer() const { return m_indexBuffer; }
         L3DMaterial*    material() const { return m_material; }
-        VertexFormat    vertexFormat() const { return m_vertexFormat; }
-        DrawPrimitive   drawPrimitive() const { return m_drawPrimitive; }
+        L3DVertexFormat    vertexFormat() const { return m_vertexFormat; }
+        L3DDrawPrimitive   drawPrimitive() const { return m_drawPrimitive; }
         unsigned int    vertexCount() const;
         unsigned int    indexCount() const;
 

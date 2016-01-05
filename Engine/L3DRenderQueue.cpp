@@ -72,8 +72,8 @@ void L3DRenderQueue::addSetStencilTestCommand(
 
 void L3DRenderQueue::addSetBlendCommand(
     bool enable,
-    const BlendFactor& srcFactor,
-    const BlendFactor& dstFactor
+    const L3DBlendFactor& srcFactor,
+    const L3DBlendFactor& dstFactor
 )
 {
     m_commands.push_back(

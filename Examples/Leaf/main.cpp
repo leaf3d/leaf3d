@@ -69,7 +69,7 @@ int main()
 
     // Load a material.
     L3DHandle material = l3dLoadMaterial("logo", shaderProgram);
-    l3dAddTextureToMaterial(material, "albedoMap", texture);
+    l3dAddTextureToMaterial(material, "u_diffuseMap", texture);
 
     // Load a simple textured quad.
     L3DHandle logo = l3dLoadQuad(material);

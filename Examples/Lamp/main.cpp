@@ -65,7 +65,7 @@ int main()
     L3DHandle basicShaderProgram = l3dutLoadShaderProgram("basic.vert", "basic.frag");
 
     // Load a shader program with support for lighting (Blinn-Phong).
-    L3DHandle blinnPhongShaderProgram = l3dutLoadShaderProgram("blinnphong.vert", "blinnphong.frag");
+    L3DHandle blinnPhongShaderProgram = l3dutLoadShaderProgram("basic.vert", "blinnphong.frag");
 
     // Load a lamp.
     unsigned int meshCount = 0;
@@ -81,7 +81,7 @@ int main()
     // Load a floor.
     L3DHandle floorTexture = l3dutLoadTexture2D("floor.jpg");
     L3DHandle floorMaterial = l3dLoadMaterial("floorMaterial", blinnPhongShaderProgram);
-    l3dAddTextureToMaterial(floorMaterial, "albedoMap", floorTexture);
+    l3dAddTextureToMaterial(floorMaterial, "u_diffuseMap", floorTexture);
     L3DHandle floor = l3dLoadQuad(floorMaterial, L3DVec2(30, 30));
     l3dRotateMesh(floor, 1.57f, L3DVec3(-1, 0, 0));
     l3dScaleMesh(floor, L3DVec3(200, 200, 1));
@@ -89,7 +89,7 @@ int main()
     // Load a cube.
     L3DHandle crateTexture = l3dutLoadTexture2D("crate.jpg");
     L3DHandle crateMaterial = l3dLoadMaterial("crateMaterial", blinnPhongShaderProgram);
-    l3dAddTextureToMaterial(crateMaterial, "albedoMap", crateTexture);
+    l3dAddTextureToMaterial(crateMaterial, "u_diffuseMap", crateTexture);
     L3DHandle cube = l3dLoadCube(crateMaterial);
     l3dRotateMesh(cube, 0.75f);
     l3dTranslateMesh(cube, L3DVec3(10, 3, -2));
@@ -99,15 +99,12 @@ int main()
     L3DVec3 lightPos = L3DVec3(-2.0f, 12.0f, 0);
     L3DVec4 lightColor = L3DVec4(1, 1, 0.7f, 1);
     L3DHandle lightMaterial = l3dLoadMaterial("lightMaterial", basicShaderProgram);
-    l3dSetShaderProgramUniformVec4(basicShaderProgram, "objectColor", lightColor);
+    l3dSetShaderProgramUniformVec4(basicShaderProgram, "u_objectColor", lightColor);
 
     L3DHandle light = l3dLoadLight(lightPos, lightColor);
     L3DHandle lightBulb = l3dLoadCube(lightMaterial);
     l3dTranslateMesh(lightBulb, lightPos);
-    l3dSetShaderProgramUniformVec4(blinnPhongShaderProgram, "objectColor", L3DVec4(1, 1, 1, 1));
-    l3dSetShaderProgramUniformVec4(blinnPhongShaderProgram, "ambientColor", L3DVec4(0.8, 0.8, 1, 0.3));
-    l3dSetShaderProgramUniformVec4(blinnPhongShaderProgram, "lightColor", lightColor);
-    l3dSetShaderProgramUniformVec3(blinnPhongShaderProgram, "lightPos", lightPos);
+    l3dSetShaderProgramUniformVec4(blinnPhongShaderProgram, "u_ambientColor", L3DVec4(0.8, 0.8, 1, 0.3));
 
     // Create a camera.
     L3DHandle camera = l3dLoadCamera(

@@ -33,7 +33,7 @@
 
 using namespace l3d;
 
-static GLenum _toOpenGL(const BufferType& orig)
+static GLenum _toOpenGL(const L3DBufferType& orig)
 {
     switch (orig)
     {
@@ -48,7 +48,7 @@ static GLenum _toOpenGL(const BufferType& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const DrawType& orig)
+static GLenum _toOpenGL(const L3DDrawType& orig)
 {
     switch (orig)
     {
@@ -63,7 +63,7 @@ static GLenum _toOpenGL(const DrawType& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const TextureType& orig)
+static GLenum _toOpenGL(const L3DTextureType& orig)
 {
     switch (orig)
     {
@@ -80,7 +80,7 @@ static GLenum _toOpenGL(const TextureType& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const ImageFormat& orig)
+static GLenum _toOpenGL(const L3DImageFormat& orig)
 {
     switch (orig)
     {
@@ -95,7 +95,7 @@ static GLenum _toOpenGL(const ImageFormat& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const DrawPrimitive& orig)
+static GLenum _toOpenGL(const L3DDrawPrimitive& orig)
 {
     switch (orig)
     {
@@ -112,7 +112,7 @@ static GLenum _toOpenGL(const DrawPrimitive& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const BlendFactor& orig)
+static GLenum _toOpenGL(const L3DBlendFactor& orig)
 {
     switch (orig)
     {
@@ -151,7 +151,7 @@ static GLenum _toOpenGL(const BlendFactor& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const ShaderType& orig)
+static GLenum _toOpenGL(const L3DShaderType& orig)
 {
     switch (orig)
     {
@@ -548,15 +548,15 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
                 L3DShaderProgram* shaderProgram = material->shaderProgram();
 
                 // Enable vertex attributes.
-                GLint posAttrib     = glGetAttribLocation(shaderProgram->id(), "position");
-                GLint colAttrib     = glGetAttribLocation(shaderProgram->id(), "color");
-                GLint tex0Attrib    = glGetAttribLocation(shaderProgram->id(), "texcoord0");
-                GLint tex1Attrib    = glGetAttribLocation(shaderProgram->id(), "texcoord1");
-                GLint tex2Attrib    = glGetAttribLocation(shaderProgram->id(), "texcoord2");
-                GLint tex3Attrib    = glGetAttribLocation(shaderProgram->id(), "texcoord3");
-                GLint norAttrib     = glGetAttribLocation(shaderProgram->id(), "normal");
-                GLint tanAttrib     = glGetAttribLocation(shaderProgram->id(), "tan");
-                GLint btanAttrib    = glGetAttribLocation(shaderProgram->id(), "btan");
+                GLint posAttrib     = glGetAttribLocation(shaderProgram->id(), "i_position");
+                GLint colAttrib     = glGetAttribLocation(shaderProgram->id(), "i_color");
+                GLint tex0Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord0");
+                GLint tex1Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord1");
+                GLint tex2Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord2");
+                GLint tex3Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord3");
+                GLint norAttrib     = glGetAttribLocation(shaderProgram->id(), "i_normal");
+                GLint tanAttrib     = glGetAttribLocation(shaderProgram->id(), "i_tan");
+                GLint btanAttrib    = glGetAttribLocation(shaderProgram->id(), "i_btan");
 
                 switch(mesh->vertexFormat())
                 {
@@ -936,8 +936,8 @@ void L3DRenderer::setStencilTest(bool enable)
 
 void L3DRenderer::setBlend(
     bool enable,
-    const BlendFactor& srcFactor,
-    const BlendFactor& dstFactor
+    const L3DBlendFactor& srcFactor,
+    const L3DBlendFactor& dstFactor
 )
 {
     enable ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
@@ -946,6 +946,9 @@ void L3DRenderer::setBlend(
 
 void L3DRenderer::drawMeshes(L3DCamera* camera)
 {
+    if (!camera)
+        return;
+
     for (L3DMeshPool::iterator it = m_meshes.begin(); it != m_meshes.end(); ++it)
     {
         L3DMesh* mesh = it->second;
@@ -971,7 +974,7 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
                 {
                     L3DTexture* texture = tex_it->second;
                     GLenum gl_type = _toOpenGL(texture->type());
-                    GLint gl_sampler = glGetUniformLocation(shaderProgram->id(), tex_it->first);
+                    GLint gl_sampler = glGetUniformLocation(shaderProgram->id(), tex_it->first.c_str());
 
                     glActiveTexture(GL_TEXTURE0 + i);
                     glBindTexture(gl_type, texture->id());
@@ -990,18 +993,35 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
             // Bind uniforms.
             L3DUniformMap uniforms = shaderProgram->uniforms();
             for (L3DUniformMap::iterator unif_it = uniforms.begin(); unif_it!=uniforms.end(); ++unif_it)
-                _setUniform(shaderProgram->id(), unif_it->first, unif_it->second);
+                _setUniform(shaderProgram->id(), unif_it->first.c_str(), unif_it->second);
 
             // Bind matrices.
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "view"), 1, GL_FALSE, glm::value_ptr(camera->view));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "proj"), 1, GL_FALSE, glm::value_ptr(camera->proj));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "model"), 1, GL_FALSE, glm::value_ptr(mesh->transMatrix));
-            glUniformMatrix3fv(glGetUniformLocation(shaderProgram->id(), "normalMatrix"), 1, GL_FALSE, glm::value_ptr(camera->calculateNormalMatrix(mesh->transMatrix)));
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_viewMat"), 1, GL_FALSE, glm::value_ptr(camera->view));
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_projMat"), 1, GL_FALSE, glm::value_ptr(camera->proj));
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_modelMat"), 1, GL_FALSE, glm::value_ptr(mesh->transMatrix));
+            glUniformMatrix3fv(glGetUniformLocation(shaderProgram->id(), "u_normalMat"), 1, GL_FALSE, glm::value_ptr(camera->calculateNormalMatrix(mesh->transMatrix)));
 
-            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "material.ambient"), 1,  glm::value_ptr(material->ambient));
-            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "material.diffuse"), 1,  glm::value_ptr(material->diffuse));
-            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "material.specular"), 1,  glm::value_ptr(material->specular));
-            glUniform1f(glGetUniformLocation(shaderProgram->id(), "material.shininess"), material->shininess);
+            // Bind material.
+            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.ambient"), 1,  glm::value_ptr(material->ambient));
+            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.diffuse"), 1,  glm::value_ptr(material->diffuse));
+            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.specular"), 1,  glm::value_ptr(material->specular));
+            glUniform1f(glGetUniformLocation(shaderProgram->id(), "u_material.shininess"), material->shininess);
+
+            // Bind lights.
+            unsigned int i = 0;
+            for (L3DLightPool::iterator light_it = m_lights.begin(); light_it!=m_lights.end(); ++light_it)
+            {
+                L3DLight* light = light_it->second;
+
+                if (light && light->isOn)
+                {
+                    shaderProgram->setUniform((std::string("u_light") + ".position").c_str(), camera->transformInViewSpace(light->position));
+                    shaderProgram->setUniform((std::string("u_light") + ".color").c_str(), light->color);
+                    shaderProgram->setUniform((std::string("u_light") + ".kc").c_str(), light->attenuation.kc);
+                    shaderProgram->setUniform((std::string("u_light") + ".kl").c_str(), light->attenuation.kl);
+                    shaderProgram->setUniform((std::string("u_light") + ".kq").c_str(), light->attenuation.kq);
+                }
+            }
 
             // Render geometry.
             if (index_count > 0)

@@ -135,8 +135,8 @@ namespace l3d
         void setStencilTest(bool enable = true);
         void setBlend(
             bool enable = true,
-            const BlendFactor& srcFactor = L3D_SRC_ALPHA,
-            const BlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
+            const L3DBlendFactor& srcFactor = L3D_SRC_ALPHA,
+            const L3DBlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
         );
         void drawMeshes(L3DCamera* camera);
     };

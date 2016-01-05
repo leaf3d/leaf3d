@@ -27,10 +27,34 @@ using namespace l3d;
 L3DLight::L3DLight(
     L3DRenderer* renderer,
     const L3DVec3& position,
-    const L3DVec4& color
+    const L3DVec4& color,
+    const L3DLightAttenuation& attenuation,
+    bool on
 ) : L3DResource(L3D_LIGHT, renderer),
     position(position),
-    color(color)
+    color(color),
+    attenuation(attenuation),
+    isOn(on)
 {
     if (renderer) renderer->addLight(this);
+}
+
+L3DLight::L3DLight(
+    L3DRenderer* renderer,
+    const L3DVec3& position,
+    float kc, float kl, float kq,
+    const L3DVec4& color,
+    bool on
+) : L3DResource(L3D_LIGHT, renderer),
+    position(position),
+    color(color),
+    attenuation(kc, kl, kq),
+    isOn(on)
+{
+    if (renderer) renderer->addLight(this);
+}
+
+void L3DLight::translate(const L3DVec3& movement)
+{
+    this->position += movement;
 }

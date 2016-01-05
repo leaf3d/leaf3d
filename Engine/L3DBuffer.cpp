@@ -26,11 +26,11 @@ using namespace l3d;
 
 L3DBuffer::L3DBuffer(
     L3DRenderer* renderer,
-    const BufferType& type,
+    const L3DBufferType& type,
     void* data,
     unsigned int size,
     unsigned int stride,
-    const DrawType& drawType
+    const L3DDrawType& drawType
 ) : L3DResource(L3D_BUFFER, renderer),
     m_type(type),
     m_data(0),

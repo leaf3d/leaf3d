@@ -26,8 +26,8 @@ using namespace l3d;
 
 L3DTexture::L3DTexture(
     L3DRenderer* renderer,
-    const TextureType& type,
-    const ImageFormat& format,
+    const L3DTextureType& type,
+    const L3DImageFormat& format,
     unsigned char* data,
     unsigned int width,
     unsigned int height,
