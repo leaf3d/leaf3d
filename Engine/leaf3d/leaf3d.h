@@ -113,8 +113,8 @@ void l3dSetShaderProgramUniformMat4(
 L3DHandle l3dLoadMaterial(
     const char* name,
     const L3DHandle& shaderProgram,
-    const L3DVec3& ambient = L3DVec3(1.0f, 1.0f, 1.0f),
     const L3DVec3& diffuse = L3DVec3(1.0f, 1.0f, 1.0f),
+    const L3DVec3& ambient = L3DVec3(1.0f, 1.0f, 1.0f),
     const L3DVec3& specular = L3DVec3(1.0f, 1.0f, 1.0f),
     float shininess = 32.0f
 );

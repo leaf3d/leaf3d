@@ -73,9 +73,8 @@ int main()
 
     if (meshCount > 0)
     {
-        L3DHandle model = lamp[0];
-        l3dTranslateMesh(model, L3DVec3(-8, 0, 0));
-        l3dScaleMesh(model, L3DVec3(8, 8, 8));
+        l3dTranslateMesh(lamp[0], L3DVec3(-8, 0, 0));
+        l3dScaleMesh(lamp[0], L3DVec3(8, 8, 8));
     }
 
     // Load a floor.
@@ -95,15 +94,35 @@ int main()
     l3dTranslateMesh(cube, L3DVec3(10, 3, -2));
     l3dScaleMesh(cube, L3DVec3(6, 6, 6));
 
-    // Load a light.
-    L3DVec3 lightPos = L3DVec3(-2.0f, 12.0f, 0);
-    L3DVec4 lightColor = L3DVec4(1, 1, 0.7f, 1);
-    L3DHandle lightMaterial = l3dLoadMaterial("lightMaterial", basicShaderProgram);
-    l3dSetShaderProgramUniformVec4(basicShaderProgram, "u_objectColor", lightColor);
+    // Load some lights.
+    L3DVec3 light1Pos = L3DVec3(-2.0f, 12.0f, 0);
+    L3DVec4 light1Color = L3DVec4(1, 1, 0.7f, 1.0f);
+    L3DHandle light1 = l3dLoadLight(light1Pos, light1Color);
+    L3DHandle light1Material = l3dLoadMaterial("light1Material", basicShaderProgram, light1Color.xyz());
+    L3DHandle light1Bulb = l3dLoadCube(light1Material);
+    l3dTranslateMesh(light1Bulb, light1Pos);
 
-    L3DHandle light = l3dLoadLight(lightPos, lightColor);
-    L3DHandle lightBulb = l3dLoadCube(lightMaterial);
-    l3dTranslateMesh(lightBulb, lightPos);
+    L3DVec3 light2Pos = L3DVec3(10, 5.0f, -4);
+    L3DVec4 light2Color = L3DVec4(1, 0.2f, 0.2f, 0.5f);
+    L3DHandle light2 = l3dLoadLight(light2Pos, light2Color);
+    L3DHandle light2Material = l3dLoadMaterial("light2Material", basicShaderProgram, light2Color.xyz());
+    L3DHandle light2Bulb = l3dLoadCube(light2Material);
+    l3dTranslateMesh(light2Bulb, light2Pos);
+
+    L3DVec3 light3Pos = L3DVec3(0, 0.5f, -12);
+    L3DVec4 light3Color = L3DVec4(0.2f, 1.0f, 0.2f, 0.5f);
+    L3DHandle light3 = l3dLoadLight(light3Pos, light3Color);
+    L3DHandle light3Material = l3dLoadMaterial("light3Material", basicShaderProgram, light3Color.xyz());
+    L3DHandle light3Bulb = l3dLoadCube(light3Material);
+    l3dTranslateMesh(light3Bulb, light3Pos);
+
+    L3DVec3 light4Pos = L3DVec3(-2, 2, 3);
+    L3DVec4 light4Color = L3DVec4(0.2f, 0.2f, 1.0f, 0.5f);
+    L3DHandle light4 = l3dLoadLight(light4Pos, light4Color);
+    L3DHandle light4Material = l3dLoadMaterial("light4Material", basicShaderProgram, light4Color.xyz());
+    L3DHandle light4Bulb = l3dLoadCube(light4Material);
+    l3dTranslateMesh(light4Bulb, light4Pos);
+
     l3dSetShaderProgramUniformVec4(blinnPhongShaderProgram, "u_ambientColor", L3DVec4(0.8, 0.8, 1, 0.3));
 
     // Create a camera.

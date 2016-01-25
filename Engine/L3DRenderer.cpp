@@ -20,6 +20,7 @@
  */
 
 #include <stdio.h>
+#include <sstream>
 #include <leaf3d/L3DBuffer.h>
 #include <leaf3d/L3DTexture.h>
 #include <leaf3d/L3DShader.h>
@@ -456,6 +457,15 @@ void L3DRenderer::addShader(L3DShader* shader)
         glShaderSource(id, 1, &code, L3D_NULLPTR);
         glCompileShader(id);
 
+        GLint status;
+        glGetShaderiv(id, GL_COMPILE_STATUS, &status);
+        if (status == GL_FALSE)
+        {
+            GLchar infoLog[512];
+            glGetShaderInfoLog(id, 512, NULL, infoLog);
+            fprintf(stderr, infoLog);
+        }
+
         shader->setId(id);
 
         m_shaders[id] = shader;
@@ -478,6 +488,15 @@ void L3DRenderer::addShaderProgram(L3DShaderProgram* shaderProgram)
             glAttachShader(id, shaderProgram->geometryShader()->id());
 
         glLinkProgram(id);
+
+        GLint status;
+        glGetProgramiv(id, GL_LINK_STATUS, &status);
+        if (status == GL_FALSE)
+        {
+            GLchar infoLog[512];
+            glGetProgramInfoLog(id, 512, NULL, infoLog);
+            fprintf(stderr, infoLog);
+        }
 
         shaderProgram->setId(id);
 
@@ -1007,20 +1026,30 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
             glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.specular"), 1,  glm::value_ptr(material->specular));
             glUniform1f(glGetUniformLocation(shaderProgram->id(), "u_material.shininess"), material->shininess);
 
+            glUniform4fv(glGetUniformLocation(shaderProgram->id(), "u_objectColor"), 1,  glm::value_ptr(glm::vec4(material->diffuse, 1.0f)));
+
             // Bind lights.
-            unsigned int i = 0;
+            shaderProgram->setUniform("u_lightNr", (int)m_lights.size());
+
+            unsigned int l = 0;
             for (L3DLightPool::iterator light_it = m_lights.begin(); light_it!=m_lights.end(); ++light_it)
             {
                 L3DLight* light = light_it->second;
 
                 if (light && light->isOn)
                 {
-                    shaderProgram->setUniform((std::string("u_light") + ".position").c_str(), camera->transformInViewSpace(light->position));
-                    shaderProgram->setUniform((std::string("u_light") + ".color").c_str(), light->color);
-                    shaderProgram->setUniform((std::string("u_light") + ".kc").c_str(), light->attenuation.kc);
-                    shaderProgram->setUniform((std::string("u_light") + ".kl").c_str(), light->attenuation.kl);
-                    shaderProgram->setUniform((std::string("u_light") + ".kq").c_str(), light->attenuation.kq);
+                    std::ostringstream sstream;
+                    sstream << "u_light[" << l << "]";
+                    std::string lightName = sstream.str();
+
+                    shaderProgram->setUniform((lightName + ".position").c_str(), camera->transformInViewSpace(light->position));
+                    shaderProgram->setUniform((lightName + ".color").c_str(), light->color);
+                    shaderProgram->setUniform((lightName + ".kc").c_str(), light->attenuation.kc);
+                    shaderProgram->setUniform((lightName + ".kl").c_str(), light->attenuation.kl);
+                    shaderProgram->setUniform((lightName + ".kq").c_str(), light->attenuation.kq);
                 }
+
+                ++l;
             }
 
             // Render geometry.

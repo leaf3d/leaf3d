@@ -29,14 +29,14 @@ L3DMaterial::L3DMaterial(
     L3DRenderer* renderer,
     const char* name,
     L3DShaderProgram* shaderProgram,
-    const L3DVec3& ambient,
     const L3DVec3& diffuse,
+    const L3DVec3& ambient,
     const L3DVec3& specular,
     float shininess
 ) : L3DResource(L3D_MATERIAL, renderer),
     m_name(name),
-    ambient(ambient),
     diffuse(diffuse),
+    ambient(ambient),
     specular(specular),
     shininess(shininess),
     m_shaderProgram(shaderProgram)

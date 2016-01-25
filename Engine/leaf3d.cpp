@@ -256,8 +256,8 @@ void l3dSetShaderProgramUniformMat4(
 L3DHandle l3dLoadMaterial(
     const char* name,
     const L3DHandle& shaderProgram,
-    const L3DVec3& ambient,
     const L3DVec3& diffuse,
+    const L3DVec3& ambient,
     const L3DVec3& specular,
     float shininess
 )
@@ -268,8 +268,8 @@ L3DHandle l3dLoadMaterial(
         _renderer,
         name,
         _renderer->getShaderProgram(shaderProgram),
-        ambient,
         diffuse,
+        ambient,
         specular,
         shininess
     );
