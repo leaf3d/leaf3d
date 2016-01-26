@@ -463,7 +463,7 @@ void L3DRenderer::addShader(L3DShader* shader)
         {
             GLchar infoLog[512];
             glGetShaderInfoLog(id, 512, NULL, infoLog);
-            fprintf(stderr, infoLog);
+            fprintf(stderr, "%s", infoLog);
         }
 
         shader->setId(id);
@@ -495,7 +495,7 @@ void L3DRenderer::addShaderProgram(L3DShaderProgram* shaderProgram)
         {
             GLchar infoLog[512];
             glGetProgramInfoLog(id, 512, NULL, infoLog);
-            fprintf(stderr, infoLog);
+            fprintf(stderr, "%s", infoLog);
         }
 
         shaderProgram->setId(id);
