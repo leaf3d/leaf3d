@@ -1,8 +1,13 @@
 #version 330 core
 
-// Flat object color
+/* UNIFORMS *******************************************************************/
+
+// Flat object color.
 uniform vec4 u_objectColor;
 
-void main() {
+/* MAIN ***********************************************************************/
+
+void main()
+{
     gl_FragColor = u_objectColor;
 }

@@ -97,28 +97,28 @@ int main()
     // Load some lights.
     L3DVec3 light1Pos = L3DVec3(-2.0f, 12.0f, 0);
     L3DVec4 light1Color = L3DVec4(1, 1, 0.7f, 1.0f);
-    L3DHandle light1 = l3dLoadLight(light1Pos, light1Color);
+    L3DHandle light1 = l3dLoadSpotLight(light1Pos, L3DVec3(0, -1, 0), light1Color);
     L3DHandle light1Material = l3dLoadMaterial("light1Material", basicShaderProgram, light1Color.xyz());
     L3DHandle light1Bulb = l3dLoadCube(light1Material);
     l3dTranslateMesh(light1Bulb, light1Pos);
 
     L3DVec3 light2Pos = L3DVec3(10, 5.0f, -4);
     L3DVec4 light2Color = L3DVec4(1, 0.2f, 0.2f, 0.5f);
-    L3DHandle light2 = l3dLoadLight(light2Pos, light2Color);
+    L3DHandle light2 = l3dLoadPointLight(light2Pos, light2Color);
     L3DHandle light2Material = l3dLoadMaterial("light2Material", basicShaderProgram, light2Color.xyz());
     L3DHandle light2Bulb = l3dLoadCube(light2Material);
     l3dTranslateMesh(light2Bulb, light2Pos);
 
     L3DVec3 light3Pos = L3DVec3(0, 0.5f, -12);
     L3DVec4 light3Color = L3DVec4(0.2f, 1.0f, 0.2f, 0.5f);
-    L3DHandle light3 = l3dLoadLight(light3Pos, light3Color);
+    L3DHandle light3 = l3dLoadPointLight(light3Pos, light3Color);
     L3DHandle light3Material = l3dLoadMaterial("light3Material", basicShaderProgram, light3Color.xyz());
     L3DHandle light3Bulb = l3dLoadCube(light3Material);
     l3dTranslateMesh(light3Bulb, light3Pos);
 
-    L3DVec3 light4Pos = L3DVec3(-2, 2, 3);
+    L3DVec3 light4Pos = L3DVec3(-2, 1, 3);
     L3DVec4 light4Color = L3DVec4(0.2f, 0.2f, 1.0f, 0.5f);
-    L3DHandle light4 = l3dLoadLight(light4Pos, light4Color);
+    L3DHandle light4 = l3dLoadPointLight(light4Pos, light4Color);
     L3DHandle light4Material = l3dLoadMaterial("light4Material", basicShaderProgram, light4Color.xyz());
     L3DHandle light4Bulb = l3dLoadCube(light4Material);
     l3dTranslateMesh(light4Bulb, light4Pos);
