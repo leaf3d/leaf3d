@@ -86,6 +86,11 @@ L3DMesh::L3DMesh(
     if (renderer) renderer->addMesh(this);
 }
 
+L3DMat3 L3DMesh::normalMatrix() const
+{
+    return glm::transpose(glm::inverse(L3DMat3(this->transMatrix)));
+}
+
 unsigned int L3DMesh::vertexCount() const
 {
     return m_vertexBuffer ? m_vertexBuffer->count() : 0;

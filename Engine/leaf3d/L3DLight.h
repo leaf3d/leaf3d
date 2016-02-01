@@ -30,31 +30,48 @@ namespace l3d
     class L3DLight : public L3DResource
     {
     public:
+        L3DLightType type;
         L3DVec3 position;
+        L3DVec3 direction;
         L3DVec4 color;
         L3DLightAttenuation attenuation;
-        bool isOn;
 
     public:
         L3DLight(
             L3DRenderer* renderer,
+            const L3DLightType& type,
             const L3DVec3& position,
+            const L3DVec3& direction,
             const L3DVec4& color = L3DVec4(1, 1, 1, 1),
-            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
-            bool on = true
-        );
-        L3DLight(
-            L3DRenderer* renderer,
-            const L3DVec3& position,
-            float kc,
-            float kl,
-            float kq,
-            const L3DVec4& color = L3DVec4(1, 1, 1, 1),
-            bool on = true
+            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f)
         );
         ~L3DLight() {}
 
         void translate(const L3DVec3& movement);
+        void lookAt(const L3DVec3& targetPosition);
+
+        bool isOn() const { return (this->color.a > 0.0f); }
+
+        static L3DLight* createDirectionalLight(
+            L3DRenderer* renderer,
+            const L3DVec3& direction,
+            const L3DVec4& color = L3DVec4(1, 1, 1, 1)
+        );
+
+        static L3DLight* createPointLight(
+            L3DRenderer* renderer,
+            const L3DVec3& position,
+            const L3DVec4& color = L3DVec4(1, 1, 1, 1),
+            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f)
+        );
+
+        static L3DLight* createSpotLight(
+            L3DRenderer* renderer,
+            const L3DVec3& position,
+            const L3DVec3& direction = L3DVec3(0, -1, 0),
+            const L3DVec4& color = L3DVec4(1, 1, 1, 1),
+            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f)
+        );
     };
 }
 

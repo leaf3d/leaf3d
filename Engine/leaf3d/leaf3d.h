@@ -27,14 +27,24 @@
 
 using namespace l3d;
 
+/* Init & terminate ***********************************************************/
+
 int l3dInit();
 
 int l3dTerminate();
+
+/* Rendering ******************************************************************/
 
 void l3dRenderFrame(
     const L3DHandle& camera,
     const L3DHandle& renderQueue
 );
+
+L3DHandle l3dLoadForwardRenderQueue(
+    const L3DVec4& clearColor = L3DVec4(1, 1, 1, 1)
+);
+
+/* Textures *******************************************************************/
 
 L3DHandle l3dLoadTexture(
     const L3DTextureType& type,
@@ -44,6 +54,8 @@ L3DHandle l3dLoadTexture(
     unsigned int height,
     unsigned int depth
 );
+
+/* Shaders ********************************************************************/
 
 L3DHandle l3dLoadShader(
     const L3DShaderType& type,
@@ -110,6 +122,8 @@ void l3dSetShaderProgramUniformMat4(
     const L3DMat4& value
 );
 
+/* Materials ******************************************************************/
+
 L3DHandle l3dLoadMaterial(
     const char* name,
     const L3DHandle& shaderProgram,
@@ -124,6 +138,8 @@ void l3dAddTextureToMaterial(
     const char* name,
     const L3DHandle& texture
 );
+
+/* Cameras ********************************************************************/
 
 L3DHandle l3dLoadCamera(
     const char* name = "Default",
@@ -163,6 +179,8 @@ void l3dRotateCamera(
     float radians,
     const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
 );
+
+/* Meshes *********************************************************************/
 
 L3DHandle l3dLoadMesh(
     float* vertices,
@@ -211,22 +229,55 @@ void l3dScaleMesh(
     const L3DVec3& factor
 );
 
-L3DHandle l3dLoadLight(
+/* Lights *********************************************************************/
+
+L3DHandle l3dLoadDirectionalLight(
+    const L3DVec3& direction,
+    const L3DVec4& color = L3DVec4(1, 1, 1, 1)
+);
+
+L3DHandle l3dLoadPointLight(
     const L3DVec3& position,
     const L3DVec4& color = L3DVec4(1, 1, 1, 1),
     const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f)
 );
 
-void l3dToggleLight(
-    const L3DHandle& target,
-    bool on
+L3DHandle l3dLoadSpotLight(
+    const L3DVec3& position,
+    const L3DVec3& direction = L3DVec3(0, -1, 0),
+    const L3DVec4& color = L3DVec4(1, 1, 1, 1),
+    const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f)
 );
+
+int l3dLightType(const L3DHandle& target);
+
+bool l3dIsLightOn(const L3DHandle& target);
 
 void l3dTranslateLight(
     const L3DHandle& target,
     const L3DVec3& movement
 );
 
-L3DHandle l3dLoadForwardRenderQueue(const L3DVec4& clearColor = L3DVec4(1, 1, 1, 1));
+void l3dSetLightDirection(
+    const L3DHandle& target,
+    const L3DVec3& direction
+);
+
+void l3dSetLightAttenuation(
+    const L3DHandle& target,
+    float kc,
+    float kl,
+    float kq
+);
+
+void l3dSetLightColor(
+    const L3DHandle& target,
+    const L3DVec4& color
+);
+
+void l3dLightLookAt(
+    const L3DHandle& target,
+    const L3DVec3& targetPosition
+);
 
 #endif // L3D_LEAF3D_H

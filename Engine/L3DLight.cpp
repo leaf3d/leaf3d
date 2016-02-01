@@ -26,30 +26,17 @@ using namespace l3d;
 
 L3DLight::L3DLight(
     L3DRenderer* renderer,
+    const L3DLightType& type,
     const L3DVec3& position,
+    const L3DVec3& direction,
     const L3DVec4& color,
-    const L3DLightAttenuation& attenuation,
-    bool on
+    const L3DLightAttenuation& attenuation
 ) : L3DResource(L3D_LIGHT, renderer),
+    type(type),
     position(position),
+    direction(direction),
     color(color),
-    attenuation(attenuation),
-    isOn(on)
-{
-    if (renderer) renderer->addLight(this);
-}
-
-L3DLight::L3DLight(
-    L3DRenderer* renderer,
-    const L3DVec3& position,
-    float kc, float kl, float kq,
-    const L3DVec4& color,
-    bool on
-) : L3DResource(L3D_LIGHT, renderer),
-    position(position),
-    color(color),
-    attenuation(kc, kl, kq),
-    isOn(on)
+    attenuation(attenuation)
 {
     if (renderer) renderer->addLight(this);
 }
@@ -57,4 +44,60 @@ L3DLight::L3DLight(
 void L3DLight::translate(const L3DVec3& movement)
 {
     this->position += movement;
+}
+
+void L3DLight::lookAt(const L3DVec3& targetPosition)
+{
+    this->direction = glm::normalize(this->position - targetPosition);
+}
+
+L3DLight* L3DLight::createDirectionalLight(
+    L3DRenderer* renderer,
+    const L3DVec3& direction,
+    const L3DVec4& color
+)
+{
+    return new L3DLight(
+        renderer,
+        L3D_LIGHT_DIRECTIONAL,
+        L3DVec3(0, 0, 0),
+        glm::normalize(direction),
+        color,
+        L3DLightAttenuation(0, 0, 0)
+    );
+}
+
+L3DLight* L3DLight::createPointLight(
+    L3DRenderer* renderer,
+    const L3DVec3& position,
+    const L3DVec4& color,
+    const L3DLightAttenuation& attenuation
+)
+{
+    return new L3DLight(
+        renderer,
+        L3D_LIGHT_POINT,
+        position,
+        L3DVec3(0, 0, 0),
+        color,
+        attenuation
+    );
+}
+
+L3DLight* L3DLight::createSpotLight(
+    L3DRenderer* renderer,
+    const L3DVec3& position,
+    const L3DVec3& direction,
+    const L3DVec4& color,
+    const L3DLightAttenuation& attenuation
+)
+{
+    return new L3DLight(
+        renderer,
+        L3D_LIGHT_SPOT,
+        position,
+        direction,
+        color,
+        attenuation
+    );
 }

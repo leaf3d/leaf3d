@@ -167,6 +167,13 @@ namespace l3d
         L3D_DRAW_MESHES
     };
 
+    enum L3DLightType
+    {
+        L3D_LIGHT_DIRECTIONAL = 0,
+        L3D_LIGHT_POINT,
+        L3D_LIGHT_SPOT
+    };
+
     struct L3DLightAttenuation
     {
         L3DLightAttenuation(

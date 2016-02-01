@@ -67,13 +67,14 @@ namespace l3d
         );
         ~L3DMesh() {}
 
-        L3DBuffer*      vertexBuffer() const { return m_vertexBuffer; }
-        L3DBuffer*      indexBuffer() const { return m_indexBuffer; }
-        L3DMaterial*    material() const { return m_material; }
-        L3DVertexFormat    vertexFormat() const { return m_vertexFormat; }
-        L3DDrawPrimitive   drawPrimitive() const { return m_drawPrimitive; }
-        unsigned int    vertexCount() const;
-        unsigned int    indexCount() const;
+        L3DBuffer*          vertexBuffer() const { return m_vertexBuffer; }
+        L3DBuffer*          indexBuffer() const { return m_indexBuffer; }
+        L3DMaterial*        material() const { return m_material; }
+        L3DVertexFormat     vertexFormat() const { return m_vertexFormat; }
+        L3DDrawPrimitive    drawPrimitive() const { return m_drawPrimitive; }
+        L3DMat3             normalMatrix() const;
+        unsigned int        vertexCount() const;
+        unsigned int        indexCount() const;
 
         void translate(const L3DVec3& movement);
         void rotate(

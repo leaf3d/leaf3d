@@ -19,38 +19,27 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
-#include <leaf3d/L3DRenderer.h>
 #include <leaf3d/L3DCamera.h>
+#include <catch/catch.hpp>
 
 using namespace l3d;
 
-L3DCamera::L3DCamera(
-    L3DRenderer* renderer,
-    const char* name,
-    const L3DMat4& view,
-    const L3DMat4& proj
-) : L3DResource(L3D_CAMERA, renderer),
-    m_name(name),
-    view(view),
-    proj(proj)
+TEST_CASE( "Test getting camera position from View matrix", "[leaf3d][camera][get][position][from][view][matrix]" )
 {
-    if (renderer) renderer->addCamera(this);
-}
+    L3DVec3 camPos(0, 5, -6.5f);
 
-L3DVec3 L3DCamera::position() const
-{
-    return -glm::transpose(L3DMat3(this->view)) * L3DVec3(this->view[3]);
-}
+    L3DCamera* camera = new L3DCamera(
+        0, "Default",
+        glm::lookAt(
+            camPos,
+            L3DVec3(0, 0, 0),
+            L3DVec3(0, 1, 0)
+        )
+    );
 
-void L3DCamera::translate(const L3DVec3& movement)
-{
-    this->view = glm::translate(this->view, movement);
-}
+    L3DVec3 retCamPos = camera->position();
 
-void L3DCamera::rotate(
-    float radians,
-    const L3DVec3& direction
-)
-{
-    this->view = glm::rotate(this->view, radians, direction);
+    REQUIRE(Approx(retCamPos.x) == camPos.x);
+    REQUIRE(Approx(retCamPos.y) == camPos.y);
+    REQUIRE(Approx(retCamPos.z) == camPos.z);
 }

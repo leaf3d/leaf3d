@@ -67,6 +67,14 @@ int main()
     // Load a shader program with support for lighting (Blinn-Phong).
     L3DHandle blinnPhongShaderProgram = l3dutLoadShaderProgram("basic.vert", "blinnphong.frag");
 
+    // Load a floor.
+    L3DHandle floorTexture = l3dutLoadTexture2D("floor.jpg");
+    L3DHandle floorMaterial = l3dLoadMaterial("floorMaterial", blinnPhongShaderProgram);
+    l3dAddTextureToMaterial(floorMaterial, "u_diffuseMap", floorTexture);
+    L3DHandle floor = l3dLoadQuad(floorMaterial, L3DVec2(20, 20));
+    l3dRotateMesh(floor, 1.57f, L3DVec3(-1, 0, 0));
+    l3dScaleMesh(floor, L3DVec3(200, 200, 1));
+
     // Load a lamp.
     unsigned int meshCount = 0;
     L3DHandle* lamp = l3dutLoadMeshes("lamp.obj", blinnPhongShaderProgram, &meshCount);
@@ -77,53 +85,52 @@ int main()
         l3dScaleMesh(lamp[0], L3DVec3(8, 8, 8));
     }
 
-    // Load a floor.
-    L3DHandle floorTexture = l3dutLoadTexture2D("floor.jpg");
-    L3DHandle floorMaterial = l3dLoadMaterial("floorMaterial", blinnPhongShaderProgram);
-    l3dAddTextureToMaterial(floorMaterial, "u_diffuseMap", floorTexture);
-    L3DHandle floor = l3dLoadQuad(floorMaterial, L3DVec2(30, 30));
-    l3dRotateMesh(floor, 1.57f, L3DVec3(-1, 0, 0));
-    l3dScaleMesh(floor, L3DVec3(200, 200, 1));
-
     // Load a cube.
     L3DHandle crateTexture = l3dutLoadTexture2D("crate.jpg");
     L3DHandle crateMaterial = l3dLoadMaterial("crateMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(crateMaterial, "u_diffuseMap", crateTexture);
-    L3DHandle cube = l3dLoadCube(crateMaterial);
-    l3dRotateMesh(cube, 0.75f);
-    l3dTranslateMesh(cube, L3DVec3(10, 3, -2));
-    l3dScaleMesh(cube, L3DVec3(6, 6, 6));
+    L3DHandle cube1 = l3dLoadCube(crateMaterial);
+    l3dRotateMesh(cube1, 0.75f);
+    l3dTranslateMesh(cube1, L3DVec3(10, 3, -2));
+    l3dScaleMesh(cube1, L3DVec3(6, 6, 6));
 
-    // Load some lights.
+    // Load a spotlight.
     L3DVec3 light1Pos = L3DVec3(-2.0f, 12.0f, 0);
-    L3DVec4 light1Color = L3DVec4(1, 1, 0.7f, 1.0f);
+    L3DVec4 light1Color = L3DVec4(1, 1, 0.7f, 0.8f);
     L3DHandle light1 = l3dLoadSpotLight(light1Pos, L3DVec3(0, -1, 0), light1Color);
     L3DHandle light1Material = l3dLoadMaterial("light1Material", basicShaderProgram, light1Color.xyz());
     L3DHandle light1Bulb = l3dLoadCube(light1Material);
     l3dTranslateMesh(light1Bulb, light1Pos);
+    l3dSetLightAttenuation(light1, 0.7f, 0.6f, 0);
 
+    // Load some point lights.
     L3DVec3 light2Pos = L3DVec3(10, 5.0f, -4);
-    L3DVec4 light2Color = L3DVec4(1, 0.2f, 0.2f, 0.5f);
+    L3DVec4 light2Color = L3DVec4(1, 0.2f, 0.2f, 1);
     L3DHandle light2 = l3dLoadPointLight(light2Pos, light2Color);
     L3DHandle light2Material = l3dLoadMaterial("light2Material", basicShaderProgram, light2Color.xyz());
     L3DHandle light2Bulb = l3dLoadCube(light2Material);
     l3dTranslateMesh(light2Bulb, light2Pos);
 
-    L3DVec3 light3Pos = L3DVec3(0, 0.5f, -12);
-    L3DVec4 light3Color = L3DVec4(0.2f, 1.0f, 0.2f, 0.5f);
+    L3DVec3 light3Pos = L3DVec3(-0.5f, 0.5f, -12);
+    L3DVec4 light3Color = L3DVec4(0.2f, 1.0f, 0.2f, 1);
     L3DHandle light3 = l3dLoadPointLight(light3Pos, light3Color);
     L3DHandle light3Material = l3dLoadMaterial("light3Material", basicShaderProgram, light3Color.xyz());
     L3DHandle light3Bulb = l3dLoadCube(light3Material);
     l3dTranslateMesh(light3Bulb, light3Pos);
 
-    L3DVec3 light4Pos = L3DVec3(-2, 1, 3);
-    L3DVec4 light4Color = L3DVec4(0.2f, 0.2f, 1.0f, 0.5f);
+    L3DVec3 light4Pos = L3DVec3(-2, 1, 4);
+    L3DVec4 light4Color = L3DVec4(0.2f, 0.2f, 1.0f, 1);
     L3DHandle light4 = l3dLoadPointLight(light4Pos, light4Color);
     L3DHandle light4Material = l3dLoadMaterial("light4Material", basicShaderProgram, light4Color.xyz());
     L3DHandle light4Bulb = l3dLoadCube(light4Material);
     l3dTranslateMesh(light4Bulb, light4Pos);
 
-    l3dSetShaderProgramUniformVec4(blinnPhongShaderProgram, "u_ambientColor", L3DVec4(0.8, 0.8, 1, 0.3));
+    // Load a directional light.
+    L3DVec4 light5Color = L3DVec4(0.5f, 0.5f, 0.6f, 0.5f);
+    L3DHandle light5 = l3dLoadDirectionalLight(L3DVec3(-5, -1, -1), light5Color);
+
+    // Set the global ambient light color.
+    l3dSetShaderProgramUniformVec4(blinnPhongShaderProgram, "u_ambientColor", L3DVec4(0.8f, 0.8f, 1, 0.2f));
 
     // Create a camera.
     L3DHandle camera = l3dLoadCamera(
@@ -149,7 +156,8 @@ int main()
         l3dRenderFrame(camera, renderQueue);
 
         // Apply a rotation to the camera.
-        l3dRotateCamera(camera, (float)sin(glfwGetTime()) * 0.01f);
+        float sinOfTime = 0.5f + sin(glfwGetTime()) * 0.5f;
+        l3dRotateCamera(camera, sinOfTime * 0.01f);
 
         // Swap buffers.
         glfwSwapBuffers(window);

@@ -558,7 +558,7 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
         {
             this->addBuffer(mesh->vertexBuffer());
 
-            // Bind vertex buffer.
+            // Binds vertex buffer.
             glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer()->id());
 
             if (mesh->material() && mesh->material()->shaderProgram())
@@ -566,7 +566,7 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
                 L3DMaterial* material = mesh->material();
                 L3DShaderProgram* shaderProgram = material->shaderProgram();
 
-                // Enable vertex attributes.
+                // Enables vertex attributes.
                 GLint posAttrib     = glGetAttribLocation(shaderProgram->id(), "i_position");
                 GLint colAttrib     = glGetAttribLocation(shaderProgram->id(), "i_color");
                 GLint tex0Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord0");
@@ -979,13 +979,13 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
             GLenum gl_draw_primitive = _toOpenGL(mesh->drawPrimitive());
             unsigned int index_count = mesh->indexCount();
 
-            // Bind VAO.
+            // Binds VAO.
             glBindVertexArray(mesh->id());
 
-            // Bind shaders.
+            // Binds shaders.
             glUseProgram(shaderProgram->id());
 
-            // Bind textures.
+            // Binds textures.
             if (material->textures.size() > 0)
             {
                 unsigned int i = 0;
@@ -1009,58 +1009,62 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
                 glBindTexture(GL_TEXTURE_3D, 0);
             }
 
-            // Bind uniforms.
+            // Binds uniforms.
             L3DUniformMap uniforms = shaderProgram->uniforms();
             for (L3DUniformMap::iterator unif_it = uniforms.begin(); unif_it!=uniforms.end(); ++unif_it)
                 _setUniform(shaderProgram->id(), unif_it->first.c_str(), unif_it->second);
 
-            // Bind matrices.
+            // Binds matrices and vectors.
+            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_cameraPos"), 1, glm::value_ptr(camera->position()));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_viewMat"), 1, GL_FALSE, glm::value_ptr(camera->view));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_projMat"), 1, GL_FALSE, glm::value_ptr(camera->proj));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_modelMat"), 1, GL_FALSE, glm::value_ptr(mesh->transMatrix));
-            glUniformMatrix3fv(glGetUniformLocation(shaderProgram->id(), "u_normalMat"), 1, GL_FALSE, glm::value_ptr(camera->calculateNormalMatrix(mesh->transMatrix)));
+            glUniformMatrix3fv(glGetUniformLocation(shaderProgram->id(), "u_normalMat"), 1, GL_FALSE, glm::value_ptr(mesh->normalMatrix()));
 
-            // Bind material.
-            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.ambient"), 1,  glm::value_ptr(material->ambient));
-            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.diffuse"), 1,  glm::value_ptr(material->diffuse));
-            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.specular"), 1,  glm::value_ptr(material->specular));
+            // Binds material.
+            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.ambient"), 1, glm::value_ptr(material->ambient));
+            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.diffuse"), 1, glm::value_ptr(material->diffuse));
+            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.specular"), 1, glm::value_ptr(material->specular));
             glUniform1f(glGetUniformLocation(shaderProgram->id(), "u_material.shininess"), material->shininess);
 
             glUniform4fv(glGetUniformLocation(shaderProgram->id(), "u_objectColor"), 1,  glm::value_ptr(glm::vec4(material->diffuse, 1.0f)));
 
-            // Bind lights.
-            shaderProgram->setUniform("u_lightNr", (int)m_lights.size());
-
-            unsigned int l = 0;
+            // Binds lights.
+            int activeLightCount = 0;
             for (L3DLightPool::iterator light_it = m_lights.begin(); light_it!=m_lights.end(); ++light_it)
             {
                 L3DLight* light = light_it->second;
 
-                if (light && light->isOn)
+                if (light && light->isOn())
                 {
                     std::ostringstream sstream;
-                    sstream << "u_light[" << l << "]";
+                    sstream << "u_light[" << activeLightCount << "]";
                     std::string lightName = sstream.str();
 
-                    shaderProgram->setUniform((lightName + ".position").c_str(), camera->transformInViewSpace(light->position));
+                    shaderProgram->setUniform((lightName + ".type").c_str(), light->type);
+                    shaderProgram->setUniform((lightName + ".position").c_str(), light->position);
+                    shaderProgram->setUniform((lightName + ".direction").c_str(), light->direction);
                     shaderProgram->setUniform((lightName + ".color").c_str(), light->color);
                     shaderProgram->setUniform((lightName + ".kc").c_str(), light->attenuation.kc);
                     shaderProgram->setUniform((lightName + ".kl").c_str(), light->attenuation.kl);
                     shaderProgram->setUniform((lightName + ".kq").c_str(), light->attenuation.kq);
-                }
 
-                ++l;
+                    ++activeLightCount;
+                }
             }
 
-            // Render geometry.
+            // Passes count of active lights.
+            shaderProgram->setUniform("u_lightNr", (int)activeLightCount);
+
+            // Renders geometry.
             if (index_count > 0)
             {
-                // Render vertices using indices.
+                // Renders vertices using indices.
                 glDrawElements(gl_draw_primitive, index_count, GL_UNSIGNED_INT, 0);
             }
             else
             {
-                // Render vertices without using indices.
+                // Renders vertices without using indices.
                 glDrawArrays(gl_draw_primitive, 0, mesh->vertexCount());
             }
         }

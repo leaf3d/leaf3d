@@ -17,7 +17,6 @@ uniform mat3 u_normalMat;
 /* OUTPUTS ********************************************************************/
 
 // Data for fragment shader.
-out vec3    o_camera;
 out vec3    o_position;
 out vec3    o_normal;
 out vec2    o_texcoord0;
@@ -26,19 +25,16 @@ out vec2    o_texcoord0;
 
 void main(void)
 {
-   // Position in world space.
-   vec4 viewSpacePosition = u_viewMat * u_modelMat * vec4(i_position, 1);
-   o_position = viewSpacePosition.xyz / viewSpacePosition.w;
+    // Vertex position in world space.
+    vec4 worldSpacePosition = u_modelMat * vec4(i_position, 1);
+    o_position = worldSpacePosition.xyz / worldSpacePosition.w;
 
-   // Normal in world space.
-   o_normal	= normalize(u_normalMat * i_normal);
+    // Normal in world space.
+    o_normal	= normalize(u_normalMat * i_normal);
 
-   // Camera coordinates to fragment shader.
-   o_camera = -u_viewMat[3].xyz * mat3(u_viewMat);
+    // Texture coordinates to fragment shader.
+    o_texcoord0	= i_texcoord0;
 
-   // Texture coordinates to fragment shader.
-   o_texcoord0	= i_texcoord0;
-
-   // Screen space coordinates of the vertex.
-   gl_Position	= u_projMat * viewSpacePosition;
+    // Vertex position in screen space.
+    gl_Position	= u_projMat * u_viewMat * worldSpacePosition;
 }

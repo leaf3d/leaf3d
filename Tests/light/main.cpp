@@ -19,38 +19,56 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
-#include <leaf3d/L3DRenderer.h>
-#include <leaf3d/L3DCamera.h>
+#include <leaf3d/L3DLight.h>
+#include <catch/catch.hpp>
 
 using namespace l3d;
 
-L3DCamera::L3DCamera(
-    L3DRenderer* renderer,
-    const char* name,
-    const L3DMat4& view,
-    const L3DMat4& proj
-) : L3DResource(L3D_CAMERA, renderer),
-    m_name(name),
-    view(view),
-    proj(proj)
+TEST_CASE( "Test getting L3DLight type", "[leaf3d][light][get][type]" )
 {
-    if (renderer) renderer->addCamera(this);
+    L3DLight* dirLight = L3DLight::createDirectionalLight(
+        0, L3DVec3(0, -1, 0)
+    );
+
+    REQUIRE(dirLight->type == L3D_LIGHT_DIRECTIONAL);
+
+    L3DLight* pointLight = L3DLight::createPointLight(
+        0, L3DVec3(0, 0, 0)
+    );
+
+    REQUIRE(pointLight->type == L3D_LIGHT_POINT);
+
+    L3DLight* spotLight = L3DLight::createSpotLight(
+        0, L3DVec3(0, 0, 0)
+    );
+
+    REQUIRE(spotLight->type == L3D_LIGHT_SPOT);
 }
 
-L3DVec3 L3DCamera::position() const
+TEST_CASE( "Test L3DLight active status", "[leaf3d][light][get][isOn]" )
 {
-    return -glm::transpose(L3DMat3(this->view)) * L3DVec3(this->view[3]);
-}
+    L3DVec4 lightColor = L3DVec4(1, 1, 1, 1);
 
-void L3DCamera::translate(const L3DVec3& movement)
-{
-    this->view = glm::translate(this->view, movement);
-}
+    L3DLight* light = L3DLight::createPointLight(
+        0, L3DVec3(0, 0, 0),
+        lightColor
+    );
 
-void L3DCamera::rotate(
-    float radians,
-    const L3DVec3& direction
-)
-{
-    this->view = glm::rotate(this->view, radians, direction);
+    REQUIRE(light->isOn() == true);
+
+    light->color.a = 0.6f;
+
+    REQUIRE(light->isOn() == true);
+
+    light->color.a = 0.2f;
+
+    REQUIRE(light->isOn() == true);
+
+    light->color.a = 0.01f;
+
+    REQUIRE(light->isOn() == true);
+
+    light->color.a = 0.0f;
+
+    REQUIRE(light->isOn() == false);
 }

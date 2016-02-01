@@ -69,6 +69,26 @@ void l3dRenderFrame(
     );
 }
 
+L3DHandle l3dLoadForwardRenderQueue(const L3DVec4& clearColor)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DRenderQueue* renderQueue = new L3DRenderQueue(
+        _renderer,
+        "ForwardRendering"
+    );
+
+    renderQueue->addClearBuffersCommand(true, true, true, clearColor);
+    renderQueue->addSetDepthTestCommand();
+    renderQueue->addSetBlendCommand();
+    renderQueue->addDrawMeshesCommand();
+
+    if (renderQueue)
+        return renderQueue->handle();
+
+    return L3D_INVALID_HANDLE;
+}
+
 L3DHandle l3dLoadTexture(
     const L3DTextureType& type,
     const L3DImageFormat& format,
@@ -458,35 +478,35 @@ L3DHandle l3dLoadCube(
 {
     GLfloat vertices[] = {
     //  Position              Normal               Texcoords
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f, // Front Top-left
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  texMulFactor.x, 0.0f, // Front Top-right
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  texMulFactor.x, texMulFactor.y, // Front Bottom-right
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, texMulFactor.y, // Front Bottom-left
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f,                      // Front Top-left
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  texMulFactor.x, 0.0f,            // Front Top-right
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  texMulFactor.x, texMulFactor.y,  // Front Bottom-right
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, texMulFactor.y,            // Front Bottom-left
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  texMulFactor.x, 0.0f, // Back Top-left
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f, // Back Top-right
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, texMulFactor.y, // Back Bottom-right
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  texMulFactor.x, texMulFactor.y, // Back Bottom-left
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  texMulFactor.x, 0.0f,            // Back Top-left
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,                      // Back Top-right
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, texMulFactor.y,            // Back Bottom-right
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  texMulFactor.x, texMulFactor.y,  // Back Bottom-left
 
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f, // Left Top-left
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f, // Left Top-right
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y, // Left Bottom-left
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y, // Left Bottom-right
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,                      // Left Top-left
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,            // Left Top-right
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Left Bottom-left
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y,            // Left Bottom-right
 
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, // Right Top-left
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  1.0f,  texMulFactor.x, 0.0f, // Right Top-right
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  1.0f,  texMulFactor.x, texMulFactor.y, // Right Bottom-left
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  1.0f,  0.0f, texMulFactor.y, // Right Bottom-right
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,                      // Right Top-left
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,            // Right Top-right
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Right Bottom-left
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y,            // Right Bottom-right
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  1.0f,  0.0f, 0.0f, // Top Top-left
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  1.0f,  texMulFactor.x, 0.0f, // Top Top-right
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  1.0f,  texMulFactor.x, texMulFactor.y, // Top Bottom-left
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  1.0f,  0.0f, texMulFactor.y, // Top Bottom-right
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,                      // Top Top-left
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  texMulFactor.x, 0.0f,            // Top Top-right
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Top Bottom-left
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, texMulFactor.y,            // Top Bottom-right
 
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  1.0f,  0.0f, 0.0f, // Bottom Top-left
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  1.0f,  texMulFactor.x, 0.0f, // Bottom Top-right
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  1.0f,  texMulFactor.x, texMulFactor.y, // Bottom Bottom-left
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  1.0f,  0.0f, texMulFactor.y, // Bottom Bottom-right
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,                      // Bottom Top-left
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  texMulFactor.x, 0.0f,            // Bottom Top-right
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Bottom Bottom-left
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, texMulFactor.y,            // Bottom Bottom-right
     };
 
     GLuint indices[] = {
@@ -579,7 +599,26 @@ void l3dScaleMesh(
         mesh->scale(factor);
 }
 
-L3DHandle l3dLoadLight(
+L3DHandle l3dLoadDirectionalLight(
+    const L3DVec3& direction,
+    const L3DVec4& color
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DLight* light = L3DLight::createDirectionalLight(
+        _renderer,
+        direction,
+        color
+    );
+
+    if (light)
+        return light->handle();
+
+    return L3D_INVALID_HANDLE;
+}
+
+L3DHandle l3dLoadPointLight(
     const L3DVec3& position,
     const L3DVec4& color,
     const L3DLightAttenuation& attenuation
@@ -587,7 +626,7 @@ L3DHandle l3dLoadLight(
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = new L3DLight(
+    L3DLight* light = L3DLight::createPointLight(
         _renderer,
         position,
         color,
@@ -600,9 +639,43 @@ L3DHandle l3dLoadLight(
     return L3D_INVALID_HANDLE;
 }
 
-void l3dToggleLight(
-    const L3DHandle& target,
-    bool on
+L3DHandle l3dLoadSpotLight(
+    const L3DVec3& position,
+    const L3DVec3& direction,
+    const L3DVec4& color,
+    const L3DLightAttenuation& attenuation
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DLight* light = L3DLight::createSpotLight(
+        _renderer,
+        position,
+        direction,
+        color,
+        attenuation
+    );
+
+    if (light)
+        return light->handle();
+
+    return L3D_INVALID_HANDLE;
+}
+
+int l3dLightType(const L3DHandle& target)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DLight* light = _renderer->getLight(target);
+
+    if (light)
+        return light->type;
+
+    return -1;
+}
+
+bool l3dIsLightOn(
+    const L3DHandle& target
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
@@ -610,7 +683,9 @@ void l3dToggleLight(
     L3DLight* light = _renderer->getLight(target);
 
     if (light)
-        light->isOn = on;
+        return light->isOn();
+
+    return false;
 }
 
 void l3dTranslateLight(
@@ -626,22 +701,56 @@ void l3dTranslateLight(
         light->translate(movement);
 }
 
-L3DHandle l3dLoadForwardRenderQueue(const L3DVec4& clearColor)
+void l3dSetLightDirection(
+    const L3DHandle& target,
+    const L3DVec3& direction
+)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DRenderQueue* renderQueue = new L3DRenderQueue(
-        _renderer,
-        "ForwardRendering"
-    );
+    L3DLight* light = _renderer->getLight(target);
 
-    renderQueue->addClearBuffersCommand(true, true, true, clearColor);
-    renderQueue->addSetDepthTestCommand();
-    renderQueue->addSetBlendCommand();
-    renderQueue->addDrawMeshesCommand();
+    if (light)
+        light->direction = direction;
+}
 
-    if (renderQueue)
-        return renderQueue->handle();
+void l3dSetLightAttenuation(
+    const L3DHandle& target,
+    float kc,
+    float kl,
+    float kq
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    return L3D_INVALID_HANDLE;
+    L3DLight* light = _renderer->getLight(target);
+
+    if (light)
+        light->attenuation = L3DLightAttenuation(kc, kl, kq);
+}
+
+void l3dSetLightColor(
+    const L3DHandle& target,
+    const L3DVec4& color
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DLight* light = _renderer->getLight(target);
+
+    if (light)
+        light->color = color;
+}
+
+void l3dLightLookAt(
+    const L3DHandle& target,
+    const L3DVec3& targetPosition
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DLight* light = _renderer->getLight(target);
+
+    if (light)
+        light->lookAt(targetPosition);
 }

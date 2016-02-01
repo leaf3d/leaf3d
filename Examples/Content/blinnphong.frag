@@ -12,6 +12,7 @@ struct Material {
 };
 
 struct Light {
+    int     type;
     vec3    position;
     vec3    direction;
     vec4    color;
@@ -32,6 +33,9 @@ in vec2 o_texcoord0;
 // Diffuse map.
 uniform sampler2D   u_diffuseMap;
 
+// Camera position.
+uniform vec3        u_cameraPos;
+
 // Material and lights.
 uniform Material    u_material;
 uniform int         u_lightNr;
@@ -50,13 +54,13 @@ vec3 ambientLighting()
 vec3 diffuseLighting(
     in vec3 diffuse,
     in vec4 color,
-    in vec3 N,
-    in vec3 L
+    in vec3 normalDirection,
+    in vec3 surfaceToLightDirection
 )
 {
    // Calculation as for Lambertian reflection.
-   float diffuseTerm = clamp(dot(N, L), 0, 1) ;
-   return diffuse * color.xyz * color.w * diffuseTerm;
+   float diffuseTerm = clamp(dot(normalDirection, surfaceToLightDirection), 0, 1) ;
+   return diffuse * color.rgb * color.a * diffuseTerm;
 }
 
 // Returns intensity of specular reflection.
@@ -64,15 +68,14 @@ vec3 specularLighting(
     in vec3 specular,
     in float shininess,
     in vec4 color,
-    in vec3 N,
-    in vec3 L,
-    in vec3 V
+    in vec3 normalDirection,
+    in vec3 surfaceToLightDirection,
+    in vec3 surfaceToCameraDirection
 )
 {
-   // Half vector
-   vec3 H = normalize(L + V);
-   float specularTerm = pow(dot(N, H), shininess);
-   return specular * (color.xyz * color.w * specularTerm);
+   vec3 halfVector = normalize(surfaceToLightDirection + surfaceToCameraDirection);
+   float specularTerm = pow(dot(normalDirection, halfVector), shininess);
+   return specular * (color.rgb * color.a * specularTerm);
 }
 
 // Returns light attenuation based on distance.
@@ -80,37 +83,72 @@ float lightingAttenuation(
     in float kc,
     in float kl,
     in float kq,
-    in float D
+    in float surfaceToLightDistance
 )
 {
-    return 1.0f / (kc + kl * D + kq * (D * D));
+    return 1.0f / (kc + kl * surfaceToLightDistance + kq * (surfaceToLightDistance * surfaceToLightDistance));
 }
 
 /* MAIN ***********************************************************************/
 
-void main() {
+void main()
+{
     // Initial lighting is given by the ambient light.
     vec4 lighting = vec4(ambientLighting(), 1.0f);
-    
+
     // Iterate over all lights.
-    for (int i = 0; i < u_lightNr; i++)
+    for (int i = 0; i < min(u_lightNr, NR_MAX_LIGHTS); i++)
     {
-        // Calculate distance between light and eye.
-        float D = length(u_light[i].position - o_position);
+        vec3    surfaceToLight = u_light[i].position - o_position;
+        float   attenuation = 1.0f;
+
+        // Directional light.
+        if (u_light[i].type == 0)
+            surfaceToLight = -u_light[i].direction;
 
         // Normalize vectors after interpolation.
-        vec3 L = normalize(u_light[i].position - o_position);
-        vec3 V = normalize(-o_position);
-        vec3 N = normalize(o_normal);
+        float   surfaceToLightDistance = length(surfaceToLight);
+        vec3    surfaceToLightDirection = normalize(surfaceToLight);
+        vec3    surfaceToCameraDirection = normalize(u_cameraPos - o_position);
+        vec3    lightDirection = normalize(-u_light[i].direction);
+
+        // Point light.
+        if (u_light[i].type == 1)
+        {
+            // Calculate attenuation based on distance.
+            attenuation = lightingAttenuation(
+                u_light[i].kc,
+                u_light[i].kl,
+                u_light[i].kq,
+                surfaceToLightDistance
+            );
+        }
+
+        // Spotlight.
+        else if (u_light[i].type == 2)
+        {
+            float theta         = dot(surfaceToLightDirection, lightDirection);
+            float epsilon       = u_light[i].kc - u_light[i].kl;
+            attenuation         = clamp((theta - u_light[i].kl) / epsilon, 0.0, 1.0);
+        }
 
         // Get Blinn-Phong reflectance components.
-        vec3 Idif = diffuseLighting(u_material.diffuse, u_light[i].color, N, L);
-        vec3 Ispe = specularLighting(u_material.specular, u_material.shininess, u_light[i].color, N, L, V);
+        vec3 Idif = diffuseLighting(
+            u_material.diffuse,
+            u_light[i].color,
+            o_normal,
+            surfaceToLightDirection
+        );
+        vec3 Ispe = specularLighting(
+            u_material.specular,
+            u_material.shininess,
+            u_light[i].color,
+            o_normal,
+            surfaceToLightDirection,
+            surfaceToCameraDirection
+        );
 
-        // Get light attenuation.
-        float att = lightingAttenuation(u_light[i].kc, u_light[i].kl, u_light[i].kq, D);
-
-        lighting += vec4(Idif * att + Ispe * att, 0);
+        lighting += vec4(Idif * attenuation + Ispe * attenuation, 0);
     }
 
     // Diffuse color of the object from texture.
