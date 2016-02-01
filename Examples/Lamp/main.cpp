@@ -69,8 +69,10 @@ int main()
 
     // Load a floor.
     L3DHandle floorTexture = l3dutLoadTexture2D("floor.jpg");
+    L3DHandle floorSpecularTexture = l3dutLoadTexture2D("floor_spec.jpg");
     L3DHandle floorMaterial = l3dLoadMaterial("floorMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(floorMaterial, "u_diffuseMap", floorTexture);
+    l3dAddTextureToMaterial(floorMaterial, "u_specularMap", floorSpecularTexture);
     L3DHandle floor = l3dLoadQuad(floorMaterial, L3DVec2(20, 20));
     l3dRotateMesh(floor, 1.57f, L3DVec3(-1, 0, 0));
     l3dScaleMesh(floor, L3DVec3(200, 200, 1));
@@ -87,8 +89,10 @@ int main()
 
     // Load a cube.
     L3DHandle crateTexture = l3dutLoadTexture2D("crate.jpg");
+    L3DHandle crateSpecularTexture = l3dutLoadTexture2D("crate_spec.jpg");
     L3DHandle crateMaterial = l3dLoadMaterial("crateMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(crateMaterial, "u_diffuseMap", crateTexture);
+    l3dAddTextureToMaterial(crateMaterial, "u_specularMap", crateSpecularTexture);
     L3DHandle cube1 = l3dLoadCube(crateMaterial);
     l3dRotateMesh(cube1, 0.75f);
     l3dTranslateMesh(cube1, L3DVec3(10, 3, -2));

@@ -32,6 +32,7 @@ in vec2 o_texcoord0;
 
 // Diffuse map.
 uniform sampler2D   u_diffuseMap;
+uniform sampler2D   u_specularMap;
 
 // Camera position.
 uniform vec3        u_cameraPos;
@@ -93,8 +94,10 @@ float lightingAttenuation(
 
 void main()
 {
-    // Initial lighting is given by the ambient light.
-    vec4 lighting = vec4(ambientLighting(), 1.0f);
+    // Blinn-Phong lighting components.
+    vec3 Iamb = ambientLighting();
+    vec3 Idif = vec3(0);
+    vec3 Ispe = vec3(0);
 
     // Iterate over all lights.
     for (int i = 0; i < min(u_lightNr, NR_MAX_LIGHTS); i++)
@@ -132,14 +135,14 @@ void main()
             attenuation         = clamp((theta - u_light[i].kl) / epsilon, 0.0, 1.0);
         }
 
-        // Get Blinn-Phong reflectance components.
-        vec3 Idif = diffuseLighting(
+        Idif += attenuation * diffuseLighting(
             u_material.diffuse,
             u_light[i].color,
             o_normal,
             surfaceToLightDirection
         );
-        vec3 Ispe = specularLighting(
+
+        Ispe += attenuation * specularLighting(
             u_material.specular,
             u_material.shininess,
             u_light[i].color,
@@ -147,13 +150,12 @@ void main()
             surfaceToLightDirection,
             surfaceToCameraDirection
         );
-
-        lighting += vec4(Idif * attenuation + Ispe * attenuation, 0);
     }
 
-    // Diffuse color of the object from texture.
-    vec4 diffuseColor = texture(u_diffuseMap, o_texcoord0);
+    // Combine all components into the final color.
+    vec4 ambientColor = texture(u_diffuseMap, o_texcoord0) * vec4(Iamb, 1.0f);
+    vec4 diffuseColor = texture(u_diffuseMap, o_texcoord0) * vec4(Idif, 1.0f);
+    vec4 specularColor = texture(u_specularMap, o_texcoord0) * vec4(Ispe, 1.0f);
 
-    // Combination of all components and diffuse color of the object.
-    gl_FragColor = diffuseColor * lighting;
+    gl_FragColor = ambientColor + diffuseColor + specularColor;
 }
