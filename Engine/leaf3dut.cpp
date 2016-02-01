@@ -188,6 +188,15 @@ L3DHandle* l3dutLoadMeshes(
 
                 l3dAddTextureToMaterial(material, "u_diffuseMap", texture);
             }
+
+            if (mat->GetTextureCount(aiTextureType_SPECULAR) > 0)
+            {
+                aiString textureFilename;
+                mat->GetTexture(aiTextureType_SPECULAR, 0, &textureFilename);
+                L3DHandle texture = l3dutLoadTexture2D(textureFilename.C_Str());
+
+                l3dAddTextureToMaterial(material, "u_specularMap", texture);
+            }
         }
 
         L3DHandle loadedMesh = l3dLoadMesh(vertices.data(), mesh->mNumVertices, indices.data(), mesh->mNumFaces * 3, material, vertexFormat);
