@@ -2,8 +2,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../Engine)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../External)
 
-file(COPY Content DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
-
 # Look for GLFW.
 find_package(GLFW REQUIRED)
 include_directories(${GLFW_INCLUDE_DIR})
@@ -24,6 +22,13 @@ set(LEAF3D_EXAMPLES_EDITABLE_CONTENT_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/Content/simpletexture.frag
 )
 
+# Copy content files.
+add_custom_target(
+    leaf3dExamplesCopyContentFiles ALL
+    COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Content ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Content
+)
+
+# Add example projects.
 add_subdirectory(Leaf)
 add_subdirectory(Frankie)
 add_subdirectory(Lamp)

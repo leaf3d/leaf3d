@@ -46,6 +46,7 @@ set(LEAF3D_REQUIRED_LIBS
     ${OPENGL_LIBRARY}
 )
 
+# Utility library target.
 if (L3D_BUILD_UTILITY)
     # Look for Assimp.
     find_package(Assimp REQUIRED)
