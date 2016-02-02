@@ -74,9 +74,13 @@ vec3 specularLighting(
     in vec3 surfaceToCameraDirection
 )
 {
-   vec3 halfVector = normalize(surfaceToLightDirection + surfaceToCameraDirection);
-   float specularTerm = pow(dot(normalDirection, halfVector), shininess);
-   return specular * (color.rgb * color.a * specularTerm);
+    vec3 halfVector = normalize(surfaceToLightDirection + surfaceToCameraDirection);
+    float dotProduct = dot(normalDirection, halfVector);
+    float specularTerm = 0;
+    // Avoid specular reflections on back faces.
+    if (dotProduct > 0)
+        specularTerm = pow(dotProduct, shininess);
+    return specular * (color.rgb * color.a * specularTerm);
 }
 
 // Returns light attenuation based on distance.
