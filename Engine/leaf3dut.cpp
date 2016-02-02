@@ -176,9 +176,31 @@ L3DHandle* l3dutLoadMeshes(
         L3DHandle material;
         if(mesh->mMaterialIndex >= 0)
         {
-            material = l3dLoadMaterial(mesh->mName.C_Str(), shaderProgram);
-
             aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+
+            aiString materialName;
+            mat->Get(AI_MATKEY_NAME, materialName);
+
+            aiColor3D diffuse;
+            mat->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+
+            aiColor3D specular;
+            mat->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+
+            aiColor3D ambient;
+            mat->Get(AI_MATKEY_COLOR_AMBIENT, ambient);
+
+            float shininess;
+            mat->Get(AI_MATKEY_SHININESS, shininess);
+
+            material = l3dLoadMaterial(
+                materialName.C_Str(),
+                shaderProgram,
+                L3DVec3(diffuse.r, diffuse.g, diffuse.b),
+                L3DVec3(ambient.r, ambient.g, ambient.b),
+                L3DVec3(specular.r, specular.g, specular.b),
+                shininess
+            );
 
             if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0)
             {

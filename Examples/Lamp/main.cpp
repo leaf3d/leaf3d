@@ -80,11 +80,10 @@ int main()
     // Load a lamp.
     unsigned int meshCount = 0;
     L3DHandle* lamp = l3dutLoadMeshes("lamp.obj", blinnPhongShaderProgram, &meshCount);
-
-    if (meshCount > 0)
+    for (int i=0; i<meshCount; ++i)
     {
-        l3dTranslateMesh(lamp[0], L3DVec3(-8, 0, 0));
-        l3dScaleMesh(lamp[0], L3DVec3(8, 8, 8));
+        l3dTranslateMesh(lamp[i], L3DVec3(-8, 0, 0));
+        l3dScaleMesh(lamp[i], L3DVec3(8, 8, 8));
     }
 
     // Load a cube.
