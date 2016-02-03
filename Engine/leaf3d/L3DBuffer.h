@@ -31,10 +31,10 @@ namespace l3d
     {
     private:
         void*           m_data;
-        L3DBufferType      m_type;
+        L3DBufferType   m_type;
         unsigned int    m_size;
         unsigned int    m_stride;
-        L3DDrawType        m_drawType;
+        L3DDrawType     m_drawType;
 
     public:
         L3DBuffer(
@@ -47,8 +47,8 @@ namespace l3d
         );
         ~L3DBuffer();
 
-        L3DBufferType      type() const { return m_type; }
-        L3DDrawType        drawType() const { return m_drawType; }
+        L3DBufferType   type() const { return m_type; }
+        L3DDrawType     drawType() const { return m_drawType; }
         unsigned int    size() const { return m_size; }
         unsigned int    stride() const { return m_stride; }
         unsigned int    count() const { return (m_stride > 0) ? m_size / m_stride : 0; }
