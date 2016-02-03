@@ -4,7 +4,8 @@
 
 in vec3 i_position;     // xyz - position
 in vec3 i_normal;       // xyz - normal
-in vec2 i_texcoord0;    // xy - texture coords
+in vec3 i_tangent;      // xyz - tangent
+in vec2 i_texcoord0;    // xy - texture0 coords
 
 /* UNIFORMS *******************************************************************/
 
@@ -19,6 +20,8 @@ uniform mat3 u_normalMat;
 // Data for fragment shader.
 out vec3    o_position;
 out vec3    o_normal;
+out vec3    o_tangent;
+out vec3    o_bitangent;
 out vec2    o_texcoord0;
 
 /* MAIN ***********************************************************************/
@@ -31,6 +34,14 @@ void main(void)
 
     // Normal in world space.
     o_normal	= normalize(u_normalMat * i_normal);
+
+    // Tangent in world space.
+    o_tangent	= normalize(u_normalMat * i_tangent);
+    // Re-orthogonalize tangent with respect to normal
+    //o_tangent = normalize(o_tangent - dot(o_tangent, o_normal) * o_normal);
+
+    // Bi-tagent in world space.
+    o_bitangent = cross(o_tangent, o_normal);
 
     // Texture coordinates to fragment shader.
     o_texcoord0	= i_texcoord0;

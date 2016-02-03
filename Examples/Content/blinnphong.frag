@@ -26,13 +26,20 @@ struct Light {
 // Data from vertex shader.
 in vec3 o_position;
 in vec3 o_normal;
+in vec3 o_tangent;
+in vec3 o_bitangent;
 in vec2 o_texcoord0;
 
 /* UNIFORMS *******************************************************************/
 
+// Flags.
+uniform bool        u_enableSpecularMap;
+uniform bool        u_enableNormalMap;
+
 // Diffuse map.
 uniform sampler2D   u_diffuseMap;
 uniform sampler2D   u_specularMap;
+uniform sampler2D   u_normalMap;
 
 // Camera position.
 uniform vec3        u_cameraPos;
@@ -98,6 +105,23 @@ float lightingAttenuation(
 
 void main()
 {
+    vec3 normal = o_normal;
+    vec4 diffuse = texture(u_diffuseMap, o_texcoord0);
+    vec4 specular = diffuse;
+
+    // Specular mapping.
+    if (u_enableSpecularMap)
+        specular = texture(u_specularMap, o_texcoord0);
+
+    // Normal mapping.
+    if (u_enableNormalMap)
+    {
+        // Calculate fragment bump normal using TBN matrix.
+        mat3 TBN = mat3(o_tangent, o_bitangent, o_normal);
+        normal = texture(u_normalMap, o_texcoord0).rgb;
+        normal = TBN * normalize(normal * 2.0 - 1.0);
+    }
+
     // Blinn-Phong lighting components.
     vec3 Iamb = ambientLighting();
     vec3 Idif = vec3(0);
@@ -142,7 +166,7 @@ void main()
         Idif += attenuation * diffuseLighting(
             u_material.diffuse,
             u_light[i].color,
-            o_normal,
+            normal,
             surfaceToLightDirection
         );
 
@@ -150,16 +174,17 @@ void main()
             u_material.specular,
             u_material.shininess,
             u_light[i].color,
-            o_normal,
+            normal,
             surfaceToLightDirection,
             surfaceToCameraDirection
         );
     }
 
     // Combine all components into the final color.
-    vec4 ambientColor = texture(u_diffuseMap, o_texcoord0) * vec4(Iamb, 1.0f);
-    vec4 diffuseColor = texture(u_diffuseMap, o_texcoord0) * vec4(Idif, 1.0f);
-    vec4 specularColor = texture(u_specularMap, o_texcoord0) * vec4(Ispe, 1.0f);
+    vec4 ambientColor = diffuse * vec4(Iamb, 1.0f);
+    vec4 diffuseColor = diffuse * vec4(Idif, 1.0f);
+    vec4 specularColor = specular * vec4(Ispe, 1.0f);
 
+    // Final fragment color.
     gl_FragColor = ambientColor + diffuseColor + specularColor;
 }

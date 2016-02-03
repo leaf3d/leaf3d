@@ -456,11 +456,11 @@ L3DHandle l3dLoadQuad(
 )
 {
     GLfloat vertices[] = {
-    //  Position              Normal               Texcoords
-        -0.5f,  0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f          , 0.0f,           // Top-left
-         0.5f,  0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  texMulFactor.x, 0.0f,           // Top-right
-         0.5f, -0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  texMulFactor.x, texMulFactor.y, // Bottom-right
-        -0.5f, -0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f          , texMulFactor.y  // Bottom-left
+    //   Position             Normal               Tangent              Texcoords
+        -0.5f,  0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f          , 0.0f,           // Top-left
+         0.5f,  0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,           // Top-right
+         0.5f, -0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y, // Bottom-right
+        -0.5f, -0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f          , texMulFactor.y  // Bottom-left
     };
 
     GLuint indices[] = {
@@ -468,7 +468,7 @@ L3DHandle l3dLoadQuad(
         2, 3, 0
     };
 
-    return l3dLoadMesh(vertices, 4, indices, 6, material, L3D_POS3_NOR3_UV2);
+    return l3dLoadMesh(vertices, 4, indices, 6, material, L3D_POS3_NOR3_TAN3_UV2);
 }
 
 L3DHandle l3dLoadCube(
@@ -477,36 +477,36 @@ L3DHandle l3dLoadCube(
 )
 {
     GLfloat vertices[] = {
-    //  Position              Normal               Texcoords
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f,                      // Front Top-left
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  texMulFactor.x, 0.0f,            // Front Top-right
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  texMulFactor.x, texMulFactor.y,  // Front Bottom-right
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  0.0f, texMulFactor.y,            // Front Bottom-left
+    //   Position             Normal               Tangent              Texcoords
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,                      // Front Top-left
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,            // Front Top-right
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Front Bottom-right
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y,            // Front Bottom-left
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  texMulFactor.x, 0.0f,            // Back Top-left
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,                      // Back Top-right
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, texMulFactor.y,            // Back Bottom-right
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  texMulFactor.x, texMulFactor.y,  // Back Bottom-left
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,            // Back Top-left
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,                      // Back Top-right
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y,            // Back Bottom-right
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Back Bottom-left
 
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,                      // Left Top-left
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,            // Left Top-right
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Left Bottom-left
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y,            // Left Bottom-right
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f,                      // Left Top-left
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  texMulFactor.x, 0.0f,            // Left Top-right
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  texMulFactor.x, texMulFactor.y,  // Left Bottom-left
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f, texMulFactor.y,            // Left Bottom-right
 
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,                      // Right Top-left
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,            // Right Top-right
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Right Bottom-left
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y,            // Right Bottom-right
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,                      // Right Top-left
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f, -1.0f,  texMulFactor.x, 0.0f,            // Right Top-right
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f, -1.0f,  texMulFactor.x, texMulFactor.y,  // Right Bottom-left
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f, -1.0f,  0.0f, texMulFactor.y,            // Right Bottom-right
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,                      // Top Top-left
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  texMulFactor.x, 0.0f,            // Top Top-right
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Top Bottom-left
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, texMulFactor.y,            // Top Bottom-right
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,                      // Top Top-left
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,            // Top Top-right
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Top Bottom-left
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y,            // Top Bottom-right
 
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,                      // Bottom Top-left
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  texMulFactor.x, 0.0f,            // Bottom Top-right
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Bottom Bottom-left
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, texMulFactor.y,            // Bottom Bottom-right
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,                      // Bottom Top-left
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,            // Bottom Top-right
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Bottom Bottom-left
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y,            // Bottom Bottom-right
     };
 
     GLuint indices[] = {
@@ -529,7 +529,7 @@ L3DHandle l3dLoadCube(
         22, 23, 20,
     };
 
-    return l3dLoadMesh(vertices, 24, indices, 36, material, L3D_POS3_NOR3_UV2);
+    return l3dLoadMesh(vertices, 24, indices, 36, material, L3D_POS3_NOR3_TAN3_UV2);
 }
 
 L3DMat4 l3dGetMeshTrans(

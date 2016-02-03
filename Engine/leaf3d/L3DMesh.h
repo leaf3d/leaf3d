@@ -75,6 +75,9 @@ namespace l3d
         L3DMat3             normalMatrix() const;
         unsigned int        vertexCount() const;
         unsigned int        indexCount() const;
+        unsigned int        primitiveCount() const;
+
+        void recalculateTangents();
 
         void translate(const L3DVec3& movement);
         void rotate(

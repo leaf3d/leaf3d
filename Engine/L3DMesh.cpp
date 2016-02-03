@@ -101,6 +101,77 @@ unsigned int L3DMesh::indexCount() const
     return m_indexBuffer ? m_indexBuffer->count() : 0;
 }
 
+unsigned int L3DMesh::primitiveCount() const
+{
+    return m_indexBuffer ? m_indexBuffer->count() / m_drawPrimitive : 0;
+}
+
+void L3DMesh::recalculateTangents()
+{
+    if (this->vertexFormat() < L3D_POS3_NOR3_TAN3_UV2)
+        return;
+
+    std::map<unsigned int, L3DVec3> tans;
+
+    unsigned int* indices = m_indexBuffer->data<unsigned int>();
+    float* vertices = m_vertexBuffer->data<float>();
+
+    for (unsigned int a = 0; a < this->primitiveCount(); ++a)
+    {
+        unsigned int primitiveOffset = a * m_drawPrimitive;
+
+        unsigned int i1 = indices[primitiveOffset+0];
+        unsigned int i2 = indices[primitiveOffset+1];
+        unsigned int i3 = indices[primitiveOffset+2];
+
+        unsigned i1Offset = i1 * m_vertexFormat;
+        unsigned i2Offset = i2 * m_vertexFormat;
+        unsigned i3Offset = i3 * m_vertexFormat;
+
+        // Position.
+        const L3DVec3 v1(vertices[i1Offset+0], vertices[i1Offset+1], vertices[i1Offset+2]);
+        const L3DVec3 v2(vertices[i2Offset+0], vertices[i2Offset+1], vertices[i2Offset+2]);
+        const L3DVec3 v3(vertices[i3Offset+0], vertices[i3Offset+1], vertices[i3Offset+2]);
+
+        // UV.
+        const L3DVec2 w1(vertices[i1Offset+9], vertices[i1Offset+10]);
+        const L3DVec2 w2(vertices[i2Offset+9], vertices[i2Offset+10]);
+        const L3DVec2 w3(vertices[i3Offset+9], vertices[i3Offset+10]);
+
+        // Calculate tangent.
+        glm::vec3 tangent1;
+
+        glm::vec3 edge1 = v2 - v1;
+        glm::vec3 edge2 = v3 - v1;
+        glm::vec2 deltaUV1 = w2 - w1;
+        glm::vec2 deltaUV2 = w3 - w1;
+
+        GLfloat f = 1.0f / (deltaUV1.x * deltaUV2.y - deltaUV2.x * deltaUV1.y);
+
+        tangent1.x = f * (deltaUV2.y * edge1.x - deltaUV1.y * edge2.x);
+        tangent1.y = f * (deltaUV2.y * edge1.y - deltaUV1.y * edge2.y);
+        tangent1.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
+        tangent1 = glm::normalize(tangent1);
+
+        tans[i1] += tangent1;
+        tans[i2] += tangent1;
+        tans[i3] += tangent1;
+    }
+
+    for (unsigned int v = 0; v < this->vertexCount(); ++v)
+    {
+        unsigned int vertexOffset = v * m_vertexFormat;
+
+        L3DVec3 norm(vertices[vertexOffset+3], vertices[vertexOffset+4], vertices[vertexOffset+5]);
+        L3DVec3 tan = glm::normalize(tans[v] - glm::dot(tans[v], norm) * norm);
+
+        // Updates vertex tangent (XYZ).
+        vertices[vertexOffset+6] = tan.x;
+        vertices[vertexOffset+7] = tan.y;
+        vertices[vertexOffset+8] = tan.z;
+    }
+}
+
 void L3DMesh::translate(const L3DVec3& movement)
 {
     transMatrix = glm::translate(this->transMatrix, movement);

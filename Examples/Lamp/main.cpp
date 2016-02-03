@@ -68,11 +68,13 @@ int main()
     L3DHandle blinnPhongShaderProgram = l3dutLoadShaderProgram("basic.vert", "blinnphong.frag");
 
     // Load a floor.
-    L3DHandle floorTexture = l3dutLoadTexture2D("floor.jpg");
-    L3DHandle floorSpecularTexture = l3dutLoadTexture2D("floor_spec.jpg");
+    L3DHandle floorTexture = l3dutLoadTexture2D("floor.png");
+    L3DHandle floorSpecTexture = l3dutLoadTexture2D("floor_spec.png");
+    L3DHandle floorNormTexture = l3dutLoadTexture2D("floor_norm.png");
     L3DHandle floorMaterial = l3dLoadMaterial("floorMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(floorMaterial, "u_diffuseMap", floorTexture);
-    l3dAddTextureToMaterial(floorMaterial, "u_specularMap", floorSpecularTexture);
+    l3dAddTextureToMaterial(floorMaterial, "u_specularMap", floorSpecTexture);
+    l3dAddTextureToMaterial(floorMaterial, "u_normalMap", floorNormTexture);
     L3DHandle floor = l3dLoadQuad(floorMaterial, L3DVec2(20, 20));
     l3dRotateMesh(floor, 1.57f, L3DVec3(-1, 0, 0));
     l3dScaleMesh(floor, L3DVec3(200, 200, 1));
@@ -87,11 +89,13 @@ int main()
     }
 
     // Load a cube.
-    L3DHandle crateTexture = l3dutLoadTexture2D("crate.jpg");
-    L3DHandle crateSpecularTexture = l3dutLoadTexture2D("crate_spec.jpg");
+    L3DHandle crateTexture = l3dutLoadTexture2D("crate.png");
+    L3DHandle crateSpecTexture = l3dutLoadTexture2D("crate_spec.png");
+    L3DHandle crateNormTexture = l3dutLoadTexture2D("crate_norm.png");
     L3DHandle crateMaterial = l3dLoadMaterial("crateMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(crateMaterial, "u_diffuseMap", crateTexture);
-    l3dAddTextureToMaterial(crateMaterial, "u_specularMap", crateSpecularTexture);
+    l3dAddTextureToMaterial(crateMaterial, "u_specularMap", crateSpecTexture);
+    l3dAddTextureToMaterial(crateMaterial, "u_normalMap", crateNormTexture);
     L3DHandle cube1 = l3dLoadCube(crateMaterial);
     l3dRotateMesh(cube1, 0.75f);
     l3dTranslateMesh(cube1, L3DVec3(10, 3, -2));
@@ -101,28 +105,28 @@ int main()
     L3DVec3 light1Pos = L3DVec3(-2.0f, 12.0f, 0);
     L3DVec4 light1Color = L3DVec4(1, 1, 0.7f, 0.8f);
     L3DHandle light1 = l3dLoadSpotLight(light1Pos, L3DVec3(0, -1, 0), light1Color);
+    l3dSetLightAttenuation(light1, 0.7f, 0.6f, 0);
     L3DHandle light1Material = l3dLoadMaterial("light1Material", basicShaderProgram, light1Color.xyz());
     L3DHandle light1Bulb = l3dLoadCube(light1Material);
     l3dTranslateMesh(light1Bulb, light1Pos);
-    l3dSetLightAttenuation(light1, 0.7f, 0.6f, 0);
 
     // Load some point lights.
     L3DVec3 light2Pos = L3DVec3(10, 5.0f, -4);
-    L3DVec4 light2Color = L3DVec4(1, 0.2f, 0.2f, 1);
+    L3DVec4 light2Color = L3DVec4(1, 0.2f, 0.2f, 0.8f);
     L3DHandle light2 = l3dLoadPointLight(light2Pos, light2Color);
     L3DHandle light2Material = l3dLoadMaterial("light2Material", basicShaderProgram, light2Color.xyz());
     L3DHandle light2Bulb = l3dLoadCube(light2Material);
     l3dTranslateMesh(light2Bulb, light2Pos);
 
-    L3DVec3 light3Pos = L3DVec3(-0.5f, 0.5f, -12);
-    L3DVec4 light3Color = L3DVec4(0.2f, 1.0f, 0.2f, 1);
+    L3DVec3 light3Pos = L3DVec3(-2, 2, -14);
+    L3DVec4 light3Color = L3DVec4(0.2f, 1.0f, 0.2f, 0.8f);
     L3DHandle light3 = l3dLoadPointLight(light3Pos, light3Color);
     L3DHandle light3Material = l3dLoadMaterial("light3Material", basicShaderProgram, light3Color.xyz());
     L3DHandle light3Bulb = l3dLoadCube(light3Material);
     l3dTranslateMesh(light3Bulb, light3Pos);
 
-    L3DVec3 light4Pos = L3DVec3(-2, 1, 4);
-    L3DVec4 light4Color = L3DVec4(0.2f, 0.2f, 1.0f, 1);
+    L3DVec3 light4Pos = L3DVec3(-1.5f, 1, 2);
+    L3DVec4 light4Color = L3DVec4(0.2f, 0.2f, 1.0f, 0.8f);
     L3DHandle light4 = l3dLoadPointLight(light4Pos, light4Color);
     L3DHandle light4Material = l3dLoadMaterial("light4Material", basicShaderProgram, light4Color.xyz());
     L3DHandle light4Bulb = l3dLoadCube(light4Material);
@@ -139,7 +143,7 @@ int main()
     L3DHandle camera = l3dLoadCamera(
         "Default",
         glm::lookAt(
-           glm::vec3(0.0f, 10.0f, 20.0f),
+           glm::vec3(0.0f, 10.0f, 22.0f),
            glm::vec3(0.0f, 5.0f, 0.0f),
            glm::vec3(0.0f, 1.0f, 0.0f)
         )
@@ -159,8 +163,19 @@ int main()
         l3dRenderFrame(camera, renderQueue);
 
         // Apply a rotation to the camera.
-        float sinOfTime = 0.5f + sin(glfwGetTime()) * 0.5f;
-        l3dRotateCamera(camera, sinOfTime * 0.01f);
+        float sinOfTime = sin(glfwGetTime());
+        l3dRotateCamera(camera, (0.5f + sinOfTime * 0.5f) * 0.01f);
+
+        // Apply movement to lights.
+        L3DVec3 dy2(L3DVec3(0, 1, 1) * sinOfTime * 0.04f);
+        l3dTranslateLight(light2, dy2);
+        l3dTranslateMesh(light2Bulb, dy2);;
+        L3DVec3 dy3(L3DVec3(1, 0.5f, 0) * sinOfTime * 0.05f);
+        l3dTranslateLight(light3, dy3);
+        l3dTranslateMesh(light3Bulb, dy3);
+        L3DVec3 dy4(L3DVec3(-1, 0, 1) * sinOfTime * 0.06f);
+        l3dTranslateLight(light4, dy4);
+        l3dTranslateMesh(light4Bulb, dy4);
 
         // Swap buffers.
         glfwSwapBuffers(window);

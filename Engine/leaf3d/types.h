@@ -51,14 +51,11 @@ namespace l3d
         L3D_POS3 = 3,
         L3D_POS2_UV2 = 4,
         L3D_POS3_UV2 = 5,
-        L3D_POS2_COL3_UV2 = 7,
         L3D_POS3_NOR3_UV2 = 8,
-        L3D_POS3_NOR3_COL3_UV2 = 10,
-        L3D_POS3_NOR3_TAN3_COL3_UV2 = 15,
-        L3D_POS3_NOR3_TAN3_BTAN3_COL3_UV2 = 17,
-        L3D_POS3_NOR3_TAN3_BTAN3_COL3_UV2_UV2 = 19,
-        L3D_POS3_NOR3_TAN3_BTAN3_COL3_UV2_UV2_UV2 = 21,
-        L3D_POS3_NOR3_TAN3_BTAN3_COL3_UV2_UV2_UV2_UV2 = 25
+        L3D_POS3_NOR3_TAN3_UV2 = 11,
+        L3D_POS3_NOR3_TAN3_UV2_UV2 = 13,
+        L3D_POS3_NOR3_TAN3_UV2_UV2_UV2 = 15,
+        L3D_POS3_NOR3_TAN3_UV2_UV2_UV2_UV2 = 17
     };
 
     enum L3DImageFormat
@@ -75,9 +72,9 @@ namespace l3d
 
     enum L3DDrawPrimitive
     {
-        L3D_DRAW_POINTS = 0,
-        L3D_DRAW_LINES,
-        L3D_DRAW_TRIANGLES
+        L3D_DRAW_POINTS = 1,
+        L3D_DRAW_LINES = 2,
+        L3D_DRAW_TRIANGLES = 3
     };
 
     enum L3DUniformType

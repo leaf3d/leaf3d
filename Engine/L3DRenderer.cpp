@@ -568,14 +568,12 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
 
                 // Enables vertex attributes.
                 GLint posAttrib     = glGetAttribLocation(shaderProgram->id(), "i_position");
-                GLint colAttrib     = glGetAttribLocation(shaderProgram->id(), "i_color");
+                GLint norAttrib     = glGetAttribLocation(shaderProgram->id(), "i_normal");
+                GLint tanAttrib     = glGetAttribLocation(shaderProgram->id(), "i_tangent");
                 GLint tex0Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord0");
                 GLint tex1Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord1");
                 GLint tex2Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord2");
                 GLint tex3Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord3");
-                GLint norAttrib     = glGetAttribLocation(shaderProgram->id(), "i_normal");
-                GLint tanAttrib     = glGetAttribLocation(shaderProgram->id(), "i_tan");
-                GLint btanAttrib    = glGetAttribLocation(shaderProgram->id(), "i_btan");
 
                 switch(mesh->vertexFormat())
                 {
@@ -593,66 +591,41 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
                     _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 5*sizeof(GLfloat), 0);
                     _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 5*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
                     break;
-                case L3D_POS2_COL3_UV2:
-                    _enableVertexAttribute(posAttrib, 2, GL_FLOAT, 7*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(colAttrib, 3, GL_FLOAT, 7*sizeof(GLfloat), (void*)(2*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 7*sizeof(GLfloat), (void*)(5*sizeof(GLfloat)));
                     break;
                 case L3D_POS3_NOR3_UV2:
                     _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 8*sizeof(GLfloat), 0);
                     _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 8*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
                     _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 8*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
                     break;
-                case L3D_POS3_NOR3_COL3_UV2:
+                case L3D_POS3_NOR3_TAN3_UV2:
                     _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 11*sizeof(GLfloat), 0);
                     _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 11*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(colAttrib, 3, GL_FLOAT, 11*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
+                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 11*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
                     _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 11*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
                     break;
-                case L3D_POS3_NOR3_TAN3_COL3_UV2:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 14*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 14*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 14*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
-                    _enableVertexAttribute(colAttrib, 3, GL_FLOAT, 14*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 14*sizeof(GLfloat), (void*)(12*sizeof(GLfloat)));
+                case L3D_POS3_NOR3_TAN3_UV2_UV2:
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 13*sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 13*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
+                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 13*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 13*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 13*sizeof(GLfloat), (void*)(11*sizeof(GLfloat)));
                     break;
-                case L3D_POS3_NOR3_TAN3_BTAN3_COL3_UV2:
+                case L3D_POS3_NOR3_TAN3_UV2_UV2_UV2:
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 15*sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 15*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
+                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 15*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 15*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 15*sizeof(GLfloat), (void*)(11*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex2Attrib, 2, GL_FLOAT, 15*sizeof(GLfloat), (void*)(13*sizeof(GLfloat)));
+                    break;
+                case L3D_POS3_NOR3_TAN3_UV2_UV2_UV2_UV2:
                     _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 17*sizeof(GLfloat), 0);
                     _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 17*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
                     _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 17*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
-                    _enableVertexAttribute(btanAttrib, 3, GL_FLOAT, 17*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
-                    _enableVertexAttribute(colAttrib, 3, GL_FLOAT, 17*sizeof(GLfloat), (void*)(12*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 17*sizeof(GLfloat), (void*)(15*sizeof(GLfloat)));
-                    break;
-                case L3D_POS3_NOR3_TAN3_BTAN3_COL3_UV2_UV2:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 19*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 19*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 19*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
-                    _enableVertexAttribute(btanAttrib, 3, GL_FLOAT, 19*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
-                    _enableVertexAttribute(colAttrib, 3, GL_FLOAT, 19*sizeof(GLfloat), (void*)(12*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 19*sizeof(GLfloat), (void*)(15*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 19*sizeof(GLfloat), (void*)(17*sizeof(GLfloat)));
-                    break;
-                case L3D_POS3_NOR3_TAN3_BTAN3_COL3_UV2_UV2_UV2:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 21*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 21*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 21*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
-                    _enableVertexAttribute(btanAttrib, 3, GL_FLOAT, 21*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
-                    _enableVertexAttribute(colAttrib, 3, GL_FLOAT, 21*sizeof(GLfloat), (void*)(12*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 21*sizeof(GLfloat), (void*)(15*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 21*sizeof(GLfloat), (void*)(17*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex2Attrib, 2, GL_FLOAT, 21*sizeof(GLfloat), (void*)(19*sizeof(GLfloat)));
-                    break;
-                case L3D_POS3_NOR3_TAN3_BTAN3_COL3_UV2_UV2_UV2_UV2:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 23*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 23*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 23*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
-                    _enableVertexAttribute(btanAttrib, 3, GL_FLOAT, 23*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
-                    _enableVertexAttribute(colAttrib, 3, GL_FLOAT, 23*sizeof(GLfloat), (void*)(12*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 23*sizeof(GLfloat), (void*)(15*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 23*sizeof(GLfloat), (void*)(17*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex2Attrib, 2, GL_FLOAT, 23*sizeof(GLfloat), (void*)(19*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex3Attrib, 2, GL_FLOAT, 23*sizeof(GLfloat), (void*)(21*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 17*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 17*sizeof(GLfloat), (void*)(11*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex2Attrib, 2, GL_FLOAT, 17*sizeof(GLfloat), (void*)(13*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex3Attrib, 2, GL_FLOAT, 17*sizeof(GLfloat), (void*)(15*sizeof(GLfloat)));
                     break;
                 default:
                     glDeleteVertexArrays(1, &id);
@@ -968,6 +941,8 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
     if (!camera)
         return;
 
+    L3DVec3 cameraPos = camera->position();
+
     for (L3DMeshPool::iterator it = m_meshes.begin(); it != m_meshes.end(); ++it)
     {
         L3DMesh* mesh = it->second;
@@ -985,15 +960,26 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
             // Binds shaders.
             glUseProgram(shaderProgram->id());
 
+            // Init flags.
+            glUniform1i(glGetUniformLocation(shaderProgram->id(), "u_enableSpecularMap"), GL_FALSE);
+            glUniform1i(glGetUniformLocation(shaderProgram->id(), "u_enableNormalMap"), GL_FALSE);
+
             // Binds textures.
             if (material->textures.size() > 0)
             {
                 unsigned int i = 0;
                 for (L3DTextureRegistry::iterator tex_it = material->textures.begin(); tex_it!=material->textures.end(); ++tex_it)
                 {
+                    std::string samplerName = tex_it->first;
                     L3DTexture* texture = tex_it->second;
                     GLenum gl_type = _toOpenGL(texture->type());
-                    GLint gl_sampler = glGetUniformLocation(shaderProgram->id(), tex_it->first.c_str());
+                    GLint gl_sampler = glGetUniformLocation(shaderProgram->id(), samplerName.c_str());
+
+                    if (samplerName == "u_specularMap")
+                        glUniform1i(glGetUniformLocation(shaderProgram->id(), "u_enableSpecularMap"), GL_TRUE);
+
+                    else if (samplerName == "u_normalMap")
+                        glUniform1i(glGetUniformLocation(shaderProgram->id(), "u_enableNormalMap"), GL_TRUE);
 
                     glActiveTexture(GL_TEXTURE0 + i);
                     glBindTexture(gl_type, texture->id());
@@ -1015,7 +1001,7 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
                 _setUniform(shaderProgram->id(), unif_it->first.c_str(), unif_it->second);
 
             // Binds matrices and vectors.
-            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_cameraPos"), 1, glm::value_ptr(camera->position()));
+            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_cameraPos"), 1, glm::value_ptr(cameraPos));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_viewMat"), 1, GL_FALSE, glm::value_ptr(camera->view));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_projMat"), 1, GL_FALSE, glm::value_ptr(camera->proj));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_modelMat"), 1, GL_FALSE, glm::value_ptr(mesh->transMatrix));

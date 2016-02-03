@@ -123,7 +123,7 @@ L3DHandle* l3dutLoadMeshes(
 
     Assimp::Importer importer;
 
-    const aiScene* scene = importer.ReadFile(_rootPath + filename, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* scene = importer.ReadFile(_rootPath + filename, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
     if (!scene)
     {
@@ -157,6 +157,15 @@ L3DHandle* l3dutLoadMeshes(
                 vertices.push_back(mesh->mNormals[j].z);
 
                 vertexFormat = L3D_POS3_NOR3_UV2;
+            }
+
+            if (mesh->HasTangentsAndBitangents())
+            {
+                vertices.push_back(mesh->mTangents[j].x);
+                vertices.push_back(mesh->mTangents[j].y);
+                vertices.push_back(mesh->mTangents[j].z);
+
+                vertexFormat = L3D_POS3_NOR3_TAN3_UV2;
             }
 
             if (mesh->HasTextureCoords(0))
@@ -218,6 +227,15 @@ L3DHandle* l3dutLoadMeshes(
                 L3DHandle texture = l3dutLoadTexture2D(textureFilename.C_Str());
 
                 l3dAddTextureToMaterial(material, "u_specularMap", texture);
+            }
+
+            if (mat->GetTextureCount(aiTextureType_HEIGHT) > 0)
+            {
+                aiString textureFilename;
+                mat->GetTexture(aiTextureType_HEIGHT, 0, &textureFilename);
+                L3DHandle texture = l3dutLoadTexture2D(textureFilename.C_Str());
+
+                l3dAddTextureToMaterial(material, "u_normalMap", texture);
             }
         }
 
