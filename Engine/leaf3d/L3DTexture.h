@@ -30,12 +30,18 @@ namespace l3d
     class L3DTexture : public L3DResource
     {
     protected:
-        L3DTextureType     m_type;
-        L3DImageFormat     m_format;
-        unsigned char*  m_data;
-        unsigned int    m_width;
-        unsigned int    m_height;
-        unsigned int    m_depth;
+        L3DTextureType      m_type;
+        L3DImageFormat      m_format;
+        unsigned char*      m_data;
+        unsigned int        m_width;
+        unsigned int        m_height;
+        unsigned int        m_depth;
+        bool                m_useMipmap;
+        L3DImageMinFilter   m_minFilter;
+        L3DImageMagFilter   m_magFilter;
+        L3DImageWrapMethod  m_wrapS;
+        L3DImageWrapMethod  m_wrapT;
+        L3DImageWrapMethod  m_wrapR;
 
     public:
         L3DTexture(
@@ -45,16 +51,29 @@ namespace l3d
             unsigned char* data,
             unsigned int width,
             unsigned int height = 0,
-            unsigned int depth = 0
+            unsigned int depth = 0,
+            bool mipmap = true,
+            const L3DImageMinFilter& minFilter = L3D_MIN_NEAREST_MIPMAP_LINEAR,
+            const L3DImageMagFilter& magFilter = L3D_MAG_LINEAR,
+            const L3DImageWrapMethod& wrapS = L3D_REPEAT,
+            const L3DImageWrapMethod& wrapT = L3D_REPEAT,
+            const L3DImageWrapMethod& wrapR = L3D_REPEAT
         );
         ~L3DTexture();
 
-        L3DTextureType     type() const { return m_type; }
-        L3DImageFormat     format() const { return m_format; }
-        unsigned char*  data() const { return m_data; }
-        unsigned int    width() const { return m_width; }
-        unsigned int    height() const { return m_height; }
-        unsigned int    depth() const { return m_depth; }
+        L3DTextureType      type() const { return m_type; }
+        L3DImageFormat      format() const { return m_format; }
+        unsigned char*      data() const { return m_data; }
+        unsigned int        width() const { return m_width; }
+        unsigned int        height() const { return m_height; }
+        unsigned int        depth() const { return m_depth; }
+        bool                useMipmap() const { return m_useMipmap; }
+        L3DImageMinFilter   minFilter() const { return m_minFilter; }
+        L3DImageMagFilter   magFilter() const { return m_magFilter; }
+        L3DImageWrapMethod  wrapS() const { return m_wrapS; }
+        L3DImageWrapMethod  wrapT() const { return m_wrapT; }
+        L3DImageWrapMethod  wrapR() const { return m_wrapR; }
+
     };
 }
 

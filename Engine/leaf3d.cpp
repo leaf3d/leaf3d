@@ -95,7 +95,13 @@ L3DHandle l3dLoadTexture(
     unsigned char* data,
     unsigned int width,
     unsigned int height,
-    unsigned int depth
+    unsigned int depth,
+    bool mipmap,
+    const L3DImageMinFilter& minFilter,
+    const L3DImageMagFilter& magFilter,
+    const L3DImageWrapMethod& wrapS,
+    const L3DImageWrapMethod& wrapT,
+    const L3DImageWrapMethod& wrapR
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
@@ -107,7 +113,13 @@ L3DHandle l3dLoadTexture(
         data,
         width,
         height,
-        depth
+        depth,
+        mipmap,
+        minFilter,
+        magFilter,
+        wrapS,
+        wrapT,
+        wrapR
     );
 
     if (texture)

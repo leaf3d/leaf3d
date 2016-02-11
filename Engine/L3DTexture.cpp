@@ -31,14 +31,26 @@ L3DTexture::L3DTexture(
     unsigned char* data,
     unsigned int width,
     unsigned int height,
-    unsigned int depth
+    unsigned int depth,
+    bool mipmap,
+    const L3DImageMinFilter& minFilter,
+    const L3DImageMagFilter& magFilter,
+    const L3DImageWrapMethod& wrapS,
+    const L3DImageWrapMethod& wrapT,
+    const L3DImageWrapMethod& wrapR
 ) : L3DResource(L3D_TEXTURE, renderer),
     m_type(type),
     m_format(format),
     m_data(data),
     m_width(width),
     m_height(height),
-    m_depth(depth)
+    m_depth(depth),
+    m_useMipmap(mipmap),
+    m_minFilter(minFilter),
+    m_magFilter(magFilter),
+    m_wrapS(wrapS),
+    m_wrapT(wrapT),
+    m_wrapR(wrapR)
 {
     if (data)
     {

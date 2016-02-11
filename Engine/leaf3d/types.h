@@ -1,4 +1,4 @@
-/*
+﻿/*
  * This file is part of the leaf3d project.
  *
  * Copyright 2014-2015 Emanuele Bertoldi. All rights reserved.
@@ -64,6 +64,29 @@ namespace l3d
         L3D_RGBA
     };
 
+    enum L3DImageMinFilter
+    {
+        L3D_MIN_NEAREST = 0,
+        L3D_MIN_LINEAR,
+        L3D_MIN_NEAREST_MIPMAP_NEAREST,
+        L3D_MIN_LINEAR_MIPMAP_NEAREST,
+        L3D_MIN_NEAREST_MIPMAP_LINEAR,
+        L3D_MIN_LINEAR_MIPMAP_LINEAR
+    };
+
+    enum L3DImageMagFilter
+    {
+        L3D_MAG_NEAREST = 0,
+        L3D_MAG_LINEAR
+    };
+
+    enum L3DImageWrapMethod
+    {
+        L3D_CLAMP = 0,
+        L3D_REPEAT,
+        L3D_MIRRORED_REPEAT
+    };
+
     enum L3DDrawType
     {
         L3D_DRAW_STATIC = 0,
@@ -79,7 +102,7 @@ namespace l3d
 
     enum L3DUniformType
     {
-        L3D_UNIFORM_FLOAT,
+        L3D_UNIFORM_FLOAT = 0,
         L3D_UNIFORM_INT,
         L3D_UNIFORM_UINT,
         L3D_UNIFORM_BOOL,
@@ -105,7 +128,7 @@ namespace l3d
 
     enum L3DBlendFactor
     {
-        L3D_ZERO,
+        L3D_ZERO = 0,
         L3D_ONE,
         L3D_SRC_COLOR,
         L3D_ONE_MINUS_SRC_COLOR,

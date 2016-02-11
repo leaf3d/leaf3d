@@ -96,6 +96,59 @@ static GLenum _toOpenGL(const L3DImageFormat& orig)
     return 0;
 }
 
+static GLenum _toOpenGL(const L3DImageWrapMethod& orig)
+{
+    switch (orig)
+    {
+    case L3D_REPEAT:
+        return GL_REPEAT;
+    case L3D_CLAMP:
+        return GL_CLAMP;
+    default:
+        break;
+    }
+
+    return 0;
+}
+
+static GLenum _toOpenGL(const L3DImageMinFilter& orig)
+{
+    switch (orig)
+    {
+    case L3D_MIN_NEAREST:
+        return GL_NEAREST;
+    case L3D_MIN_LINEAR:
+        return GL_LINEAR;
+    case L3D_MIN_NEAREST_MIPMAP_NEAREST:
+        return GL_NEAREST_MIPMAP_NEAREST;
+    case L3D_MIN_LINEAR_MIPMAP_NEAREST:
+        return GL_LINEAR_MIPMAP_NEAREST;
+    case L3D_MIN_NEAREST_MIPMAP_LINEAR:
+        return GL_NEAREST_MIPMAP_LINEAR;
+    case  L3D_MIN_LINEAR_MIPMAP_LINEAR:
+        return GL_LINEAR_MIPMAP_LINEAR;
+    default:
+        break;
+    }
+
+    return 0;
+}
+
+static GLenum _toOpenGL(const L3DImageMagFilter& orig)
+{
+    switch (orig)
+    {
+    case L3D_MAG_NEAREST:
+        return GL_NEAREST;
+    case L3D_MAG_LINEAR:
+        return GL_LINEAR;
+    default:
+        break;
+    }
+
+    return 0;
+}
+
 static GLenum _toOpenGL(const L3DDrawPrimitive& orig)
 {
     switch (orig)
@@ -410,6 +463,11 @@ void L3DRenderer::addTexture(L3DTexture* texture)
 
         GLenum gl_format = _toOpenGL(texture->format());
         GLenum gl_type = _toOpenGL(texture->type());
+        GLenum gl_wrap_s = _toOpenGL(texture->wrapS());
+        GLenum gl_wrap_t = _toOpenGL(texture->wrapT());
+        GLenum gl_wrap_r = _toOpenGL(texture->wrapR());
+        GLenum gl_min_filter = _toOpenGL(texture->minFilter());
+        GLenum gl_mag_filter = _toOpenGL(texture->magFilter());
 
         glBindTexture(gl_type, id);
 
@@ -431,11 +489,22 @@ void L3DRenderer::addTexture(L3DTexture* texture)
             return;
         }
 
-        glGenerateMipmap(gl_type);
-        glTexParameteri(gl_type, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(gl_type, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(gl_type, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(gl_type, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        // Mipmap.
+        if (texture->useMipmap())
+            glGenerateMipmap(gl_type);
+
+        // Wrap mode for S, T, R coordinates.
+        glTexParameteri(gl_type, GL_TEXTURE_WRAP_S, gl_wrap_s);
+
+        if (gl_type > GL_TEXTURE_1D)
+            glTexParameteri(gl_type, GL_TEXTURE_WRAP_T, gl_wrap_t);
+
+        if (gl_type > GL_TEXTURE_2D)
+            glTexParameteri(gl_type, GL_TEXTURE_WRAP_R, gl_wrap_r);
+
+        // Min and mag filters.
+        glTexParameteri(gl_type, GL_TEXTURE_MIN_FILTER, gl_min_filter);
+        glTexParameteri(gl_type, GL_TEXTURE_MAG_FILTER, gl_mag_filter);
 
         glBindTexture(gl_type, 0);
 

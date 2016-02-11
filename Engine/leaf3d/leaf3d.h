@@ -52,7 +52,13 @@ L3DHandle l3dLoadTexture(
     unsigned char* data,
     unsigned int width,
     unsigned int height,
-    unsigned int depth
+    unsigned int depth,
+    bool mipmap = true,
+    const L3DImageMinFilter& minFilter = L3D_MIN_NEAREST_MIPMAP_LINEAR,
+    const L3DImageMagFilter& magFilter = L3D_MAG_LINEAR,
+    const L3DImageWrapMethod& wrapS = L3D_REPEAT,
+    const L3DImageWrapMethod& wrapT = L3D_REPEAT,
+    const L3DImageWrapMethod& wrapR = L3D_REPEAT
 );
 
 /* Shaders ********************************************************************/
