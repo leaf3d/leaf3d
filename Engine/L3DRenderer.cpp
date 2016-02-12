@@ -1029,41 +1029,6 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
             // Binds shaders.
             glUseProgram(shaderProgram->id());
 
-            // Init flags.
-            glUniform1i(glGetUniformLocation(shaderProgram->id(), "u_enableSpecularMap"), GL_FALSE);
-            glUniform1i(glGetUniformLocation(shaderProgram->id(), "u_enableNormalMap"), GL_FALSE);
-
-            // Binds textures.
-            if (material->textures.size() > 0)
-            {
-                unsigned int i = 0;
-                for (L3DTextureRegistry::iterator tex_it = material->textures.begin(); tex_it!=material->textures.end(); ++tex_it)
-                {
-                    std::string samplerName = tex_it->first;
-                    L3DTexture* texture = tex_it->second;
-                    GLenum gl_type = _toOpenGL(texture->type());
-                    GLint gl_sampler = glGetUniformLocation(shaderProgram->id(), samplerName.c_str());
-
-                    if (samplerName == "u_specularMap")
-                        glUniform1i(glGetUniformLocation(shaderProgram->id(), "u_enableSpecularMap"), GL_TRUE);
-
-                    else if (samplerName == "u_normalMap")
-                        glUniform1i(glGetUniformLocation(shaderProgram->id(), "u_enableNormalMap"), GL_TRUE);
-
-                    glActiveTexture(GL_TEXTURE0 + i);
-                    glBindTexture(gl_type, texture->id());
-                    glUniform1i(gl_sampler, i);
-
-                    ++i;
-                }
-            }
-            else
-            {
-                glBindTexture(GL_TEXTURE_1D, 0);
-                glBindTexture(GL_TEXTURE_2D, 0);
-                glBindTexture(GL_TEXTURE_3D, 0);
-            }
-
             // Binds uniforms.
             L3DUniformMap uniforms = shaderProgram->uniforms();
             for (L3DUniformMap::iterator unif_it = uniforms.begin(); unif_it!=uniforms.end(); ++unif_it)
@@ -1076,13 +1041,50 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_modelMat"), 1, GL_FALSE, glm::value_ptr(mesh->transMatrix));
             glUniformMatrix3fv(glGetUniformLocation(shaderProgram->id(), "u_normalMat"), 1, GL_FALSE, glm::value_ptr(mesh->normalMatrix()));
 
-            // Binds material.
-            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.ambient"), 1, glm::value_ptr(material->ambient));
-            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.diffuse"), 1, glm::value_ptr(material->diffuse));
-            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_material.specular"), 1, glm::value_ptr(material->specular));
-            glUniform1f(glGetUniformLocation(shaderProgram->id(), "u_material.shininess"), material->shininess);
+            // Binds material:
+            std::string materialName = "u_material.";
 
-            glUniform4fv(glGetUniformLocation(shaderProgram->id(), "u_objectColor"), 1,  glm::value_ptr(glm::vec4(material->diffuse, 1.0f)));
+            // 1. Colors.
+            for (L3DColorRegistry::iterator col_it = material->colors.begin(); col_it!=material->colors.end(); ++col_it)
+                _setUniform(shaderProgram->id(), (materialName + col_it->first).c_str(), col_it->second);
+
+            // 2. Parameters.
+            for (L3DParameterRegistry::iterator par_it = material->params.begin(); par_it!=material->params.end(); ++par_it)
+                _setUniform(shaderProgram->id(), (materialName + par_it->first).c_str(), par_it->second);
+
+            // 3. Textures.
+            if (material->textures.size() > 0)
+            {
+                std::string samplerName = "u_";
+
+                unsigned int i = 0;
+                for (L3DTextureRegistry::iterator tex_it = material->textures.begin(); tex_it!=material->textures.end(); ++tex_it)
+                {
+                    L3DTexture* texture = tex_it->second;
+
+                    if (texture)
+                    {
+                        GLenum gl_type = _toOpenGL(texture->type());
+                        GLint gl_sampler = glGetUniformLocation(shaderProgram->id(), (samplerName + tex_it->first).c_str());
+
+                        // Activate texture unit and bind sampler.
+                        glActiveTexture(GL_TEXTURE0 + i);
+                        glBindTexture(gl_type, texture->id());
+                        glUniform1i(gl_sampler, i);
+
+                        // Set map flag.
+                        glUniform1i(glGetUniformLocation(shaderProgram->id(), (samplerName + tex_it->first + "Enabled").c_str()), GL_TRUE);
+
+                        ++i;
+                    }
+                }
+            }
+            else
+            {
+                glBindTexture(GL_TEXTURE_1D, 0);
+                glBindTexture(GL_TEXTURE_2D, 0);
+                glBindTexture(GL_TEXTURE_3D, 0);
+            }
 
             // Binds lights.
             int activeLightCount = 0;
@@ -1096,20 +1098,20 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
                     sstream << "u_light[" << activeLightCount << "]";
                     std::string lightName = sstream.str();
 
-                    shaderProgram->setUniform((lightName + ".type").c_str(), light->type);
-                    shaderProgram->setUniform((lightName + ".position").c_str(), light->position);
-                    shaderProgram->setUniform((lightName + ".direction").c_str(), light->direction);
-                    shaderProgram->setUniform((lightName + ".color").c_str(), light->color);
-                    shaderProgram->setUniform((lightName + ".kc").c_str(), light->attenuation.kc);
-                    shaderProgram->setUniform((lightName + ".kl").c_str(), light->attenuation.kl);
-                    shaderProgram->setUniform((lightName + ".kq").c_str(), light->attenuation.kq);
+                    _setUniform(shaderProgram->id(), (lightName + ".type").c_str(), light->type);
+                    _setUniform(shaderProgram->id(), (lightName + ".position").c_str(), light->position);
+                    _setUniform(shaderProgram->id(), (lightName + ".direction").c_str(), light->direction);
+                    _setUniform(shaderProgram->id(), (lightName + ".color").c_str(), light->color);
+                    _setUniform(shaderProgram->id(), (lightName + ".kc").c_str(), light->attenuation.kc);
+                    _setUniform(shaderProgram->id(), (lightName + ".kl").c_str(), light->attenuation.kl);
+                    _setUniform(shaderProgram->id(), (lightName + ".kq").c_str(), light->attenuation.kq);
 
                     ++activeLightCount;
                 }
             }
 
             // Passes count of active lights.
-            shaderProgram->setUniform("u_lightNr", (int)activeLightCount);
+            _setUniform(shaderProgram->id(), "u_lightNr", (int)activeLightCount);
 
             // Renders geometry.
             if (index_count > 0)

@@ -26,6 +26,94 @@
 
 using namespace l3d;
 
+L3DUniform::L3DUniform(float value)
+{
+    this->value.valueF = value;
+    this->type = L3D_UNIFORM_FLOAT;
+}
+
+L3DUniform::L3DUniform(int value)
+{
+    this->value.valueI = value;
+    this->type = L3D_UNIFORM_INT;
+}
+
+L3DUniform::L3DUniform(unsigned int value)
+{
+    this->value.valueUI = value;
+    this->type = L3D_UNIFORM_UINT;
+}
+
+L3DUniform::L3DUniform(bool value)
+{
+    this->value.valueB = value;
+    this->type = L3D_UNIFORM_BOOL;
+}
+
+L3DUniform::L3DUniform(const L3DVec2& value)
+{
+    int size = value.length() * sizeof(float);
+    this->value.valueVec2 = (float*)malloc(size);
+    memcpy(this->value.valueVec2, glm::value_ptr(value), size);
+    this->type = L3D_UNIFORM_VEC2;
+}
+
+L3DUniform::L3DUniform(const L3DVec3& value)
+{
+    int size = value.length() * sizeof(float);
+    this->value.valueVec3 = (float*)malloc(size);
+    memcpy(this->value.valueVec3, glm::value_ptr(value), size);
+    this->type = L3D_UNIFORM_VEC3;
+}
+
+L3DUniform::L3DUniform(const L3DVec4& value)
+{
+    int size = value.length() * sizeof(float);
+    this->value.valueVec4 = (float*)malloc(size);
+    memcpy(this->value.valueVec4, glm::value_ptr(value), size);
+    this->type = L3D_UNIFORM_VEC4;
+}
+
+L3DUniform::L3DUniform(const L3DMat3& value)
+{
+    int size = value.length() * sizeof(float);
+    this->value.valueMat3 = (float*)malloc(size);
+    memcpy(this->value.valueMat3, glm::value_ptr(value), size);
+    this->type = L3D_UNIFORM_MAT3;
+}
+
+L3DUniform::L3DUniform(const L3DMat4& value)
+{
+    int size = value.length() * sizeof(float);
+    this->value.valueMat4 = (float*)malloc(size);
+    memcpy(this->value.valueMat4, glm::value_ptr(value), size);
+    this->type = L3D_UNIFORM_MAT4;
+}
+
+/*L3DUniform::~L3DUniform()
+{
+    switch (this->type)
+    {
+    case L3D_UNIFORM_VEC2:
+        free(this->value.valueVec2);
+        break;
+    case L3D_UNIFORM_VEC3:
+        free(this->value.valueVec3);
+        break;
+    case L3D_UNIFORM_VEC4:
+        free(this->value.valueVec4);
+        break;
+    case L3D_UNIFORM_MAT3:
+        free(this->value.valueMat3);
+        break;
+    case L3D_UNIFORM_MAT4:
+        free(this->value.valueMat4);
+        break;
+    default:
+        break;
+    }
+}*/
+
 L3DShaderProgram::L3DShaderProgram(
     L3DRenderer* renderer,
     L3DShader* vertexShader,
@@ -41,84 +129,7 @@ L3DShaderProgram::L3DShaderProgram(
     if (renderer) renderer->addShaderProgram(this);
 }
 
-void L3DShaderProgram::setUniform(const char* name, float value)
+void L3DShaderProgram::setUniform(const char* name, const L3DUniform& value)
 {
-    L3DUniform uniform;
-    uniform.value.valueF = value;
-    uniform.type = L3D_UNIFORM_FLOAT;
-    m_uniforms[name] = uniform;
-}
-
-void L3DShaderProgram::setUniform(const char* name, int value)
-{
-    L3DUniform uniform;
-    uniform.value.valueI = value;
-    uniform.type = L3D_UNIFORM_INT;
-    m_uniforms[name] = uniform;
-}
-
-void L3DShaderProgram::setUniform(const char* name, unsigned int value)
-{
-    L3DUniform uniform;
-    uniform.value.valueUI = value;
-    uniform.type = L3D_UNIFORM_UINT;
-    m_uniforms[name] = uniform;
-}
-
-void L3DShaderProgram::setUniform(const char* name, bool value)
-{
-    L3DUniform uniform;
-    uniform.value.valueB = value;
-    uniform.type = L3D_UNIFORM_BOOL;
-    m_uniforms[name] = uniform;
-}
-
-void L3DShaderProgram::setUniform(const char* name, const L3DVec2& value)
-{
-    L3DUniform uniform;
-    int size = value.length() * sizeof(float);
-    uniform.value.valueVec2 = (float*)malloc(size);
-    memcpy(uniform.value.valueVec2, glm::value_ptr(value), size);
-    uniform.type = L3D_UNIFORM_VEC2;
-    m_uniforms[name] = uniform;
-}
-
-void L3DShaderProgram::setUniform(const char* name, const L3DVec3& value)
-{
-    L3DUniform uniform;
-    int size = value.length() * sizeof(float);
-    uniform.value.valueVec3 = (float*)malloc(size);
-    memcpy(uniform.value.valueVec3, glm::value_ptr(value), size);
-    uniform.type = L3D_UNIFORM_VEC3;
-    m_uniforms[name] = uniform;
-}
-
-void L3DShaderProgram::setUniform(const char* name, const L3DVec4& value)
-{
-    L3DUniform uniform;
-    int size = value.length() * sizeof(float);
-    uniform.value.valueVec4 = (float*)malloc(size);
-    memcpy(uniform.value.valueVec4, glm::value_ptr(value), size);
-    uniform.type = L3D_UNIFORM_VEC4;
-    m_uniforms[name] = uniform;
-}
-
-void L3DShaderProgram::setUniform(const char* name, const L3DMat3& value)
-{
-    L3DUniform uniform;
-    int size = value.length() * sizeof(float);
-    uniform.value.valueMat3 = (float*)malloc(size);
-    memcpy(uniform.value.valueMat3, glm::value_ptr(value), size);
-    uniform.type = L3D_UNIFORM_MAT3;
-    m_uniforms[name] = uniform;
-}
-
-void L3DShaderProgram::setUniform(const char* name, const L3DMat4& value)
-{
-    L3DUniform uniform;
-    int size = value.length() * sizeof(float);
-    uniform.value.valueMat4 = (float*)malloc(size);
-    memcpy(uniform.value.valueMat4, glm::value_ptr(value), size);
-    uniform.type = L3D_UNIFORM_MAT4;
-    m_uniforms[name] = uniform;
+    m_uniforms[name] = value;
 }

@@ -33,8 +33,8 @@ in vec2 o_texcoord0;
 /* UNIFORMS *******************************************************************/
 
 // Flags.
-uniform bool        u_enableSpecularMap;
-uniform bool        u_enableNormalMap;
+uniform bool        u_specularMapEnabled;
+uniform bool        u_normalMapEnabled;
 
 // Diffuse map.
 uniform sampler2D   u_diffuseMap;
@@ -110,11 +110,11 @@ void main()
     vec4 specular = diffuse;
 
     // Specular mapping.
-    if (u_enableSpecularMap)
+    if (u_specularMapEnabled)
         specular = texture(u_specularMap, o_texcoord0);
 
     // Normal mapping.
-    if (u_enableNormalMap)
+    if (u_normalMapEnabled)
     {
         // Calculate fragment bump normal using TBN matrix.
         mat3 TBN = mat3(o_tangent, o_bitangent, o_normal);

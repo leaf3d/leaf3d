@@ -217,7 +217,7 @@ L3DHandle* l3dutLoadMeshes(
                 mat->GetTexture(aiTextureType_DIFFUSE, 0, &textureFilename);
                 L3DHandle texture = l3dutLoadTexture2D(textureFilename.C_Str());
 
-                l3dAddTextureToMaterial(material, "u_diffuseMap", texture);
+                l3dAddTextureToMaterial(material, "diffuseMap", texture);
             }
 
             if (mat->GetTextureCount(aiTextureType_SPECULAR) > 0)
@@ -226,7 +226,7 @@ L3DHandle* l3dutLoadMeshes(
                 mat->GetTexture(aiTextureType_SPECULAR, 0, &textureFilename);
                 L3DHandle texture = l3dutLoadTexture2D(textureFilename.C_Str());
 
-                l3dAddTextureToMaterial(material, "u_specularMap", texture);
+                l3dAddTextureToMaterial(material, "specularMap", texture);
             }
 
             if (mat->GetTextureCount(aiTextureType_HEIGHT) > 0)
@@ -235,7 +235,7 @@ L3DHandle* l3dutLoadMeshes(
                 mat->GetTexture(aiTextureType_HEIGHT, 0, &textureFilename);
                 L3DHandle texture = l3dutLoadTexture2D(textureFilename.C_Str());
 
-                l3dAddTextureToMaterial(material, "u_normalMap", texture);
+                l3dAddTextureToMaterial(material, "normalMap", texture);
             }
         }
 

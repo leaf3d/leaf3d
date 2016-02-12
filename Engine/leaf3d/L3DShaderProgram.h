@@ -35,9 +35,20 @@ namespace l3d
     {
     public:
         L3DUniformValue value;
-        L3DUniformType     type;
+        L3DUniformType  type;
 
     public:
+        L3DUniform() : type(L3D_UNIFORM_INVALID) { this->value.valueUI = 0; }
+        L3DUniform(float value);
+        L3DUniform(int value);
+        L3DUniform(unsigned int value);
+        L3DUniform(bool value);
+        L3DUniform(const L3DVec2& value);
+        L3DUniform(const L3DVec3& value);
+        L3DUniform(const L3DVec4& value);
+        L3DUniform(const L3DMat3& value);
+        L3DUniform(const L3DMat4& value);
+
         bool is(const L3DUniformType& type) const { return this->type == type; }
     };
 
@@ -67,15 +78,7 @@ namespace l3d
         L3DUniformMap uniforms() const { return m_uniforms; }
         unsigned int uniformCount() const { return m_uniforms.size(); }
 
-        void setUniform(const char* name, float value);
-        void setUniform(const char* name, int value);
-        void setUniform(const char* name, unsigned int value);
-        void setUniform(const char* name, bool value);
-        void setUniform(const char* name, const L3DVec2& value);
-        void setUniform(const char* name, const L3DVec3& value);
-        void setUniform(const char* name, const L3DVec4& value);
-        void setUniform(const char* name, const L3DMat3& value);
-        void setUniform(const char* name, const L3DMat4& value);
+        void setUniform(const char* name, const L3DUniform& value);
     };
 }
 

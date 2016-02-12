@@ -32,6 +32,8 @@ namespace l3d
     class L3DTexture;
     class L3DShaderProgram;
 
+    typedef std::map<std::string,L3DVec3> L3DColorRegistry;
+    typedef std::map<std::string,float> L3DParameterRegistry;
     typedef std::map<std::string,L3DTexture*> L3DTextureRegistry;
 
     class L3DMaterial : public L3DResource
@@ -41,10 +43,8 @@ namespace l3d
         L3DShaderProgram* m_shaderProgram;
 
     public:
-        L3DVec3 diffuse;
-        L3DVec3 ambient;
-        L3DVec3 specular;
-        float shininess;
+        L3DColorRegistry colors;
+        L3DParameterRegistry params;
         L3DTextureRegistry textures;
 
     public:
@@ -52,15 +52,27 @@ namespace l3d
             L3DRenderer* renderer,
             const char* name,
             L3DShaderProgram* shaderProgram,
-            const L3DVec3& diffuse = L3DVec3(1.0f, 1.0f, 1.0f),
-            const L3DVec3& ambient = L3DVec3(1.0f, 1.0f, 1.0f),
-            const L3DVec3& specular = L3DVec3(1.0f, 1.0f, 1.0f),
-            float shininess = 32.0f
+            const L3DColorRegistry& colors,
+            const L3DParameterRegistry& params,
+            const L3DTextureRegistry& textures
         );
         ~L3DMaterial() {}
 
         const char* name() const { return m_name; }
         L3DShaderProgram* shaderProgram() const { return m_shaderProgram; }
+
+        static L3DMaterial* createBlinnPhongMaterial(
+            L3DRenderer* renderer,
+            const char* name,
+            L3DShaderProgram* shaderProgram,
+            const L3DVec3& diffuse = L3DVec3(1.0f, 1.0f, 1.0f),
+            const L3DVec3& ambient = L3DVec3(1.0f, 1.0f, 1.0f),
+            const L3DVec3& specular = L3DVec3(1.0f, 1.0f, 1.0f),
+            float shininess = 32.0f,
+            L3DTexture* diffuseMap = 0,
+            L3DTexture* specularMap = 0,
+            L3DTexture* normalMap = 0
+        );
     };
 }
 

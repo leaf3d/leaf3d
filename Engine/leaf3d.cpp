@@ -296,7 +296,7 @@ L3DHandle l3dLoadMaterial(
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMaterial* material = new L3DMaterial(
+    L3DMaterial* material = L3DMaterial::createBlinnPhongMaterial(
         _renderer,
         name,
         _renderer->getShaderProgram(shaderProgram),

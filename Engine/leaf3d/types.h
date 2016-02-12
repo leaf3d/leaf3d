@@ -102,7 +102,8 @@ namespace l3d
 
     enum L3DUniformType
     {
-        L3D_UNIFORM_FLOAT = 0,
+        L3D_UNIFORM_INVALID = 0,
+        L3D_UNIFORM_FLOAT,
         L3D_UNIFORM_INT,
         L3D_UNIFORM_UINT,
         L3D_UNIFORM_BOOL,
