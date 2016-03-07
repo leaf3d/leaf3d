@@ -40,6 +40,12 @@ L3DRenderQueue::~L3DRenderQueue()
     m_commands.clear();
 }
 
+void L3DRenderQueue::appendCommands(const L3DRenderCommandList& commands)
+{
+    m_commands.reserve(commands.size());
+    m_commands.insert(m_commands.end(), commands.begin(), commands.end());
+}
+
 void L3DRenderQueue::addClearBuffersCommand(
     bool colorBuffer,
     bool depthBuffer,

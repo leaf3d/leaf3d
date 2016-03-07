@@ -129,6 +129,8 @@ namespace l3d
         unsigned int commandCount() const { return m_commands.size(); }
         const L3DRenderCommandList& commands() const { return m_commands; }
 
+        void appendCommands(const L3DRenderCommandList& commands);
+
         void addClearBuffersCommand(
             bool colorBuffer = true,
             bool depthBuffer = true,
