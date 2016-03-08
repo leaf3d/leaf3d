@@ -634,15 +634,16 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
             {
                 L3DMaterial* material = mesh->material();
                 L3DShaderProgram* shaderProgram = material->shaderProgram();
+                L3DAttributeMap shaderAttributes = shaderProgram->attributes();
 
                 // Enables vertex attributes.
-                GLint posAttrib     = glGetAttribLocation(shaderProgram->id(), "i_position");
-                GLint norAttrib     = glGetAttribLocation(shaderProgram->id(), "i_normal");
-                GLint tanAttrib     = glGetAttribLocation(shaderProgram->id(), "i_tangent");
-                GLint tex0Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord0");
-                GLint tex1Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord1");
-                GLint tex2Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord2");
-                GLint tex3Attrib    = glGetAttribLocation(shaderProgram->id(), "i_texcoord3");
+                GLint posAttrib     = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_POSITION].c_str());
+                GLint norAttrib     = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_NORMAL].c_str());
+                GLint tanAttrib     = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_TANGENT].c_str());
+                GLint tex0Attrib    = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_UV0].c_str());
+                GLint tex1Attrib    = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_UV1].c_str());
+                GLint tex2Attrib    = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_UV2].c_str());
+                GLint tex3Attrib    = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_UV3].c_str());
 
                 switch(mesh->vertexFormat())
                 {

@@ -45,6 +45,17 @@ namespace l3d
     typedef glm::mat3 L3DMat3;
     typedef glm::mat4 L3DMat4;
 
+    enum L3DVertexAttribute
+    {
+        L3D_POSITION = 0,
+        L3D_NORMAL,
+        L3D_TANGENT,
+        L3D_UV0,
+        L3D_UV1,
+        L3D_UV2,
+        L3D_UV3
+    };
+
     enum L3DVertexFormat
     {
         L3D_POS2 = 2,

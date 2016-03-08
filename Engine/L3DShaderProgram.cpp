@@ -119,17 +119,45 @@ L3DShaderProgram::L3DShaderProgram(
     L3DShader* vertexShader,
     L3DShader* fragmentShader,
     L3DShader* geometryShader,
-    const L3DUniformMap& uniforms
+    const L3DUniformMap& uniforms,
+    const L3DAttributeMap& attributes
 ) : L3DResource(L3D_SHADER_PROGRAM, renderer),
     m_vertexShader(vertexShader),
     m_fragmentShader(fragmentShader),
     m_geometryShader(geometryShader),
-    m_uniforms(uniforms)
+    m_uniforms(uniforms),
+    m_attributes(attributes)
 {
     if (renderer) renderer->addShaderProgram(this);
+
+    if (m_attributes.empty())
+    {
+        m_attributes[L3D_POSITION] = "i_position";
+        m_attributes[L3D_NORMAL] = "i_normal";
+        m_attributes[L3D_TANGENT] = "i_tangent";
+        m_attributes[L3D_UV0] = "i_texcoord0";
+        m_attributes[L3D_UV1] = "i_texcoord1";
+        m_attributes[L3D_UV2] = "i_texcoord2";
+        m_attributes[L3D_UV3] = "i_texcoord3";
+    }
 }
 
 void L3DShaderProgram::setUniform(const char* name, const L3DUniform& value)
 {
     m_uniforms[name] = value;
+}
+
+void L3DShaderProgram::removeUniform(const char* name)
+{
+    m_uniforms.erase(name);
+}
+
+void L3DShaderProgram::addAttribute(const L3DVertexAttribute& attribute, const char* name)
+{
+    m_attributes[attribute] = name;
+}
+
+void L3DShaderProgram::removeAttribute(const L3DVertexAttribute& attribute)
+{
+    m_attributes.erase(attribute);
 }
