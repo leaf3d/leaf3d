@@ -45,17 +45,6 @@ namespace l3d
     typedef glm::mat3 L3DMat3;
     typedef glm::mat4 L3DMat4;
 
-    enum L3DVertexAttribute
-    {
-        L3D_POSITION = 0,
-        L3D_NORMAL,
-        L3D_TANGENT,
-        L3D_UV0,
-        L3D_UV1,
-        L3D_UV2,
-        L3D_UV3
-    };
-
     enum L3DVertexFormat
     {
         L3D_POS2 = 2,
@@ -136,6 +125,26 @@ namespace l3d
         float* valueVec4;
         float* valueMat3;
         float* valueMat4;
+    };
+
+    enum L3DBindingName
+    {
+        L3D_POSITION = 0,
+        L3D_NORMAL,
+        L3D_TANGENT,
+        L3D_UV0,
+        L3D_UV1,
+        L3D_UV2,
+        L3D_UV3,
+        L3D_CAMERA_POSITION,
+        L3D_VIEW_MAT,
+        L3D_PROJ_MAT,
+        L3D_MODEL_MAT,
+        L3D_NORMAL_MAT,
+        L3D_MATERIAL_PREFIX,
+        L3D_SAMPLER_PREFIX,
+        L3D_LIGHT_PREFIX,
+        L3D_LIGHT_COUNTER
     };
 
     enum L3DBlendFactor

@@ -120,25 +120,34 @@ L3DShaderProgram::L3DShaderProgram(
     L3DShader* fragmentShader,
     L3DShader* geometryShader,
     const L3DUniformMap& uniforms,
-    const L3DAttributeMap& attributes
+    const L3DBindingNameMap& bindingNames
 ) : L3DResource(L3D_SHADER_PROGRAM, renderer),
     m_vertexShader(vertexShader),
     m_fragmentShader(fragmentShader),
     m_geometryShader(geometryShader),
     m_uniforms(uniforms),
-    m_attributes(attributes)
+    m_bindingNames(bindingNames)
 {
     if (renderer) renderer->addShaderProgram(this);
 
-    if (m_attributes.empty())
+    if (m_bindingNames.empty())
     {
-        m_attributes[L3D_POSITION] = "i_position";
-        m_attributes[L3D_NORMAL] = "i_normal";
-        m_attributes[L3D_TANGENT] = "i_tangent";
-        m_attributes[L3D_UV0] = "i_texcoord0";
-        m_attributes[L3D_UV1] = "i_texcoord1";
-        m_attributes[L3D_UV2] = "i_texcoord2";
-        m_attributes[L3D_UV3] = "i_texcoord3";
+        m_bindingNames[L3D_POSITION] = "i_position";
+        m_bindingNames[L3D_NORMAL] = "i_normal";
+        m_bindingNames[L3D_TANGENT] = "i_tangent";
+        m_bindingNames[L3D_UV0] = "i_texcoord0";
+        m_bindingNames[L3D_UV1] = "i_texcoord1";
+        m_bindingNames[L3D_UV2] = "i_texcoord2";
+        m_bindingNames[L3D_UV3] = "i_texcoord3";
+        m_bindingNames[L3D_CAMERA_POSITION] = "u_cameraPos";
+        m_bindingNames[L3D_VIEW_MAT] = "u_viewMat";
+        m_bindingNames[L3D_PROJ_MAT] = "u_projMat";
+        m_bindingNames[L3D_MODEL_MAT] = "u_modelMat";
+        m_bindingNames[L3D_NORMAL_MAT] = "u_normalMat";
+        m_bindingNames[L3D_MATERIAL_PREFIX] = "u_material.";
+        m_bindingNames[L3D_SAMPLER_PREFIX] = "u_";
+        m_bindingNames[L3D_LIGHT_PREFIX] = "u_light";
+        m_bindingNames[L3D_LIGHT_COUNTER] = "u_lightNr";
     }
 }
 
@@ -152,12 +161,12 @@ void L3DShaderProgram::removeUniform(const char* name)
     m_uniforms.erase(name);
 }
 
-void L3DShaderProgram::addAttribute(const L3DVertexAttribute& attribute, const char* name)
+void L3DShaderProgram::addBindingName(const L3DBindingName& attribute, const char* name)
 {
-    m_attributes[attribute] = name;
+    m_bindingNames[attribute] = name;
 }
 
-void L3DShaderProgram::removeAttribute(const L3DVertexAttribute& attribute)
+void L3DShaderProgram::removeBindingName(const L3DBindingName& attribute)
 {
-    m_attributes.erase(attribute);
+    m_bindingNames.erase(attribute);
 }

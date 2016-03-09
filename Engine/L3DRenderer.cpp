@@ -634,16 +634,16 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
             {
                 L3DMaterial* material = mesh->material();
                 L3DShaderProgram* shaderProgram = material->shaderProgram();
-                L3DAttributeMap shaderAttributes = shaderProgram->attributes();
+                L3DBindingNameMap bindingNames = shaderProgram->bindingNames();
 
                 // Enables vertex attributes.
-                GLint posAttrib     = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_POSITION].c_str());
-                GLint norAttrib     = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_NORMAL].c_str());
-                GLint tanAttrib     = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_TANGENT].c_str());
-                GLint tex0Attrib    = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_UV0].c_str());
-                GLint tex1Attrib    = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_UV1].c_str());
-                GLint tex2Attrib    = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_UV2].c_str());
-                GLint tex3Attrib    = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_UV3].c_str());
+                GLint posAttrib     = glGetAttribLocation(shaderProgram->id(), bindingNames[L3D_POSITION].c_str());
+                GLint norAttrib     = glGetAttribLocation(shaderProgram->id(), bindingNames[L3D_NORMAL].c_str());
+                GLint tanAttrib     = glGetAttribLocation(shaderProgram->id(), bindingNames[L3D_TANGENT].c_str());
+                GLint tex0Attrib    = glGetAttribLocation(shaderProgram->id(), bindingNames[L3D_UV0].c_str());
+                GLint tex1Attrib    = glGetAttribLocation(shaderProgram->id(), bindingNames[L3D_UV1].c_str());
+                GLint tex2Attrib    = glGetAttribLocation(shaderProgram->id(), bindingNames[L3D_UV2].c_str());
+                GLint tex3Attrib    = glGetAttribLocation(shaderProgram->id(), bindingNames[L3D_UV3].c_str());
 
                 switch(mesh->vertexFormat())
                 {
@@ -1021,6 +1021,7 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
         {
             L3DMaterial* material = mesh->material();
             L3DShaderProgram* shaderProgram = material->shaderProgram();
+            L3DBindingNameMap bindingNames = shaderProgram->bindingNames();
             GLenum gl_draw_primitive = _toOpenGL(mesh->drawPrimitive());
             unsigned int index_count = mesh->indexCount();
 
@@ -1036,14 +1037,14 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
                 _setUniform(shaderProgram->id(), unif_it->first.c_str(), unif_it->second);
 
             // Binds matrices and vectors.
-            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_cameraPos"), 1, glm::value_ptr(cameraPos));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_viewMat"), 1, GL_FALSE, glm::value_ptr(camera->view));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_projMat"), 1, GL_FALSE, glm::value_ptr(camera->proj));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_modelMat"), 1, GL_FALSE, glm::value_ptr(mesh->transMatrix));
-            glUniformMatrix3fv(glGetUniformLocation(shaderProgram->id(), "u_normalMat"), 1, GL_FALSE, glm::value_ptr(mesh->normalMatrix()));
+            glUniform3fv(glGetUniformLocation(shaderProgram->id(), bindingNames[L3D_CAMERA_POSITION].c_str()), 1, glm::value_ptr(cameraPos));
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), bindingNames[L3D_VIEW_MAT].c_str()), 1, GL_FALSE, glm::value_ptr(camera->view));
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), bindingNames[L3D_PROJ_MAT].c_str()), 1, GL_FALSE, glm::value_ptr(camera->proj));
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), bindingNames[L3D_MODEL_MAT].c_str()), 1, GL_FALSE, glm::value_ptr(mesh->transMatrix));
+            glUniformMatrix3fv(glGetUniformLocation(shaderProgram->id(), bindingNames[L3D_NORMAL_MAT].c_str()), 1, GL_FALSE, glm::value_ptr(mesh->normalMatrix()));
 
             // Binds material:
-            std::string materialName = "u_material.";
+            std::string materialName = bindingNames[L3D_MATERIAL_PREFIX];
 
             // 1. Colors.
             for (L3DColorRegistry::iterator col_it = material->colors.begin(); col_it!=material->colors.end(); ++col_it)
@@ -1056,7 +1057,7 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
             // 3. Textures.
             if (material->textures.size() > 0)
             {
-                std::string samplerName = "u_";
+                std::string samplerName = bindingNames[L3D_SAMPLER_PREFIX];
 
                 unsigned int i = 0;
                 for (L3DTextureRegistry::iterator tex_it = material->textures.begin(); tex_it!=material->textures.end(); ++tex_it)
@@ -1096,7 +1097,7 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
                 if (light && light->isOn())
                 {
                     std::ostringstream sstream;
-                    sstream << "u_light[" << activeLightCount << "]";
+                    sstream << bindingNames[L3D_LIGHT_PREFIX] << "[" << activeLightCount << "]";
                     std::string lightName = sstream.str();
 
                     _setUniform(shaderProgram->id(), (lightName + ".type").c_str(), light->type);
@@ -1112,7 +1113,7 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
             }
 
             // Passes count of active lights.
-            _setUniform(shaderProgram->id(), "u_lightNr", (int)activeLightCount);
+            _setUniform(shaderProgram->id(), bindingNames[L3D_LIGHT_COUNTER].c_str(), (int)activeLightCount);
 
             // Renders geometry.
             if (index_count > 0)

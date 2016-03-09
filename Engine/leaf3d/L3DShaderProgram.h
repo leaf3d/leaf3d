@@ -53,16 +53,16 @@ namespace l3d
     };
 
     typedef std::map<std::string,L3DUniform> L3DUniformMap;
-    typedef std::map<int,std::string> L3DAttributeMap;
+    typedef std::map<int,std::string> L3DBindingNameMap;
 
     class L3DShaderProgram : public L3DResource
     {
     protected:
-        L3DShader*      m_vertexShader;
-        L3DShader*      m_fragmentShader;
-        L3DShader*      m_geometryShader;
-        L3DUniformMap   m_uniforms;
-        L3DAttributeMap m_attributes;
+        L3DShader*          m_vertexShader;
+        L3DShader*          m_fragmentShader;
+        L3DShader*          m_geometryShader;
+        L3DUniformMap       m_uniforms;
+        L3DBindingNameMap   m_bindingNames;
 
     public:
         L3DShaderProgram(
@@ -71,7 +71,7 @@ namespace l3d
             L3DShader* fragmentShader,
             L3DShader* geometryShader = L3D_NULLPTR,
             const L3DUniformMap& uniforms = L3DUniformMap(),
-            const L3DAttributeMap& attributeMap = L3DAttributeMap()
+            const L3DBindingNameMap& bindingNames = L3DBindingNameMap()
         );
         ~L3DShaderProgram() {}
 
@@ -80,14 +80,14 @@ namespace l3d
         L3DShader* geometryShader() const { return m_geometryShader; }
         L3DUniformMap uniforms() const { return m_uniforms; }
         unsigned int uniformCount() const { return m_uniforms.size(); }
-        L3DAttributeMap attributes() const { return m_attributes; }
-        unsigned int attributeCount() const { return m_attributes.size(); }
+        L3DBindingNameMap bindingNames() const { return m_bindingNames; }
+        unsigned int bindingNameCount() const { return m_bindingNames.size(); }
 
         void setUniform(const char* name, const L3DUniform& value);
         void removeUniform(const char* name);
 
-        void addAttribute(const L3DVertexAttribute& attribute, const char* name);
-        void removeAttribute(const L3DVertexAttribute& attribute);
+        void addBindingName(const L3DBindingName& attribute, const char* name);
+        void removeBindingName(const L3DBindingName& attribute);
     };
 }
 
