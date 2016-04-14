@@ -1044,7 +1044,7 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
             glUniformMatrix3fv(glGetUniformLocation(shaderProgram->id(), bindingNames[L3D_NORMAL_MAT].c_str()), 1, GL_FALSE, glm::value_ptr(mesh->normalMatrix()));
 
             // Binds material:
-            std::string materialName = bindingNames[L3D_MATERIAL_PREFIX];
+            std::string materialName = bindingNames[L3D_MATERIAL_PREFIX] + ".";
 
             // 1. Colors.
             for (L3DColorRegistry::iterator col_it = material->colors.begin(); col_it!=material->colors.end(); ++col_it)
@@ -1100,13 +1100,13 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
                     sstream << bindingNames[L3D_LIGHT_PREFIX] << "[" << activeLightCount << "]";
                     std::string lightName = sstream.str();
 
-                    _setUniform(shaderProgram->id(), (lightName + ".type").c_str(), light->type);
-                    _setUniform(shaderProgram->id(), (lightName + ".position").c_str(), light->position);
-                    _setUniform(shaderProgram->id(), (lightName + ".direction").c_str(), light->direction);
-                    _setUniform(shaderProgram->id(), (lightName + ".color").c_str(), light->color);
-                    _setUniform(shaderProgram->id(), (lightName + ".kc").c_str(), light->attenuation.kc);
-                    _setUniform(shaderProgram->id(), (lightName + ".kl").c_str(), light->attenuation.kl);
-                    _setUniform(shaderProgram->id(), (lightName + ".kq").c_str(), light->attenuation.kq);
+                    _setUniform(shaderProgram->id(), (lightName + "." + bindingNames[L3D_LIGHT_TYPE]).c_str(), light->type);
+                    _setUniform(shaderProgram->id(), (lightName + "." + bindingNames[L3D_LIGHT_POSITION]).c_str(), light->position);
+                    _setUniform(shaderProgram->id(), (lightName + "." + bindingNames[L3D_LIGHT_DIRECTION]).c_str(), light->direction);
+                    _setUniform(shaderProgram->id(), (lightName + "." + bindingNames[L3D_LIGHT_COLOR]).c_str(), light->color);
+                    _setUniform(shaderProgram->id(), (lightName + "." + bindingNames[L3D_LIGHT_KC]).c_str(), light->attenuation.kc);
+                    _setUniform(shaderProgram->id(), (lightName + "." + bindingNames[L3D_LIGHT_KL]).c_str(), light->attenuation.kl);
+                    _setUniform(shaderProgram->id(), (lightName + "." + bindingNames[L3D_LIGHT_KQ]).c_str(), light->attenuation.kq);
 
                     ++activeLightCount;
                 }

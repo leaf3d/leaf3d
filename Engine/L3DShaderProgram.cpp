@@ -132,6 +132,7 @@ L3DShaderProgram::L3DShaderProgram(
 
     if (m_bindingNames.empty())
     {
+        // If not specified, use default binding names.
         m_bindingNames[L3D_POSITION] = "i_position";
         m_bindingNames[L3D_NORMAL] = "i_normal";
         m_bindingNames[L3D_TANGENT] = "i_tangent";
@@ -144,10 +145,17 @@ L3DShaderProgram::L3DShaderProgram(
         m_bindingNames[L3D_PROJ_MAT] = "u_projMat";
         m_bindingNames[L3D_MODEL_MAT] = "u_modelMat";
         m_bindingNames[L3D_NORMAL_MAT] = "u_normalMat";
-        m_bindingNames[L3D_MATERIAL_PREFIX] = "u_material.";
+        m_bindingNames[L3D_MATERIAL_PREFIX] = "u_material";
         m_bindingNames[L3D_SAMPLER_PREFIX] = "u_";
         m_bindingNames[L3D_LIGHT_PREFIX] = "u_light";
         m_bindingNames[L3D_LIGHT_COUNTER] = "u_lightNr";
+        m_bindingNames[L3D_LIGHT_TYPE] = "type";
+        m_bindingNames[L3D_LIGHT_POSITION] = "position";
+        m_bindingNames[L3D_LIGHT_DIRECTION] = "direction";
+        m_bindingNames[L3D_LIGHT_COLOR] = "color";
+        m_bindingNames[L3D_LIGHT_KC] = "kc";
+        m_bindingNames[L3D_LIGHT_KL] = "kl";
+        m_bindingNames[L3D_LIGHT_KQ] = "kq";
     }
 }
 

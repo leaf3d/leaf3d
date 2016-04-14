@@ -144,7 +144,14 @@ namespace l3d
         L3D_MATERIAL_PREFIX,
         L3D_SAMPLER_PREFIX,
         L3D_LIGHT_PREFIX,
-        L3D_LIGHT_COUNTER
+        L3D_LIGHT_COUNTER,
+        L3D_LIGHT_TYPE,
+        L3D_LIGHT_POSITION,
+        L3D_LIGHT_DIRECTION,
+        L3D_LIGHT_COLOR,
+        L3D_LIGHT_KC,
+        L3D_LIGHT_KL,
+        L3D_LIGHT_KQ
     };
 
     enum L3DBlendFactor
