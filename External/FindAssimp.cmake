@@ -51,8 +51,8 @@ IF(NOT ASSIMP_LIBRARY OR FORCE_DOWNLOAD_ASSIMP)
     MESSAGE(STATUS "Preparing external ASSIMP project")
     INCLUDE(ExternalProject)
     ExternalProject_Add(project_assimp
-        URL https://github.com/assimp/assimp/archive/v3.2.zip
-        URL_MD5 a2297eb35d7c321ec230627aa29ec314
+        URL https://github.com/assimp/assimp/archive/v3.3.1.zip
+        URL_MD5 c20ae75c10d1569cd6fa435eef079f56
         CMAKE_ARGS -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR> -DBUILD_SHARED_LIBS=OFF -DASSIMP_BUILD_TESTS=OFF
         LOG_DOWNLOAD 1
         LOG_UPDATE 1
