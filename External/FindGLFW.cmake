@@ -65,14 +65,14 @@ IF(NOT GLFW_LIBRARY OR FORCE_DOWNLOAD_GLFW)
     )
 
     IF(WIN32)
-            SET(GLFW_LIBRARY
-                ${install_dir}/lib/glfw3.lib
-            )
-        ELSE(WIN32)
-            SET(GLFW_LIBRARY
-                ${install_dir}/lib/libglfw3.a
-            )
-        ENDIF(WIN32)
+        SET(GLFW_LIBRARY
+            ${install_dir}/lib/glfw3.lib
+        )
+    ELSE(WIN32)
+        SET(GLFW_LIBRARY
+            ${install_dir}/lib/libglfw3.a
+        )
+    ENDIF(WIN32)
 
 ENDIF(NOT GLFW_LIBRARY OR FORCE_DOWNLOAD_GLFW)
 
