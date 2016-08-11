@@ -100,10 +100,16 @@ static GLenum _toOpenGL(const L3DImageWrapMethod& orig)
 {
     switch (orig)
     {
+    case L3D_CLAMP_TO_EDGE:
+        return GL_CLAMP_TO_EDGE;
+    case L3D_CLAMP_TO_BORDER:
+        return GL_CLAMP_TO_BORDER;
     case L3D_REPEAT:
         return GL_REPEAT;
-    case L3D_CLAMP:
-        return GL_CLAMP;
+    case L3D_MIRRORED_REPEAT:
+        return GL_MIRRORED_REPEAT;
+    case L3D_MIRROR_CLAMP_TO_EDGE:
+        return GL_MIRROR_CLAMP_TO_EDGE;
     default:
         break;
     }
@@ -286,10 +292,9 @@ L3DRenderer::~L3DRenderer()
 
 int L3DRenderer::init()
 {
-    // Init GLEW
-    glewExperimental = GL_TRUE;
-    if (glewInit() != GLEW_OK) {
-        fprintf(stderr, "Failed to initialize GLEW\n");
+    // Load OpenGL extensions.
+    if (!gladLoadGL()) {
+        fprintf(stderr, "Failed to initialize OpenGL\n");
         return -1;
     }
 

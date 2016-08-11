@@ -36,13 +36,12 @@ endif (L3D_BUILD_EXAMPLES)
 # Look for OpenGL.
 find_package(OpenGL REQUIRED)
 
-# Look for GLEW.
-find_package(GLEW REQUIRED)
-include_directories(${GLEW_INCLUDE_DIR})
+# Look for GLAD.
+find_package(GLAD REQUIRED)
+include_directories(${GLAD_INCLUDE_DIR})
 
 # Set necessary libs.
 set(LEAF3D_REQUIRED_LIBS
-    ${GLEW_LIBRARIES}
     ${OPENGL_LIBRARY}
 )
 
@@ -55,7 +54,6 @@ if (L3D_BUILD_UTILITY)
     # Set utility required libs.
     set(LEAF3DUT_REQUIRED_LIBS
         ${ASSIMP_LIBRARIES}
-        png
     )
 endif (L3D_BUILD_UTILITY)
 
@@ -73,4 +71,3 @@ if (L3D_BUILD_TESTS)
     enable_testing()
     add_test(leaf3d Tests/leaf3dTests)
 endif (L3D_BUILD_TESTS)
-

@@ -22,6 +22,7 @@
 #include <stdio.h>
 #include <leaf3d/leaf3d.h>
 #include <leaf3d/leaf3dut.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #define WINDOW_SIZE 640

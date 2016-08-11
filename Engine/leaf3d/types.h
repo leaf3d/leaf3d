@@ -28,7 +28,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <GL/glew.h>
+#include <glad/glad.h>
 #include "platform.h"
 
 #define L3D_TRUE 1
@@ -93,9 +93,11 @@ namespace l3d
 
     enum L3DImageWrapMethod
     {
-        L3D_CLAMP = 0,
+        L3D_CLAMP_TO_EDGE = 0,
+        L3D_CLAMP_TO_BORDER,
         L3D_REPEAT,
-        L3D_MIRRORED_REPEAT
+        L3D_MIRRORED_REPEAT,
+        L3D_MIRROR_CLAMP_TO_EDGE,
     };
 
     enum L3DDrawType
