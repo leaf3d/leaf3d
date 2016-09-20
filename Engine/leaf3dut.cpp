@@ -133,7 +133,7 @@ L3DHandle* l3dutLoadMeshes(
         return 0;
     }
 
-    for (int i = 0; i < scene->mNumMeshes; ++i)
+    for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
     {
         const aiMesh* mesh = scene->mMeshes[i];
 
@@ -141,7 +141,7 @@ L3DHandle* l3dutLoadMeshes(
         std::vector<unsigned int> indices;
         L3DVertexFormat vertexFormat = L3D_POS3_UV2;
 
-        for (int j = 0; j < mesh->mNumVertices; ++j)
+        for (unsigned int j = 0; j < mesh->mNumVertices; ++j)
         {
             if (mesh->HasPositions())
             {
@@ -175,7 +175,7 @@ L3DHandle* l3dutLoadMeshes(
             }
         }
 
-        for(int j = 0; j < mesh->mNumFaces; ++j)
+        for(unsigned int j = 0; j < mesh->mNumFaces; ++j)
         {
             indices.push_back(mesh->mFaces[j].mIndices[0]);
             indices.push_back(mesh->mFaces[j].mIndices[1]);

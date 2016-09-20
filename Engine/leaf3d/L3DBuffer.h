@@ -30,8 +30,8 @@ namespace l3d
     class L3DBuffer : public L3DResource
     {
     private:
-        void*           m_data;
         L3DBufferType   m_type;
+        void*           m_data;
         unsigned int    m_size;
         unsigned int    m_stride;
         L3DDrawType     m_drawType;
