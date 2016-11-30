@@ -3,13 +3,13 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../Engine)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../External)
 
 # Look for GLFW.
-find_package(GLFW REQUIRED)
+find_package(glfw3 REQUIRED)
 include_directories(${GLFW_INCLUDE_DIR})
 
 # Set necessary libs.
 set(LEAF3D_EXAMPLES_REQUIRED_LIBS
     leaf3d
-    ${GLFW_LIBRARIES}
+    glfw
     ${LEAF3DUT_REQUIRED_LIBS}
     ${LEAF3D_REQUIRED_LIBS}
 )

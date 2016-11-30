@@ -43,4 +43,5 @@ add_library(leaf3d SHARED ${LEAF3D_SOURCES} ${GLAD_SOURCES})
 target_link_libraries(leaf3d
     ${LEAF3_REQUIRED_LIBS}
     ${LEAF3DUT_REQUIRED_LIBS}
+    -ldl
 )

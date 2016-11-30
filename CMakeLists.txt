@@ -54,6 +54,7 @@ if (L3D_BUILD_UTILITY)
     # Set utility required libs.
     set(LEAF3DUT_REQUIRED_LIBS
         ${ASSIMP_LIBRARIES}
+        png
     )
 endif (L3D_BUILD_UTILITY)
 
