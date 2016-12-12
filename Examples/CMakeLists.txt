@@ -15,11 +15,10 @@ set(LEAF3D_EXAMPLES_REQUIRED_LIBS
 )
 
 # Set editable content files.
-set(LEAF3D_EXAMPLES_EDITABLE_CONTENT_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/Content/basic.vert
-    ${CMAKE_CURRENT_SOURCE_DIR}/Content/basic.frag
-    ${CMAKE_CURRENT_SOURCE_DIR}/Content/blinnphong.frag
-    ${CMAKE_CURRENT_SOURCE_DIR}/Content/simpletexture.frag
+file(GLOB_RECURSE LEAF3D_EXAMPLES_EDITABLE_CONTENT_FILES
+    "${CMAKE_CURRENT_SOURCE_DIR}/Content/*.vert"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Content/*.geom"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Content/*.frag"
 )
 
 # Copy content files.
