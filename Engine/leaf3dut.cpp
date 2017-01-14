@@ -108,7 +108,8 @@ L3DHandle l3dutLoadShaderProgram(
 L3DHandle* l3dutLoadMeshes(
     const char* filename,
     const L3DHandle& shaderProgram,
-    unsigned int* meshCount
+    unsigned int* meshCount,
+    unsigned int renderLayer
 )
 {
     if (!filename)
@@ -239,7 +240,14 @@ L3DHandle* l3dutLoadMeshes(
             }
         }
 
-        L3DHandle loadedMesh = l3dLoadMesh(vertices.data(), mesh->mNumVertices, indices.data(), mesh->mNumFaces * 3, material, vertexFormat);
+        L3DHandle loadedMesh = l3dLoadMesh(
+            vertices.data(), mesh->mNumVertices,
+            indices.data(), mesh->mNumFaces * 3,
+            material,
+            vertexFormat,
+            L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
+            renderLayer
+        );
 
         if (loadedMesh.repr)
             meshes.push_back(loadedMesh);

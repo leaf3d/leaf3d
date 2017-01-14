@@ -109,7 +109,13 @@ namespace l3d
     class L3DDrawMeshesCommand : public L3DRenderCommand
     {
     public:
-        L3DDrawMeshesCommand() : L3DRenderCommand(L3D_DRAW_MESHES) {}
+        unsigned int renderLayer;
+
+    public:
+        L3DDrawMeshesCommand(
+            unsigned int renderLayer = 0
+        ) : L3DRenderCommand(L3D_DRAW_MESHES),
+            renderLayer(renderLayer) {}
     };
 
     class L3DRenderQueue : public L3DResource
@@ -148,7 +154,7 @@ namespace l3d
             const L3DBlendFactor& srcFactor = L3D_SRC_ALPHA,
             const L3DBlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
         );
-        void addDrawMeshesCommand();
+        void addDrawMeshesCommand(unsigned int renderLayer = 0);
     };
 }
 

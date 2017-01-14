@@ -30,10 +30,11 @@ namespace l3d
     class L3DLight : public L3DResource
     {
     public:
-        L3DLightType type;
-        L3DVec3 position;
-        L3DVec3 direction;
-        L3DVec4 color;
+        unsigned int        renderLayer;
+        L3DLightType        type;
+        L3DVec3             position;
+        L3DVec3             direction;
+        L3DVec4             color;
         L3DLightAttenuation attenuation;
 
     public:
@@ -43,7 +44,8 @@ namespace l3d
             const L3DVec3& position,
             const L3DVec3& direction,
             const L3DVec4& color = L3DVec4(1, 1, 1, 1),
-            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f)
+            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
+            unsigned int renderLayer = 0
         );
         ~L3DLight() {}
 
@@ -55,14 +57,16 @@ namespace l3d
         static L3DLight* createDirectionalLight(
             L3DRenderer* renderer,
             const L3DVec3& direction,
-            const L3DVec4& color = L3DVec4(1, 1, 1, 1)
+            const L3DVec4& color = L3DVec4(1, 1, 1, 1),
+            unsigned int renderLayer = 0
         );
 
         static L3DLight* createPointLight(
             L3DRenderer* renderer,
             const L3DVec3& position,
             const L3DVec4& color = L3DVec4(1, 1, 1, 1),
-            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f)
+            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
+            unsigned int renderLayer = 0
         );
 
         static L3DLight* createSpotLight(
@@ -70,7 +74,8 @@ namespace l3d
             const L3DVec3& position,
             const L3DVec3& direction = L3DVec3(0, -1, 0),
             const L3DVec4& color = L3DVec4(1, 1, 1, 1),
-            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f)
+            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
+            unsigned int renderLayer = 0
         );
     };
 }

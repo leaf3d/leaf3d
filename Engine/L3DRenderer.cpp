@@ -388,7 +388,11 @@ void L3DRenderer::renderFrame(L3DCamera* camera, L3DRenderQueue* renderQueue)
         break;
 
         case L3D_DRAW_MESHES:
-            this->drawMeshes(camera);
+        {
+            const L3DDrawMeshesCommand* cmd = static_cast<const L3DDrawMeshesCommand*>(command);
+            if (cmd)
+                this->drawMeshes(camera, cmd->renderLayer);
+        }
         break;
 
         default:
@@ -1011,7 +1015,10 @@ void L3DRenderer::setBlend(
     glBlendFunc(_toOpenGL(srcFactor), _toOpenGL(dstFactor));
 }
 
-void L3DRenderer::drawMeshes(L3DCamera* camera)
+void L3DRenderer::drawMeshes(
+    L3DCamera* camera,
+    unsigned int renderLayer
+)
 {
     if (!camera)
         return;
@@ -1022,7 +1029,7 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
     {
         L3DMesh* mesh = it->second;
 
-        if (mesh && mesh->material() && mesh->material()->shaderProgram())
+        if (mesh && mesh->renderLayer == renderLayer && mesh->material() && mesh->material()->shaderProgram())
         {
             L3DMaterial* material = mesh->material();
             L3DShaderProgram* shaderProgram = material->shaderProgram();
@@ -1098,7 +1105,7 @@ void L3DRenderer::drawMeshes(L3DCamera* camera)
             {
                 L3DLight* light = light_it->second;
 
-                if (light && light->isOn())
+                if (light && light->renderLayer == renderLayer && light->isOn())
                 {
                     std::ostringstream sstream;
                     sstream << "u_light[" << activeLightCount << "]";

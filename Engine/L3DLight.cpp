@@ -30,8 +30,10 @@ L3DLight::L3DLight(
     const L3DVec3& position,
     const L3DVec3& direction,
     const L3DVec4& color,
-    const L3DLightAttenuation& attenuation
+    const L3DLightAttenuation& attenuation,
+    unsigned int renderLayer
 ) : L3DResource(L3D_LIGHT, renderer),
+    renderLayer(renderLayer),
     type(type),
     position(position),
     direction(direction),
@@ -54,7 +56,8 @@ void L3DLight::lookAt(const L3DVec3& targetPosition)
 L3DLight* L3DLight::createDirectionalLight(
     L3DRenderer* renderer,
     const L3DVec3& direction,
-    const L3DVec4& color
+    const L3DVec4& color,
+    unsigned int renderLayer
 )
 {
     return new L3DLight(
@@ -63,7 +66,8 @@ L3DLight* L3DLight::createDirectionalLight(
         L3DVec3(0, 0, 0),
         glm::normalize(direction),
         color,
-        L3DLightAttenuation(0, 0, 0)
+        L3DLightAttenuation(0, 0, 0),
+        renderLayer
     );
 }
 
@@ -71,7 +75,8 @@ L3DLight* L3DLight::createPointLight(
     L3DRenderer* renderer,
     const L3DVec3& position,
     const L3DVec4& color,
-    const L3DLightAttenuation& attenuation
+    const L3DLightAttenuation& attenuation,
+    unsigned int renderLayer
 )
 {
     return new L3DLight(
@@ -80,7 +85,8 @@ L3DLight* L3DLight::createPointLight(
         position,
         L3DVec3(0, 0, 0),
         color,
-        attenuation
+        attenuation,
+        renderLayer
     );
 }
 
@@ -89,7 +95,8 @@ L3DLight* L3DLight::createSpotLight(
     const L3DVec3& position,
     const L3DVec3& direction,
     const L3DVec4& color,
-    const L3DLightAttenuation& attenuation
+    const L3DLightAttenuation& attenuation,
+    unsigned int renderLayer
 )
 {
     return new L3DLight(
@@ -98,6 +105,7 @@ L3DLight* L3DLight::createSpotLight(
         position,
         direction,
         color,
-        attenuation
+        attenuation,
+        renderLayer
     );
 }

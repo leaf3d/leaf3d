@@ -438,7 +438,8 @@ L3DHandle l3dLoadMesh(
     const L3DVertexFormat& vertexFormat,
     const L3DMat4& transMatrix,
     const L3DDrawType& drawType,
-    const L3DDrawPrimitive& drawPrimitive
+    const L3DDrawPrimitive& drawPrimitive,
+    unsigned int renderLayer
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
@@ -453,7 +454,8 @@ L3DHandle l3dLoadMesh(
         vertexFormat,
         transMatrix,
         drawType,
-        drawPrimitive
+        drawPrimitive,
+        renderLayer
     );
 
     if (mesh)
@@ -464,7 +466,8 @@ L3DHandle l3dLoadMesh(
 
 L3DHandle l3dLoadQuad(
     const L3DHandle &material,
-    const L3DVec2& texMulFactor
+    const L3DVec2& texMulFactor,
+    unsigned int renderLayer
 )
 {
     GLfloat vertices[] = {
@@ -480,12 +483,20 @@ L3DHandle l3dLoadQuad(
         2, 3, 0
     };
 
-    return l3dLoadMesh(vertices, 4, indices, 6, material, L3D_POS3_NOR3_TAN3_UV2);
+    return l3dLoadMesh(
+        vertices, 4,
+        indices, 6,
+        material,
+        L3D_POS3_NOR3_TAN3_UV2,
+        L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
+        renderLayer
+    );
 }
 
 L3DHandle l3dLoadCube(
     const L3DHandle &material,
-    const L3DVec2& texMulFactor
+    const L3DVec2& texMulFactor,
+    unsigned int renderLayer
 )
 {
     GLfloat vertices[] = {
@@ -541,7 +552,14 @@ L3DHandle l3dLoadCube(
         22, 23, 20,
     };
 
-    return l3dLoadMesh(vertices, 24, indices, 36, material, L3D_POS3_NOR3_TAN3_UV2);
+    return l3dLoadMesh(
+        vertices, 24,
+        indices, 36,
+        material,
+        L3D_POS3_NOR3_TAN3_UV2,
+        L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
+        renderLayer
+    );
 }
 
 L3DMat4 l3dGetMeshTrans(
@@ -613,7 +631,8 @@ void l3dScaleMesh(
 
 L3DHandle l3dLoadDirectionalLight(
     const L3DVec3& direction,
-    const L3DVec4& color
+    const L3DVec4& color,
+    unsigned int renderLayer
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
@@ -621,7 +640,8 @@ L3DHandle l3dLoadDirectionalLight(
     L3DLight* light = L3DLight::createDirectionalLight(
         _renderer,
         direction,
-        color
+        color,
+        renderLayer
     );
 
     if (light)
@@ -633,7 +653,8 @@ L3DHandle l3dLoadDirectionalLight(
 L3DHandle l3dLoadPointLight(
     const L3DVec3& position,
     const L3DVec4& color,
-    const L3DLightAttenuation& attenuation
+    const L3DLightAttenuation& attenuation,
+    unsigned int renderLayer
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
@@ -642,7 +663,8 @@ L3DHandle l3dLoadPointLight(
         _renderer,
         position,
         color,
-        attenuation
+        attenuation,
+        renderLayer
     );
 
     if (light)
@@ -655,7 +677,8 @@ L3DHandle l3dLoadSpotLight(
     const L3DVec3& position,
     const L3DVec3& direction,
     const L3DVec4& color,
-    const L3DLightAttenuation& attenuation
+    const L3DLightAttenuation& attenuation,
+    unsigned int renderLayer
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
@@ -665,7 +688,8 @@ L3DHandle l3dLoadSpotLight(
         position,
         direction,
         color,
-        attenuation
+        attenuation,
+        renderLayer
     );
 
     if (light)

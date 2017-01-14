@@ -38,9 +38,11 @@ L3DMesh::L3DMesh(
     const L3DVertexFormat& vertexFormat,
     const L3DMat4& transMatrix,
     const L3DDrawType& drawType,
-    const L3DDrawPrimitive& drawPrimitive
+    const L3DDrawPrimitive& drawPrimitive,
+    unsigned int renderLayer
 ) : L3DResource(L3D_MESH, renderer),
     transMatrix(transMatrix),
+    renderLayer(renderLayer),
     m_vertexBuffer(0),
     m_indexBuffer(0),
     m_material(material),
@@ -64,9 +66,11 @@ L3DMesh::L3DMesh(
     const L3DVertexFormat& vertexFormat,
     const L3DMat4& transMatrix,
     const L3DDrawType& drawType,
-    const L3DDrawPrimitive& drawPrimitive
+    const L3DDrawPrimitive& drawPrimitive,
+    unsigned int renderLayer
 ) : L3DResource(L3D_MESH, renderer),
     transMatrix(transMatrix),
+    renderLayer(renderLayer),
     m_vertexBuffer(0),
     m_indexBuffer(0),
     m_material(material),

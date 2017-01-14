@@ -48,7 +48,8 @@ L3DHandle l3dutLoadShaderProgram(
 L3DHandle* l3dutLoadMeshes(
     const char* filename,
     const L3DHandle& shaderProgram,
-    unsigned int* meshCount
+    unsigned int* meshCount,
+    unsigned int renderLayer = 0
 );
 
 #endif // L3D_LEAF3DUT_H

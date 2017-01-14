@@ -87,9 +87,9 @@ void L3DRenderQueue::addSetBlendCommand(
     );
 }
 
-void L3DRenderQueue::addDrawMeshesCommand()
+void L3DRenderQueue::addDrawMeshesCommand(unsigned int renderLayer)
 {
     m_commands.push_back(
-        new L3DDrawMeshesCommand()
+        new L3DDrawMeshesCommand(renderLayer)
     );
 }

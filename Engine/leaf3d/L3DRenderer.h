@@ -138,7 +138,10 @@ namespace l3d
             const L3DBlendFactor& srcFactor = L3D_SRC_ALPHA,
             const L3DBlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
         );
-        void drawMeshes(L3DCamera* camera);
+        void drawMeshes(
+            L3DCamera* camera,
+            unsigned int renderLayer = 0
+        );
     };
 }
 
