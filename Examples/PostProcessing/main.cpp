@@ -61,7 +61,6 @@ int main()
     }
 
     // ----------------------------- RESOURCES ----------------------------- //
-
     // Load a shader program.
     L3DHandle shaderProgram = l3dutLoadShaderProgram("basic.vert", "simpletexture.frag");
 
@@ -79,8 +78,49 @@ int main()
         )
     );
 
+    // Create a shader for screen effect.
+    L3DHandle screenFx = l3dLoadShader(L3D_SHADER_FRAGMENT, GLSL(
+       in vec2 o_texcoord0;
+
+       uniform sampler2D u_diffuseMap;
+
+        const float offset = 1.0 / 300;
+
+        void main()
+        {
+            vec2 offsets[9] = vec2[](
+                vec2(-offset, offset),  // top-left
+                vec2(0.0f,    offset),  // top-center
+                vec2(offset,  offset),  // top-right
+                vec2(-offset, 0.0f),    // center-left
+                vec2(0.0f,    0.0f),    // center-center
+                vec2(offset,  0.0f),    // center-right
+                vec2(-offset, -offset), // bottom-left
+                vec2(0.0f,    -offset), // bottom-center
+                vec2(offset,  -offset)  // bottom-right
+            );
+
+            float kernel[9] = float[](
+                -1, -1, -1,
+                -1,  9, -1,
+                -1, -1, -1
+            );
+
+            vec3 sampleTex[9];
+            for(int i = 0; i < 9; i++)
+            {
+                sampleTex[i] = vec3(texture(u_diffuseMap, o_texcoord0.st + offsets[i]));
+            }
+            vec3 col = vec3(0.0);
+            for(int i = 0; i < 9; i++)
+                col += sampleTex[i] * kernel[i];
+
+            gl_FragColor = vec4(col, 1.0);
+        }
+    ));
+
     // Create a forward rendering pipeline.
-    L3DHandle renderQueue = l3dLoadForwardRenderQueue(WINDOW_SIZE, WINDOW_SIZE);
+    L3DHandle renderQueue = l3dLoadForwardRenderQueue(WINDOW_SIZE, WINDOW_SIZE, L3DVec4(1,1,1,1), screenFx);
 
     // ---------------------------- RENDERING ------------------------------ //
 

@@ -72,7 +72,14 @@ namespace l3d
     enum L3DImageFormat
     {
         L3D_RGB = 3,
-        L3D_RGBA
+        L3D_RGBA,
+        L3D_DEPTH24_STENCIL8
+    };
+
+    enum L3DPixelFormat
+    {
+        L3D_UNSIGNED_BYTE,
+        L3D_UNSIGNED_INT_24_8
     };
 
     enum L3DImageMinFilter
@@ -111,6 +118,27 @@ namespace l3d
         L3D_DRAW_POINTS = 1,
         L3D_DRAW_LINES = 2,
         L3D_DRAW_TRIANGLES = 3
+    };
+
+    enum L3DAttachmentType
+    {
+        L3D_DEPTH_STENCIL_ATTACHMENT,
+        L3D_COLOR_ATTACHMENT0,
+        L3D_COLOR_ATTACHMENT1,
+        L3D_COLOR_ATTACHMENT2,
+        L3D_COLOR_ATTACHMENT3,
+        L3D_COLOR_ATTACHMENT4,
+        L3D_COLOR_ATTACHMENT5,
+        L3D_COLOR_ATTACHMENT6,
+        L3D_COLOR_ATTACHMENT7,
+        L3D_COLOR_ATTACHMENT8,
+        L3D_COLOR_ATTACHMENT9,
+        L3D_COLOR_ATTACHMENT10,
+        L3D_COLOR_ATTACHMENT11,
+        L3D_COLOR_ATTACHMENT12,
+        L3D_COLOR_ATTACHMENT13,
+        L3D_COLOR_ATTACHMENT14,
+        L3D_COLOR_ATTACHMENT15
     };
 
     enum L3DUniformType
@@ -164,6 +192,7 @@ namespace l3d
         L3D_TEXTURE,
         L3D_SHADER,
         L3D_SHADER_PROGRAM,
+        L3D_FRAME_BUFFER,
         L3D_MATERIAL,
         L3D_CAMERA,
         L3D_LIGHT,
@@ -194,6 +223,7 @@ namespace l3d
     enum L3DRenderCommandType
     {
         L3D_INVALID_RENDER_COMMAND = 0,
+        L3D_SWITCH_FRAME_BUFFER,
         L3D_CLEAR_BUFFERS,
         L3D_SET_DEPTH_TEST,
         L3D_SET_STENCIL_TEST,

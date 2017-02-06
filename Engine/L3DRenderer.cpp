@@ -25,6 +25,7 @@
 #include <leaf3d/L3DTexture.h>
 #include <leaf3d/L3DShader.h>
 #include <leaf3d/L3DShaderProgram.h>
+#include <leaf3d/L3DFrameBuffer.h>
 #include <leaf3d/L3DMaterial.h>
 #include <leaf3d/L3DCamera.h>
 #include <leaf3d/L3DLight.h>
@@ -89,6 +90,100 @@ static GLenum _toOpenGL(const L3DImageFormat& orig)
         return GL_RGB;
     case L3D_RGBA:
         return GL_RGBA;
+    case L3D_DEPTH24_STENCIL8:
+        return GL_DEPTH24_STENCIL8;
+    default:
+        break;
+    }
+
+    return 0;
+}
+
+static GLenum _toOpenGL(const L3DPixelFormat& orig)
+{
+    switch (orig)
+    {
+    case L3D_UNSIGNED_BYTE:
+        return GL_UNSIGNED_BYTE;
+    case L3D_UNSIGNED_INT_24_8:
+        return GL_UNSIGNED_INT_24_8;
+    default:
+        break;
+    }
+
+    return 0;
+}
+
+static GLenum _toOpenGL(const L3DAttachmentType& orig)
+{
+    switch (orig)
+    {
+    case L3D_DEPTH_STENCIL_ATTACHMENT:
+        return GL_DEPTH_STENCIL_ATTACHMENT;
+    case L3D_COLOR_ATTACHMENT0:
+        return GL_COLOR_ATTACHMENT0;
+    case L3D_COLOR_ATTACHMENT1:
+        return GL_COLOR_ATTACHMENT1;
+    case L3D_COLOR_ATTACHMENT2:
+        return GL_COLOR_ATTACHMENT2;
+    case L3D_COLOR_ATTACHMENT3:
+        return GL_COLOR_ATTACHMENT3;
+    case L3D_COLOR_ATTACHMENT4:
+        return GL_COLOR_ATTACHMENT4;
+    case L3D_COLOR_ATTACHMENT5:
+        return GL_COLOR_ATTACHMENT5;
+    case L3D_COLOR_ATTACHMENT6:
+        return GL_COLOR_ATTACHMENT6;
+    case L3D_COLOR_ATTACHMENT7:
+        return GL_COLOR_ATTACHMENT7;
+    case L3D_COLOR_ATTACHMENT8:
+        return GL_COLOR_ATTACHMENT8;
+    case L3D_COLOR_ATTACHMENT9:
+        return GL_COLOR_ATTACHMENT9;
+    case L3D_COLOR_ATTACHMENT10:
+        return GL_COLOR_ATTACHMENT10;
+    case L3D_COLOR_ATTACHMENT11:
+        return GL_COLOR_ATTACHMENT11;
+    case L3D_COLOR_ATTACHMENT12:
+        return GL_COLOR_ATTACHMENT12;
+    case L3D_COLOR_ATTACHMENT13:
+        return GL_COLOR_ATTACHMENT13;
+    case L3D_COLOR_ATTACHMENT14:
+        return GL_COLOR_ATTACHMENT14;
+    case L3D_COLOR_ATTACHMENT15:
+        return GL_COLOR_ATTACHMENT15;
+    /*case L3D_COLOR_ATTACHMENT16:
+        return GL_COLOR_ATTACHMENT16;
+    case L3D_COLOR_ATTACHMENT17:
+        return GL_COLOR_ATTACHMENT17;
+    case L3D_COLOR_ATTACHMENT18:
+        return GL_COLOR_ATTACHMENT18;
+    case L3D_COLOR_ATTACHMENT19:
+        return GL_COLOR_ATTACHMENT19;
+    case L3D_COLOR_ATTACHMENT20:
+        return GL_COLOR_ATTACHMENT20;
+    case L3D_COLOR_ATTACHMENT21:
+        return GL_COLOR_ATTACHMENT21;
+    case L3D_COLOR_ATTACHMENT22:
+        return GL_COLOR_ATTACHMENT22;
+    case L3D_COLOR_ATTACHMENT23:
+        return GL_COLOR_ATTACHMENT23;
+    case L3D_COLOR_ATTACHMENT24:
+        return GL_COLOR_ATTACHMENT24;
+    case L3D_COLOR_ATTACHMENT25:
+        return GL_COLOR_ATTACHMENT25;
+    case L3D_COLOR_ATTACHMENT26:
+        return GL_COLOR_ATTACHMENT26;
+    case L3D_COLOR_ATTACHMENT27:
+        return GL_COLOR_ATTACHMENT27;
+    case L3D_COLOR_ATTACHMENT28:
+        return GL_COLOR_ATTACHMENT28;
+    case L3D_COLOR_ATTACHMENT29:
+        return GL_COLOR_ATTACHMENT29;
+    case L3D_COLOR_ATTACHMENT30:
+        return GL_COLOR_ATTACHMENT30;
+    case L3D_COLOR_ATTACHMENT31:
+        return GL_COLOR_ATTACHMENT31;*/
     default:
         break;
     }
@@ -319,6 +414,10 @@ int L3DRenderer::terminate()
         delete it->second;
     m_shaderPrograms.clear();
 
+    for (L3DFrameBufferPool::reverse_iterator it = m_frameBuffers.rbegin(); it != m_frameBuffers.rend(); ++it)
+        delete it->second;
+    m_frameBuffers.clear();
+
     for (L3DMaterialPool::reverse_iterator it = m_materials.rbegin(); it != m_materials.rend(); ++it)
         delete it->second;
     m_materials.clear();
@@ -355,6 +454,14 @@ void L3DRenderer::renderFrame(L3DCamera* camera, L3DRenderQueue* renderQueue)
 
         switch (command->type())
         {
+        case L3D_SWITCH_FRAME_BUFFER:
+        {
+            const L3DSwitchFrameBufferCommand* cmd = static_cast<const L3DSwitchFrameBufferCommand*>(command);
+            if (cmd)
+                this->switchFrameBuffer(cmd->frameBuffer);
+        }
+        break;
+
         case L3D_CLEAR_BUFFERS:
         {
             const L3DClearBuffersCommand* cmd = static_cast<const L3DClearBuffersCommand*>(command);
@@ -419,6 +526,9 @@ void L3DRenderer::addResource(L3DResource* resource)
         case L3D_SHADER_PROGRAM:
             this->addShaderProgram(static_cast<L3DShaderProgram*>(resource));
             break;
+        case L3D_FRAME_BUFFER:
+            this->addFrameBuffer(static_cast<L3DFrameBuffer*>(resource));
+            break;
         case L3D_MATERIAL:
             this->addMaterial(static_cast<L3DMaterial*>(resource));
             break;
@@ -471,25 +581,30 @@ void L3DRenderer::addTexture(L3DTexture* texture)
         glGenTextures(1, &id);
 
         GLenum gl_format = _toOpenGL(texture->format());
+        GLenum gl_internal_format = gl_format;
         GLenum gl_type = _toOpenGL(texture->type());
+        GLenum gl_pixel_format = _toOpenGL(texture->pixelFormat());
         GLenum gl_wrap_s = _toOpenGL(texture->wrapS());
         GLenum gl_wrap_t = _toOpenGL(texture->wrapT());
         GLenum gl_wrap_r = _toOpenGL(texture->wrapR());
         GLenum gl_min_filter = _toOpenGL(texture->minFilter());
         GLenum gl_mag_filter = _toOpenGL(texture->magFilter());
 
+        if (gl_format == GL_DEPTH24_STENCIL8)
+            gl_internal_format = GL_DEPTH_STENCIL;
+
         glBindTexture(gl_type, id);
 
         switch (texture->type())
         {
         case L3D_TEXTURE_1D:
-            glTexImage1D(gl_type, 0, gl_format, texture->width(), 0, gl_format, GL_UNSIGNED_BYTE, texture->data());
+            glTexImage1D(gl_type, 0, gl_format, texture->width(), 0, gl_internal_format, gl_pixel_format, texture->data());
             break;
         case L3D_TEXTURE_2D:
-            glTexImage2D(gl_type, 0, gl_format, texture->width(), texture->height(), 0, gl_format, GL_UNSIGNED_BYTE, texture->data());
+            glTexImage2D(gl_type, 0, gl_format, texture->width(), texture->height(), 0, gl_internal_format, gl_pixel_format, texture->data());
             break;
         case L3D_TEXTURE_3D:
-            glTexImage3D(gl_type, 0, gl_format, texture->width(), texture->height(), texture->depth(), 0, gl_format, GL_UNSIGNED_BYTE, texture->data());
+            glTexImage3D(gl_type, 0, gl_format, texture->width(), texture->height(), texture->depth(), 0, gl_internal_format, gl_pixel_format, texture->data());
             break;
         default:
             // Don't store id. Free resource.
@@ -500,7 +615,16 @@ void L3DRenderer::addTexture(L3DTexture* texture)
 
         // Mipmap.
         if (texture->useMipmap())
+        {
             glGenerateMipmap(gl_type);
+        }
+        else
+        {
+            if (gl_min_filter == GL_NEAREST_MIPMAP_LINEAR)
+                gl_min_filter = GL_LINEAR;
+            else if (gl_min_filter == GL_NEAREST_MIPMAP_NEAREST)
+                gl_min_filter = GL_NEAREST;
+        }
 
         // Wrap mode for S, T, R coordinates.
         glTexParameteri(gl_type, GL_TEXTURE_WRAP_S, gl_wrap_s);
@@ -579,6 +703,51 @@ void L3DRenderer::addShaderProgram(L3DShaderProgram* shaderProgram)
         shaderProgram->setId(id);
 
         m_shaderPrograms[id] = shaderProgram;
+    }
+}
+
+void L3DRenderer::addFrameBuffer(L3DFrameBuffer* frameBuffer)
+{
+    if (frameBuffer && m_frameBuffers.find(frameBuffer->id()) == m_frameBuffers.end())
+    {
+        GLuint id = 0;
+        glGenFramebuffers(1, &id);
+        glBindFramebuffer(GL_FRAMEBUFFER, id);
+
+        // Register texture attachments.
+        L3DTextureAttachments textures = frameBuffer->textureAttachments();
+        for (L3DTextureAttachments::iterator tex_it = textures.begin(); tex_it != textures.end(); ++tex_it)
+        {
+            GLenum gl_attachment_type = _toOpenGL(tex_it->first);
+            L3DTexture* texture = tex_it->second;
+
+            if (texture)
+            {
+                this->addTexture(texture);
+
+                GLuint id = texture->id();
+                GLenum gl_type = _toOpenGL(texture->type());
+
+                switch (texture->type())
+                {
+                case L3D_TEXTURE_1D:
+                    glFramebufferTexture1D(GL_FRAMEBUFFER, gl_attachment_type, gl_type, id, 0);
+                    break;
+                case L3D_TEXTURE_2D:
+                    glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment_type, gl_type, id, 0);
+                    break;
+                case L3D_TEXTURE_3D:
+                    glFramebufferTexture3D(GL_FRAMEBUFFER, gl_attachment_type, gl_type, id, 0, 0);
+                    break;
+                }
+            }
+        }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        frameBuffer->setId(id);
+
+        m_frameBuffers[id] = frameBuffer;
     }
 }
 
@@ -760,6 +929,9 @@ void L3DRenderer::removeResource(L3DResource* resource)
         case L3D_SHADER_PROGRAM:
             this->removeShaderProgram(static_cast<L3DShaderProgram*>(resource));
             break;
+        case L3D_FRAME_BUFFER:
+            this->removeFrameBuffer(static_cast<L3DFrameBuffer*>(resource));
+            break;
         case L3D_MATERIAL:
             this->removeMaterial(static_cast<L3DMaterial*>(resource));
             break;
@@ -822,6 +994,18 @@ void L3DRenderer::removeShaderProgram(L3DShaderProgram* shaderProgram)
         m_shaderPrograms[id] = L3D_NULLPTR;
         glDeleteProgram(id);
         shaderProgram->setId(0);
+    }
+}
+
+void L3DRenderer::removeFrameBuffer(L3DFrameBuffer* frameBuffer)
+{
+    if (frameBuffer)
+    {
+        GLuint id = frameBuffer->id();
+        m_frameBuffers[id] = L3D_NULLPTR;
+        glDeleteFramebuffers(1, &id);
+        // TODO: clean frame buffer attachments.
+        frameBuffer->setId(0);
     }
 }
 
@@ -892,6 +1076,8 @@ L3DResource* L3DRenderer::getResource(const L3DHandle& handle) const
         return m_shaders.find(handle.data.id)->second;
     case L3D_SHADER_PROGRAM:
         return m_shaderPrograms.find(handle.data.id)->second;
+    case L3D_FRAME_BUFFER:
+        return m_frameBuffers.find(handle.data.id)->second;
     case L3D_MATERIAL:
         return m_materials.find(handle.data.id)->second;
     case L3D_CAMERA:
@@ -939,6 +1125,14 @@ L3DShaderProgram* L3DRenderer::getShaderProgram(const L3DHandle& handle) const
     return L3D_NULLPTR;
 }
 
+L3DFrameBuffer* L3DRenderer::getFrameBuffer(const L3DHandle& handle) const
+{
+    if (handle.data.type == L3D_FRAME_BUFFER)
+        return m_frameBuffers.find(handle.data.id)->second;
+
+    return L3D_NULLPTR;
+}
+
 L3DMaterial* L3DRenderer::getMaterial(const L3DHandle& handle) const
 {
     if (handle.data.type == L3D_MATERIAL)
@@ -977,6 +1171,18 @@ L3DRenderQueue* L3DRenderer::getRenderQueue(const L3DHandle& handle) const
         return m_renderQueues.find(handle.data.id)->second;
 
     return L3D_NULLPTR;
+}
+
+void L3DRenderer::switchFrameBuffer(L3DFrameBuffer* frameBuffer)
+{
+    GLuint frameBufferId = frameBuffer ? frameBuffer->id() : 0;
+
+    glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
+
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+    {
+        fprintf(stderr, "Framebuffer %d is not completed!\n", frameBufferId);
+    }
 }
 
 void L3DRenderer::clearBuffers(

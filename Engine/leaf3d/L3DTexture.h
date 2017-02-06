@@ -32,6 +32,7 @@ namespace l3d
     protected:
         L3DTextureType      m_type;
         L3DImageFormat      m_format;
+        L3DPixelFormat      m_pixelFormat;
         unsigned char*      m_data;
         unsigned int        m_width;
         unsigned int        m_height;
@@ -53,6 +54,7 @@ namespace l3d
             unsigned int height = 0,
             unsigned int depth = 0,
             bool mipmap = true,
+            const L3DPixelFormat& pixelFormat = L3D_UNSIGNED_BYTE,
             const L3DImageMinFilter& minFilter = L3D_MIN_NEAREST_MIPMAP_LINEAR,
             const L3DImageMagFilter& magFilter = L3D_MAG_LINEAR,
             const L3DImageWrapMethod& wrapS = L3D_REPEAT,
@@ -63,10 +65,12 @@ namespace l3d
 
         L3DTextureType      type() const { return m_type; }
         L3DImageFormat      format() const { return m_format; }
+        L3DPixelFormat      pixelFormat() const { return m_pixelFormat; }
         unsigned char*      data() const { return m_data; }
         unsigned int        width() const { return m_width; }
         unsigned int        height() const { return m_height; }
         unsigned int        depth() const { return m_depth; }
+        unsigned int        size() const;
         bool                useMipmap() const { return m_useMipmap; }
         L3DImageMinFilter   minFilter() const { return m_minFilter; }
         L3DImageMagFilter   magFilter() const { return m_magFilter; }

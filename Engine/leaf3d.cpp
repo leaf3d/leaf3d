@@ -24,6 +24,7 @@
 #include <leaf3d/L3DTexture.h>
 #include <leaf3d/L3DShader.h>
 #include <leaf3d/L3DShaderProgram.h>
+#include <leaf3d/L3DFrameBuffer.h>
 #include <leaf3d/L3DMaterial.h>
 #include <leaf3d/L3DCamera.h>
 #include <leaf3d/L3DLight.h>
@@ -33,6 +34,44 @@
 using namespace l3d;
 
 static L3DRenderer* _renderer = L3D_NULLPTR;
+
+static const char* _defaultScreenVertexShader = GLSL(
+    /* ATTRIBUTES *****************************************************************/
+
+    in vec2 i_position;     // xyz - position
+    in vec2 i_texcoord0;    // xy - texture0 coords
+
+    /* UNIFORMS *******************************************************************/
+
+    // Matrices.
+    uniform mat4 u_modelMat;
+    uniform mat4 u_viewMat;
+    uniform mat4 u_projMat;
+    uniform mat3 u_normalMat;
+
+    /* OUTPUTS ********************************************************************/
+
+    out vec2    o_texcoord0;
+
+    /* MAIN ***********************************************************************/
+
+    void main()
+    {
+        gl_Position = vec4(i_position.x, i_position.y, 0.0f, 1.0f);
+        o_texcoord0 = i_texcoord0;
+    }
+);
+
+static const char* _defaultScreenFragmentShader = GLSL(
+    in vec2 o_texcoord0;
+
+    uniform sampler2D u_diffuseMap;
+
+    void main()
+    {
+        gl_FragColor = vec4(texture(u_diffuseMap, o_texcoord0).rgb, 1);
+    }
+);
 
 int l3dInit()
 {
@@ -69,7 +108,12 @@ void l3dRenderFrame(
     );
 }
 
-L3DHandle l3dLoadForwardRenderQueue(const L3DVec4& clearColor)
+L3DHandle l3dLoadForwardRenderQueue(
+    unsigned int width,
+    unsigned int height,
+    const L3DVec4& clearColor,
+    const L3DHandle& screenFragmentShader
+)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
@@ -78,10 +122,90 @@ L3DHandle l3dLoadForwardRenderQueue(const L3DVec4& clearColor)
         "ForwardRendering"
     );
 
+    // A. Init framebuffer.
+    L3DTexture* frameBufferColorTexture = new L3DTexture(_renderer, L3D_TEXTURE_2D, L3D_RGB, 0, width, height, 0, false);
+
+    L3DFrameBuffer* backendBuffer = new L3DFrameBuffer(
+        _renderer,
+        new L3DTexture(_renderer, L3D_TEXTURE_2D, L3D_DEPTH24_STENCIL8, 0, width, height, 0, false, L3D_UNSIGNED_INT_24_8),
+        frameBufferColorTexture
+    );
+
+    // B. Init fullscreen quad.
+    L3DShader* fsQuadVertexShader = new L3DShader(
+        _renderer,
+        L3D_SHADER_VERTEX,
+        _defaultScreenVertexShader
+    );
+
+    L3DShader* fsQuadFragmentShader = _renderer->getShader(screenFragmentShader);
+
+    if (!fsQuadFragmentShader)
+    {
+        fsQuadFragmentShader = new L3DShader(
+            _renderer,
+            L3D_SHADER_FRAGMENT,
+            _defaultScreenFragmentShader
+        );
+    }
+
+    L3DShaderProgram* fsQuadShaderProgram = new L3DShaderProgram(
+        _renderer,
+        fsQuadVertexShader,
+        fsQuadFragmentShader
+    );
+
+    L3DMaterial* fsQuadMaterial = new L3DMaterial(
+        _renderer,
+        "Fullscreen Quad",
+        fsQuadShaderProgram,
+        L3DColorRegistry(),
+        L3DParameterRegistry(),
+        L3DTextureRegistry()
+    );
+
+    // Assign diffuse texture of framebuffer
+    // to diffuse texture of fullscreen quad material.
+    fsQuadMaterial->textures["diffuseMap"] = frameBufferColorTexture;
+
+    GLfloat vertices[] = {
+    //   Position      Texcoords
+        -1.0f,  1.0f,  0.0f, 1.0f,  // Top-left
+         1.0f,  1.0f,  1.0f, 1.0f,  // Top-right
+         1.0f, -1.0f,  1.0f, 0.0f,  // Bottom-right
+        -1.0f, -1.0f,  0.0f, 0.0f   // Bottom-left
+    };
+
+    GLuint indices[] = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    L3DMesh* fsQuad = new L3DMesh(
+        _renderer,
+        vertices, 4,
+        indices, 6,
+        fsQuadMaterial,
+        L3D_POS2_UV2
+    );
+
+    // Draw fullscreen quad on layer 1
+    // while the scene is rendered on layer 0.
+    fsQuad->renderLayer = 1;
+
+    // 1. Render everything on frame buffer.
+    renderQueue->addSwitchFrameBufferCommand(backendBuffer);
     renderQueue->addClearBuffersCommand(true, true, true, clearColor);
     renderQueue->addSetDepthTestCommand();
     renderQueue->addSetBlendCommand();
-    renderQueue->addDrawMeshesCommand();
+    renderQueue->addDrawMeshesCommand(0);
+
+    // 2. Render fullscreen quad to screen, sampling from framebuffer.
+    renderQueue->addSwitchFrameBufferCommand(0);
+    renderQueue->addClearBuffersCommand(true, false, false, clearColor);
+    renderQueue->addSetDepthTestCommand(false);
+    renderQueue->addSetBlendCommand(false);
+    renderQueue->addDrawMeshesCommand(1);
 
     if (renderQueue)
         return renderQueue->handle();
@@ -97,6 +221,7 @@ L3DHandle l3dLoadTexture(
     unsigned int height,
     unsigned int depth,
     bool mipmap,
+    const L3DPixelFormat& pixelFormat,
     const L3DImageMinFilter& minFilter,
     const L3DImageMagFilter& magFilter,
     const L3DImageWrapMethod& wrapS,
@@ -115,6 +240,7 @@ L3DHandle l3dLoadTexture(
         height,
         depth,
         mipmap,
+        pixelFormat,
         minFilter,
         magFilter,
         wrapS,
@@ -283,6 +409,126 @@ void l3dSetShaderProgramUniformMat4(
     L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(name, value);
+}
+
+L3DHandle l3dLoadFrameBuffer(
+    const L3DHandle& textureDepthStencilAttachment,
+    const L3DHandle& textureColorAttachment0,
+    const L3DHandle& textureColorAttachment1,
+    const L3DHandle& textureColorAttachment2,
+    const L3DHandle& textureColorAttachment3,
+    const L3DHandle& textureColorAttachment4,
+    const L3DHandle& textureColorAttachment5,
+    const L3DHandle& textureColorAttachment6,
+    const L3DHandle& textureColorAttachment7,
+    const L3DHandle& textureColorAttachment8,
+    const L3DHandle& textureColorAttachment9,
+    const L3DHandle& textureColorAttachment10,
+    const L3DHandle& textureColorAttachment11,
+    const L3DHandle& textureColorAttachment12,
+    const L3DHandle& textureColorAttachment13,
+    const L3DHandle& textureColorAttachment14,
+    const L3DHandle& textureColorAttachment15
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DTextureAttachments textures;
+
+    if (textureDepthStencilAttachment.data.id)
+    {
+        textures[L3D_DEPTH_STENCIL_ATTACHMENT] = _renderer->getTexture(textureDepthStencilAttachment);
+    }
+
+    if (textureColorAttachment0.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT0] = _renderer->getTexture(textureColorAttachment0);
+    }
+
+    if (textureColorAttachment1.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT1] = _renderer->getTexture(textureColorAttachment1);
+    }
+
+    if (textureColorAttachment2.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT2] = _renderer->getTexture(textureColorAttachment2);
+    }
+
+    if (textureColorAttachment3.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT3] = _renderer->getTexture(textureColorAttachment3);
+    }
+
+    if (textureColorAttachment4.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT4] = _renderer->getTexture(textureColorAttachment4);
+    }
+
+    if (textureColorAttachment5.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT5] = _renderer->getTexture(textureColorAttachment5);
+    }
+
+    if (textureColorAttachment6.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT6] = _renderer->getTexture(textureColorAttachment6);
+    }
+
+    if (textureColorAttachment7.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT7] = _renderer->getTexture(textureColorAttachment7);
+    }
+
+    if (textureColorAttachment8.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT8] = _renderer->getTexture(textureColorAttachment8);
+    }
+
+    if (textureColorAttachment9.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT9] = _renderer->getTexture(textureColorAttachment9);
+    }
+
+    if (textureColorAttachment10.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT10] = _renderer->getTexture(textureColorAttachment10);
+    }
+
+    if (textureColorAttachment11.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT11] = _renderer->getTexture(textureColorAttachment11);
+    }
+
+    if (textureColorAttachment12.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT12] = _renderer->getTexture(textureColorAttachment12);
+    }
+
+    if (textureColorAttachment13.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT13] = _renderer->getTexture(textureColorAttachment13);
+    }
+
+    if (textureColorAttachment14.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT14] = _renderer->getTexture(textureColorAttachment14);
+    }
+
+    if (textureColorAttachment15.data.id)
+    {
+        textures[L3D_COLOR_ATTACHMENT15] = _renderer->getTexture(textureColorAttachment15);
+    }
+
+    L3DFrameBuffer* frameBuffer = new L3DFrameBuffer(
+        _renderer,
+        textures
+    );
+
+    if (frameBuffer)
+        return frameBuffer->handle();
+
+    return L3D_INVALID_HANDLE;
 }
 
 L3DHandle l3dLoadMaterial(

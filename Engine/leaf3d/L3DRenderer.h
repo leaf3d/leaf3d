@@ -33,6 +33,7 @@ namespace l3d
     class L3DTexture;
     class L3DShader;
     class L3DShaderProgram;
+    class L3DFrameBuffer;
     class L3DMaterial;
     class L3DCamera;
     class L3DLight;
@@ -43,6 +44,7 @@ namespace l3d
     typedef std::map<unsigned int, L3DTexture*>         L3DTexturePool;
     typedef std::map<unsigned int, L3DShader*>          L3DShaderPool;
     typedef std::map<unsigned int, L3DShaderProgram*>   L3DShaderProgramPool;
+    typedef std::map<unsigned int, L3DFrameBuffer*>     L3DFrameBufferPool;
     typedef std::map<unsigned int, L3DMaterial*>        L3DMaterialPool;
     typedef std::map<unsigned int, L3DCamera*>          L3DCameraPool;
     typedef std::map<unsigned int, L3DLight*>           L3DLightPool;
@@ -56,6 +58,7 @@ namespace l3d
         L3DTexturePool          m_textures;
         L3DShaderPool           m_shaders;
         L3DShaderProgramPool    m_shaderPrograms;
+        L3DFrameBufferPool      m_frameBuffers;
         L3DMaterialPool         m_materials;
         L3DCameraPool           m_cameras;
         L3DLightPool            m_lights;
@@ -82,6 +85,7 @@ namespace l3d
         void addTexture(L3DTexture* texture);
         void addShader(L3DShader* shader);
         void addShaderProgram(L3DShaderProgram* shaderProgram);
+        void addFrameBuffer(L3DFrameBuffer* frameBuffer);
         void addMaterial(L3DMaterial* material);
         void addCamera(L3DCamera* camera);
         void addLight(L3DLight* light);
@@ -94,6 +98,7 @@ namespace l3d
         void removeTexture(L3DTexture* texture);
         void removeShader(L3DShader* shader);
         void removeShaderProgram(L3DShaderProgram* shaderProgram);
+        void removeFrameBuffer(L3DFrameBuffer* frameBuffer);
         void removeMaterial(L3DMaterial* material);
         void removeCamera(L3DCamera* camera);
         void removeLight(L3DLight* light);
@@ -106,6 +111,7 @@ namespace l3d
         L3DTexture*         getTexture(const L3DHandle& handle) const;
         L3DShader*          getShader(const L3DHandle& handle) const;
         L3DShaderProgram*   getShaderProgram(const L3DHandle& handle) const;
+        L3DFrameBuffer*     getFrameBuffer(const L3DHandle& handle) const;
         L3DMaterial*        getMaterial(const L3DHandle& handle) const;
         L3DCamera*          getCamera(const L3DHandle& handle) const;
         L3DLight*           getLight(const L3DHandle& handle) const;
@@ -117,6 +123,7 @@ namespace l3d
         unsigned int    textureCount() const { return m_textures.size(); }
         unsigned int    shaderCount() const { return m_shaders.size(); }
         unsigned int    shaderProgramCount() const { return m_shaderPrograms.size(); }
+        unsigned int    frameBufferCount() const { return m_frameBuffers.size(); }
         unsigned int    materialCount() const { return m_materials.size(); }
         unsigned int    cameraCount() const { return m_cameras.size(); }
         unsigned int    lightCount() const { return m_lights.size(); }
@@ -125,6 +132,7 @@ namespace l3d
 
     protected:
         // Render actions.
+        void switchFrameBuffer(L3DFrameBuffer* frameBuffer = 0);
         void clearBuffers(
             bool colorBuffer = true,
             bool depthBuffer = true,

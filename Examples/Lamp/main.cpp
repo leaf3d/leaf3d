@@ -151,7 +151,7 @@ int main()
     );
 
     // Create a forward rendering pipeline.
-    L3DHandle renderQueue = l3dLoadForwardRenderQueue(L3DVec4(0, 0, 0.05f, 1));
+    L3DHandle renderQueue = l3dLoadForwardRenderQueue(WINDOW_SIZE, WINDOW_SIZE, L3DVec4(0, 0, 0.05f, 1));
 
     // ---------------------------- RENDERING ------------------------------ //
 

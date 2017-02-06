@@ -41,7 +41,10 @@ void l3dRenderFrame(
 );
 
 L3DHandle l3dLoadForwardRenderQueue(
-    const L3DVec4& clearColor = L3DVec4(1, 1, 1, 1)
+    unsigned int width,
+    unsigned int height,
+    const L3DVec4& clearColor = L3DVec4(1, 1, 1, 1),
+    const L3DHandle& screenFragmentShader = L3D_INVALID_HANDLE
 );
 
 /* Textures *******************************************************************/
@@ -54,6 +57,7 @@ L3DHandle l3dLoadTexture(
     unsigned int height,
     unsigned int depth,
     bool mipmap = true,
+    const L3DPixelFormat& pixelFormat = L3D_UNSIGNED_BYTE,
     const L3DImageMinFilter& minFilter = L3D_MIN_NEAREST_MIPMAP_LINEAR,
     const L3DImageMagFilter& magFilter = L3D_MAG_LINEAR,
     const L3DImageWrapMethod& wrapS = L3D_REPEAT,
@@ -126,6 +130,28 @@ void l3dSetShaderProgramUniformMat4(
     const L3DHandle& target,
     const char* name,
     const L3DMat4& value
+);
+
+/* Framebuffers ***************************************************************/
+
+L3DHandle l3dLoadFrameBuffer(
+    const L3DHandle& textureDepthStencilAttachment,
+    const L3DHandle& textureColorAttachment0,
+    const L3DHandle& textureColorAttachment1 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment2 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment3 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment4 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment5 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment6 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment7 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment8 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment9 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment10 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment11 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment12 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment13 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment14 = L3D_INVALID_HANDLE,
+    const L3DHandle& textureColorAttachment15 = L3D_INVALID_HANDLE
 );
 
 /* Materials ******************************************************************/

@@ -31,3 +31,4 @@ add_custom_target(
 add_subdirectory(Leaf)
 add_subdirectory(Frankie)
 add_subdirectory(Lamp)
+add_subdirectory(PostProcessing)

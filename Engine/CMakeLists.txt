@@ -9,6 +9,7 @@ set(LEAF3D_SOURCES
     leaf3d/L3DTexture.h
     leaf3d/L3DShader.h
     leaf3d/L3DShaderProgram.h
+    leaf3d/L3DFrameBuffer.h
     leaf3d/L3DMaterial.h
     leaf3d/L3DCamera.h
     leaf3d/L3DLight.h
@@ -21,6 +22,7 @@ set(LEAF3D_SOURCES
     L3DTexture.cpp
     L3DShader.cpp
     L3DShaderProgram.cpp
+    L3DFrameBuffer.cpp
     L3DMaterial.cpp
     L3DCamera.cpp
     L3DLight.cpp

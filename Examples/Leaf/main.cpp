@@ -70,7 +70,7 @@ int main()
 
     // Load a material.
     L3DHandle material = l3dLoadMaterial("logo", shaderProgram);
-    l3dAddTextureToMaterial(material, "u_diffuseMap", texture);
+    l3dAddTextureToMaterial(material, "diffuseMap", texture);
 
     // Load a simple textured quad.
     L3DHandle logo = l3dLoadQuad(material);
@@ -80,7 +80,7 @@ int main()
     L3DHandle camera = l3dLoadCamera();
 
     // Create a forward rendering pipeline.
-    L3DHandle renderQueue = l3dLoadForwardRenderQueue();
+    L3DHandle renderQueue = l3dLoadForwardRenderQueue(WINDOW_SIZE, WINDOW_SIZE);
 
     // ---------------------------- RENDERING ------------------------------ //
 

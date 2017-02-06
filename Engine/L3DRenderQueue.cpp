@@ -46,6 +46,13 @@ void L3DRenderQueue::appendCommands(const L3DRenderCommandList& commands)
     m_commands.insert(m_commands.end(), commands.begin(), commands.end());
 }
 
+void L3DRenderQueue::addSwitchFrameBufferCommand(L3DFrameBuffer* frameBuffer)
+{
+    m_commands.push_back(
+        new L3DSwitchFrameBufferCommand(frameBuffer)
+    );
+}
+
 void L3DRenderQueue::addClearBuffersCommand(
     bool colorBuffer,
     bool depthBuffer,

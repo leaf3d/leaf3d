@@ -28,6 +28,8 @@
 
 namespace l3d
 {
+    class L3DFrameBuffer;
+
     class L3DRenderCommand
     {
     protected:
@@ -42,6 +44,18 @@ namespace l3d
     };
 
     typedef std::vector<L3DRenderCommand*> L3DRenderCommandList;
+
+    class L3DSwitchFrameBufferCommand : public L3DRenderCommand
+    {
+    public:
+        L3DFrameBuffer* frameBuffer;
+
+    public:
+        L3DSwitchFrameBufferCommand(
+            L3DFrameBuffer* frameBuffer = 0
+        ) : L3DRenderCommand(L3D_SWITCH_FRAME_BUFFER),
+            frameBuffer(frameBuffer) {}
+    };
 
     class L3DClearBuffersCommand : public L3DRenderCommand
     {
@@ -137,6 +151,9 @@ namespace l3d
 
         void appendCommands(const L3DRenderCommandList& commands);
 
+        void addSwitchFrameBufferCommand(
+            L3DFrameBuffer* frameBuffer = 0
+        );
         void addClearBuffersCommand(
             bool colorBuffer = true,
             bool depthBuffer = true,
