@@ -123,7 +123,7 @@ L3DHandle l3dLoadForwardRenderQueue(
     );
 
     // A. Init framebuffer.
-    L3DTexture* frameBufferColorTexture = new L3DTexture(_renderer, L3D_TEXTURE_2D, L3D_RGB, 0, width, height, 0, false);
+    L3DTexture* frameBufferColorTexture = new L3DTexture(_renderer, L3D_TEXTURE_2D, L3D_RGB, 0, width, height, 0);
 
     L3DFrameBuffer* backendBuffer = new L3DFrameBuffer(
         _renderer,

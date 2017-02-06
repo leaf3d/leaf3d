@@ -1175,6 +1175,26 @@ L3DRenderQueue* L3DRenderer::getRenderQueue(const L3DHandle& handle) const
 
 void L3DRenderer::switchFrameBuffer(L3DFrameBuffer* frameBuffer)
 {
+    // At every framebuffer switch, update mipmaps of attached textures.
+    for (L3DFrameBufferPool::iterator fb_it = m_frameBuffers.begin(); fb_it!=m_frameBuffers.end(); ++fb_it)
+    {
+        L3DFrameBuffer* fb = fb_it->second;
+        L3DTextureAttachments fb_textures = fb->textureAttachments();
+        for (L3DTextureAttachments::iterator tex_it = fb_textures.begin(); tex_it!=fb_textures.end(); ++tex_it)
+        {
+            L3DTexture* texture = tex_it->second;
+            if (texture && texture->useMipmap())
+            {
+                GLenum gl_type = _toOpenGL(texture->type());
+                glBindTexture(gl_type, texture->id());
+                glGenerateMipmap(gl_type);
+                glBindTexture(gl_type, 0);
+            }
+
+        }
+    }
+
+    // Switch to new framebuffer.
     GLuint frameBufferId = frameBuffer ? frameBuffer->id() : 0;
 
     glBindFramebuffer(GL_FRAMEBUFFER, frameBufferId);
