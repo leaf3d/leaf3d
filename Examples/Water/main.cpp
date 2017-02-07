@@ -135,7 +135,6 @@ int main()
     while(!glfwWindowShouldClose(window))
     {
         double time = glfwGetTime();
-        float sinOfTime = sin(time);
 
         // Poll window events.
         glfwPollEvents();
@@ -144,12 +143,12 @@ int main()
         l3dRenderFrame(camera, renderQueue);
 
         // Apply a rotation to the camera.
-        //l3dRotateCamera(camera, (float)sin(time) * 0.05f);
+        l3dRotateCamera(camera, (float)sin(time) * 0.002f);
 
         // Apply movement to lights.
-        L3DVec3 dy1(L3DVec3(1, 0, 1) * sinOfTime * 0.08f);
+        L3DVec3 dy1(L3DVec3(1, 0, 1) * (float)sin(time) * 0.08f);
         l3dTranslateLight(light1, dy1);
-        l3dTranslateMesh(light1Bulb, dy1);;
+        l3dTranslateMesh(light1Bulb, dy1);
 
         // Animate water waves.
         l3dSetShaderProgramUniformF(waterShaderProgram, "u_time", (float)time);
