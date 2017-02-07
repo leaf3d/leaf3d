@@ -19,6 +19,8 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
+#include <stdio.h>
+#include <sstream>
 #include <leaf3d/leaf3d.h>
 #include <leaf3d/L3DRenderer.h>
 #include <leaf3d/L3DTexture.h>
@@ -72,6 +74,20 @@ static const char* _defaultScreenFragmentShader = GLSL(
         gl_FragColor = vec4(texture(u_diffuseMap, o_texcoord0).rgb, 1);
     }
 );
+
+static const std::string _getUniformName(const char* name, int index)
+{
+    std::string _name(name);
+
+    if (index > -1)
+    {
+        std::ostringstream sstream;
+        sstream << "[" << index << "]";
+        _name.append(sstream.str());
+    }
+
+    return _name;
+}
 
 int l3dInit()
 {
@@ -297,118 +313,127 @@ L3DHandle l3dLoadShaderProgram(
 void l3dSetShaderProgramUniformF(
     const L3DHandle& target,
     const char* name,
-    float value
+    float value,
+    int index
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
     L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(name, value);
+        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
-void l3dSetShaderProgramUniformlI(
+void l3dSetShaderProgramUniformI(
     const L3DHandle& target,
     const char* name,
-    int value
+    int value,
+    int index
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
     L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(name, value);
+        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
-void l3dSetShaderProgramUniformlUI(
+void l3dSetShaderProgramUniformUI(
     const L3DHandle& target,
     const char* name,
-    unsigned int value
+    unsigned int value,
+    int index
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
     L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(name, value);
+        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
-void l3dSetShaderProgramUniformlB(
+void l3dSetShaderProgramUniformB(
     const L3DHandle& target,
     const char* name,
-    bool value
+    bool value,
+    int index
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
     L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(name, value);
+        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformVec2(
     const L3DHandle& target,
     const char* name,
-    const L3DVec2& value
+    const L3DVec2& value,
+    int index
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
     L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(name, value);
+        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformVec3(
     const L3DHandle& target,
     const char* name,
-    const L3DVec3& value
+    const L3DVec3& value,
+    int index
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
     L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(name, value);
+        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformVec4(
     const L3DHandle& target,
     const char* name,
-    const L3DVec4& value
+    const L3DVec4& value,
+    int index
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
     L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(name, value);
+        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformMat3(
     const L3DHandle& target,
     const char* name,
-    const L3DMat3& value
+    const L3DMat3& value,
+    int index
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
     L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(name, value);
+        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformMat4(
     const L3DHandle& target,
     const char* name,
-    const L3DMat4& value
+    const L3DMat4& value,
+    int index
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
     L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(name, value);
+        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 L3DHandle l3dLoadFrameBuffer(
@@ -711,7 +736,7 @@ L3DHandle l3dLoadMesh(
 }
 
 L3DHandle l3dLoadQuad(
-    const L3DHandle &material,
+    const L3DHandle& material,
     const L3DVec2& texMulFactor,
     unsigned int renderLayer
 )
@@ -740,7 +765,7 @@ L3DHandle l3dLoadQuad(
 }
 
 L3DHandle l3dLoadCube(
-    const L3DHandle &material,
+    const L3DHandle& material,
     const L3DVec2& texMulFactor,
     unsigned int renderLayer
 )
@@ -801,6 +826,76 @@ L3DHandle l3dLoadCube(
     return l3dLoadMesh(
         vertices, 24,
         indices, 36,
+        material,
+        L3D_POS3_NOR3_TAN3_UV2,
+        L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
+        renderLayer
+    );
+}
+
+L3DHandle l3dLoadGrid(
+    unsigned int n,
+    const L3DHandle& material,
+    const L3DVec2& texMulFactor,
+    unsigned int renderLayer
+)
+{
+    unsigned int numVertices = (n + 1) * (n + 1);
+    unsigned int numIndices = 6 * n * n;
+
+    GLfloat* vertices = (GLfloat*)malloc(numVertices * 11 * sizeof(GLfloat));
+    GLuint* indices = (GLuint*)malloc(numIndices * sizeof(GLuint));
+
+    GLfloat k = 1.0f / n;
+
+    // Generate vertices.
+    unsigned int v = 0;
+    for (unsigned int y = 0; y <= n; ++y) {
+        GLfloat ky = k * y;
+
+        for (unsigned int x = 0; x <= n; ++x) {
+            GLfloat kx = k * x;
+
+            // Position.
+            vertices[v+0]  = kx - 0.5f;
+            vertices[v+1]  = ky - 0.5f;
+            vertices[v+2]  = 0.0f;
+            // Normal.
+            vertices[v+3]  = 0.0f;
+            vertices[v+4]  = 0.0f;
+            vertices[v+5]  = 1.0f;
+            // Tangent.
+            vertices[v+6]  = 1.0f;
+            vertices[v+7]  = 0.0f;
+            vertices[v+8]  = 0.0f;
+            // Texcoords.
+            vertices[v+9]  = texMulFactor.x * x;
+            vertices[v+10] = texMulFactor.y * y;
+
+            v += 11;
+        }
+    }
+
+    // Generate indices.
+    unsigned int q = 0;
+    for (unsigned int y = 0; y < n; ++y) {
+        for (unsigned int x = 0; x < n; ++x) {
+            // First triangle.
+            indices[q    ] = x + y * n + y;
+            indices[q + 1] = x + y * n + y + 1;
+            indices[q + 2] = x + (y + 1) * n + y + 1;
+            // Second triangle.
+            indices[q + 3] = x + (y + 1) * n + y + 1;
+            indices[q + 4] = x + (y + 1) * n + y + 2;
+            indices[q + 5] = x + y * n + y + 1;
+
+            q += 6;
+        }
+    }
+
+    return l3dLoadMesh(
+        vertices, numVertices,
+        indices, numIndices,
         material,
         L3D_POS3_NOR3_TAN3_UV2,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,

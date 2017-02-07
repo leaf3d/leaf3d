@@ -81,55 +81,64 @@ L3DHandle l3dLoadShaderProgram(
 void l3dSetShaderProgramUniformI(
     const L3DHandle& target,
     const char* name,
-    int value
+    int value,
+    int index = -1
 );
 
 void l3dSetShaderProgramUniformUI(
     const L3DHandle& target,
     const char* name,
-    unsigned int value
+    unsigned int value,
+    int index = -1
 );
 
 void l3dSetShaderProgramUniformB(
     const L3DHandle& target,
     const char* name,
-    bool value
+    bool value,
+    int index = -1
 );
 
 void l3dSetShaderProgramUniformF(
     const L3DHandle& target,
     const char* name,
-    float value
+    float value,
+    int index = -1
 );
 
 void l3dSetShaderProgramUniformVec2(
     const L3DHandle& target,
     const char* name,
-    const L3DVec2& value
+    const L3DVec2& value,
+    int index = -1
 );
 
 void l3dSetShaderProgramUniformVec3(
     const L3DHandle& target,
     const char* name,
-    const L3DVec3& value
+    const L3DVec3& value,
+    int index = -1
 );
 
 void l3dSetShaderProgramUniformVec4(
     const L3DHandle& target,
     const char* name,
-    const L3DVec4& value
+    const L3DVec4& value,
+    int index = -1
 );
 
 void l3dSetShaderProgramUniformMat3(
     const L3DHandle& target,
     const char* name,
-    const L3DMat3& value
+    const L3DMat3& value,
+    int index = -1
 );
 
 void l3dSetShaderProgramUniformMat4(
     const L3DHandle& target,
     const char* name,
-    const L3DMat4& value
+    const L3DMat4& value,
+    int index = -1
 );
 
 /* Framebuffers ***************************************************************/
@@ -234,6 +243,13 @@ L3DHandle l3dLoadQuad(
 );
 
 L3DHandle l3dLoadCube(
+    const L3DHandle& material,
+    const L3DVec2& texMulFactor = L3DVec2(1, 1),
+    unsigned int renderLayer = 0
+);
+
+L3DHandle l3dLoadGrid(
+    unsigned int n,
     const L3DHandle& material,
     const L3DVec2& texMulFactor = L3DVec2(1, 1),
     unsigned int renderLayer = 0
