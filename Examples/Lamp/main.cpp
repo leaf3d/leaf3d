@@ -25,7 +25,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#define WINDOW_SIZE 640
+#define WINDOW_WIDTH    1024
+#define WINDOW_HEIGHT   768
 
 using namespace l3d;
 
@@ -45,7 +46,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    GLFWwindow* window = glfwCreateWindow(WINDOW_SIZE, WINDOW_SIZE, "leaf3d", L3D_NULLPTR, L3D_NULLPTR);
+    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "leaf3d", L3D_NULLPTR, L3D_NULLPTR);
     glfwMakeContextCurrent(window);
 
     // Init leaf3d.
@@ -147,11 +148,12 @@ int main()
            glm::vec3(0.0f, 10.0f, 22.0f),
            glm::vec3(0.0f, 5.0f, 0.0f),
            glm::vec3(0.0f, 1.0f, 0.0f)
-        )
+        ),
+        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH/(GLfloat)WINDOW_HEIGHT, 1.0f, 100.0f)
     );
 
     // Create a forward rendering pipeline.
-    L3DHandle renderQueue = l3dLoadForwardRenderQueue(WINDOW_SIZE, WINDOW_SIZE, L3DVec4(0, 0, 0.05f, 1));
+    L3DHandle renderQueue = l3dLoadForwardRenderQueue(WINDOW_WIDTH, WINDOW_HEIGHT, L3DVec4(0, 0, 0.05f, 1));
 
     // ---------------------------- RENDERING ------------------------------ //
 

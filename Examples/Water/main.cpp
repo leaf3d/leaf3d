@@ -25,7 +25,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#define WINDOW_SIZE 640
+#define WINDOW_WIDTH    1024
+#define WINDOW_HEIGHT   768
+#define WAVE_COUNT      4
+#define SKY_COLOR       L3DVec4(0.1f, 0.15f, 0.2f, 0.5f)
 
 using namespace l3d;
 
@@ -45,7 +48,7 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    GLFWwindow* window = glfwCreateWindow(WINDOW_SIZE, WINDOW_SIZE, "leaf3d", L3D_NULLPTR, L3D_NULLPTR);
+    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "leaf3d", L3D_NULLPTR, L3D_NULLPTR);
     glfwMakeContextCurrent(window);
 
     // Init leaf3d.
@@ -65,31 +68,33 @@ int main()
     // Load a shader program for realistic water rendering.
     L3DHandle waterShaderProgram = l3dutLoadShaderProgram("water.vert", "water.frag");
 
-    // Load a texture.
-    L3DHandle texture = l3dutLoadTexture2D("water.png");
+    // Load water's textures.
+    L3DHandle normalMap = l3dutLoadTexture2D("water_norm.png");
 
     // Load a material.
     L3DHandle waterMaterial = l3dLoadMaterial("waterPlaneMaterial", waterShaderProgram, L3DVec3(0,0,0));
-    l3dAddTextureToMaterial(waterMaterial, "diffuseMap", texture);
+    l3dAddTextureToMaterial(waterMaterial, "normalMap", normalMap);
 
     // Load a water plane.
-    L3DHandle waterPlane = l3dLoadGrid(200, waterMaterial, L3DVec2(0.06f, 0.06f));
+    L3DHandle waterPlane = l3dLoadGrid(200, waterMaterial, L3DVec2(0.05f, 0.05f));
     l3dRotateMesh(waterPlane, 1.57f, L3DVec3(-1, 0, 0));
     l3dScaleMesh(waterPlane, L3DVec3(200, 200, 1));
 
+    l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_waterColor", L3DVec4(0.3,0.5,0.6,1));
     l3dSetShaderProgramUniformF(waterShaderProgram, "u_waterHeight", 0);
-    l3dSetShaderProgramUniformI(waterShaderProgram, "u_numWaves", 4);
-    for (int i = 0; i < 4; ++i) {
+    l3dSetShaderProgramUniformI(waterShaderProgram, "u_numWaves", WAVE_COUNT);
+
+    for (int i = 0; i < WAVE_COUNT; ++i) {
         float amplitude = 0.5f / (i + 1);
         l3dSetShaderProgramUniformF(waterShaderProgram, "u_amplitude", amplitude, i);
 
-        float wavelength = 8 * glm::pi<float>() / (i + 1);
+        float wavelength = 10 * glm::pi<float>() / (i + 1);
         l3dSetShaderProgramUniformF(waterShaderProgram, "u_wavelength", wavelength, i);
 
         float speed = 1.0f + 2*i;
         l3dSetShaderProgramUniformF(waterShaderProgram, "u_speed", speed, i);
 
-        float angle = (float(rand() % 100) / 50.0f - 1.0f) * glm::pi<float>() / 3;
+        float angle = (float(rand() % 100) / 150.0f) + (float(rand() % 100) / 50.0f) * glm::pi<float>() / 3;
         l3dSetShaderProgramUniformVec2(waterShaderProgram, "u_direction", L3DVec2(cos(angle), sin(angle)), i);
     }
 
@@ -105,6 +110,9 @@ int main()
     L3DHandle light1Bulb = l3dLoadCube(light1Material);
     l3dTranslateMesh(light1Bulb, light1Pos);
 
+    // Load a directional light.
+    L3DHandle directionalLight = l3dLoadDirectionalLight(L3DVec3(0, -1, 0), SKY_COLOR);
+
     // Set the global ambient light color.
     l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_ambientColor", L3DVec4(0.3f, 0.6f, 0.8f, 0.2f));
 
@@ -115,11 +123,12 @@ int main()
            glm::vec3(0.0f, 15.0f, 35.0f),
            glm::vec3(0.0f, 0.0f, 0.0f),
            glm::vec3(0.0f, 1.0f, 0.0f)
-        )
+        ),
+        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH/(GLfloat)WINDOW_HEIGHT, 1.0f, 100.0f)
     );
 
     // Create a forward rendering pipeline.
-    L3DHandle renderQueue = l3dLoadForwardRenderQueue(WINDOW_SIZE, WINDOW_SIZE, L3DVec4(0.02f, 0.08f, 0.12f, 1));
+    L3DHandle renderQueue = l3dLoadForwardRenderQueue(WINDOW_WIDTH, WINDOW_HEIGHT, SKY_COLOR);
 
     // ---------------------------- RENDERING ------------------------------ //
 

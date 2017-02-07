@@ -29,16 +29,15 @@ in vec3 o_normal;
 in vec3 o_tangent;
 in vec3 o_bitangent;
 in vec2 o_texcoord0;
+in vec2 o_texcoord1;
+in vec2 o_texcoord2;
 
 /* UNIFORMS *******************************************************************/
 
 // Flags.
-uniform bool        u_specularMapEnabled;
 uniform bool        u_normalMapEnabled;
 
 // Diffuse map.
-uniform sampler2D   u_diffuseMap;
-uniform sampler2D   u_specularMap;
 uniform sampler2D   u_normalMap;
 
 // Camera position.
@@ -49,6 +48,7 @@ uniform Material    u_material;
 uniform int         u_lightNr;
 uniform Light       u_light[NR_MAX_LIGHTS];
 uniform vec4        u_ambientColor;
+uniform vec4        u_waterColor;
 
 /* UTILS **********************************************************************/
 
@@ -106,19 +106,15 @@ float lightingAttenuation(
 void main()
 {
     vec3 normal = o_normal;
-    vec4 diffuse = texture(u_diffuseMap, o_texcoord0);
+    vec4 diffuse = u_waterColor;
     vec4 specular = diffuse;
-
-    // Specular mapping.
-    if (u_specularMapEnabled)
-        specular = texture(u_specularMap, o_texcoord0);
 
     // Normal mapping.
     if (u_normalMapEnabled)
     {
         // Calculate fragment bump normal using TBN matrix.
         mat3 TBN = mat3(o_tangent, o_bitangent, o_normal);
-        normal = texture(u_normalMap, o_texcoord0).rgb;
+        normal = texture(u_normalMap, o_texcoord0).rgb + texture(u_normalMap, o_texcoord1).rgb + texture(u_normalMap, o_texcoord2).rgb;
         normal = TBN * normalize(normal * 2.0 - 1.0);
     }
 

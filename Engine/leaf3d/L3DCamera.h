@@ -45,7 +45,7 @@ namespace l3d
                 glm::vec3(0.0f, 0.0f, 0.0f),
                 glm::vec3(0.0f, 1.0f, 0.0f)
             ),
-            const L3DMat4& proj = glm::perspective(45.0f, 1.0f, 1.0f, 100.0f)
+            const L3DMat4& proj = glm::perspective(45.0f, 1.333333333f, 1.0f, 100.0f)
         );
         ~L3DCamera() {}
 
