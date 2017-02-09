@@ -38,7 +38,7 @@ void main(void)
     // Tangent in world space.
     o_tangent	= normalize(u_normalMat * i_tangent);
     // Re-orthogonalize tangent with respect to normal
-    //o_tangent = normalize(o_tangent - dot(o_tangent, o_normal) * o_normal);
+    o_tangent = normalize(o_tangent - dot(o_tangent, o_normal) * o_normal);
 
     // Bi-tagent in world space.
     o_bitangent = cross(o_tangent, o_normal);
