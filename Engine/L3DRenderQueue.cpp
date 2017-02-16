@@ -66,11 +66,21 @@ void L3DRenderQueue::addClearBuffersCommand(
 }
 
 void L3DRenderQueue::addSetDepthTestCommand(
+    bool enable,
+    const L3DDepthFactor& factor
+)
+{
+    m_commands.push_back(
+        new L3DSetDepthTestCommand(enable, factor)
+    );
+}
+
+void L3DRenderQueue::addSetDepthMaskCommand(
     bool enable
 )
 {
     m_commands.push_back(
-        new L3DSetDepthTestCommand(enable)
+        new L3DSetDepthMaskCommand(enable)
     );
 }
 

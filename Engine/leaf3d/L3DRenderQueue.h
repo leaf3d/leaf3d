@@ -82,11 +82,26 @@ namespace l3d
     {
     public:
         bool enable;
+        L3DDepthFactor factor;
 
     public:
         L3DSetDepthTestCommand(
-            bool enable = true
+            bool enable = true,
+            const L3DDepthFactor& factor = L3D_LESS
         ) : L3DRenderCommand(L3D_SET_DEPTH_TEST),
+            enable(enable),
+            factor(factor) {}
+    };
+
+    class L3DSetDepthMaskCommand : public L3DRenderCommand
+    {
+    public:
+        bool enable;
+
+    public:
+        L3DSetDepthMaskCommand(
+            bool enable = true
+        ) : L3DRenderCommand(L3D_SET_DEPTH_MASK),
             enable(enable) {}
     };
 
@@ -161,6 +176,10 @@ namespace l3d
             const L3DVec4& clearColor = L3DVec4(1, 1, 1, 1)
         );
         void addSetDepthTestCommand(
+            bool enable = true,
+            const L3DDepthFactor& factor = L3D_LESS
+        );
+        void addSetDepthMaskCommand(
             bool enable = true
         );
         void addSetStencilTestCommand(

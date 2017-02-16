@@ -205,23 +205,29 @@ L3DHandle l3dLoadForwardRenderQueue(
         L3D_POS2_UV2
     );
 
-    // Draw fullscreen quad on layer 1
-    // while the scene is rendered on layer 0.
-    fsQuad->renderLayer = 1;
+    // Draw fullscreen quad on layer 2
+    // while the scene is rendered on layer 0 and 1.
+    fsQuad->renderLayer = 2;
 
     // 1. Render everything on frame buffer.
     renderQueue->addSwitchFrameBufferCommand(backendBuffer);
     renderQueue->addClearBuffersCommand(true, true, true, clearColor);
     renderQueue->addSetDepthTestCommand();
+    renderQueue->addSetDepthMaskCommand();
     renderQueue->addSetBlendCommand();
     renderQueue->addDrawMeshesCommand(0);
 
-    // 2. Render fullscreen quad to screen, sampling from framebuffer.
+    // 2. Render meshes not writing on depth buffer of frame buffer.
+    renderQueue->addSetDepthTestCommand(true, L3D_EQUAL);
+    renderQueue->addDrawMeshesCommand(1);
+    renderQueue->addSetDepthTestCommand(true, L3D_LESS);
+
+    // 3. Render fullscreen quad to screen, sampling from framebuffer.
     renderQueue->addSwitchFrameBufferCommand(0);
     renderQueue->addClearBuffersCommand(true, false, false, clearColor);
     renderQueue->addSetDepthTestCommand(false);
     renderQueue->addSetBlendCommand(false);
-    renderQueue->addDrawMeshesCommand(1);
+    renderQueue->addDrawMeshesCommand(2);
 
     if (renderQueue)
         return renderQueue->handle();
@@ -828,6 +834,75 @@ L3DHandle l3dLoadCube(
         indices, 36,
         material,
         L3D_POS3_NOR3_TAN3_UV2,
+        L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
+        renderLayer
+    );
+}
+
+L3DHandle l3dLoadSkyBox(
+    const L3DHandle& material,
+    unsigned int renderLayer
+)
+{
+    GLfloat vertices[] = {
+    //   Position
+         1.0f,  1.0f,  1.0f,    // Right Top-left
+         1.0f,  1.0f, -1.0f,    // Right Top-right
+         1.0f, -1.0f, -1.0f,    // Right Bottom-left
+         1.0f, -1.0f,  1.0f,    // Right Bottom-right
+
+        -1.0f,  1.0f, -1.0f,    // Left Top-left
+        -1.0f,  1.0f,  1.0f,    // Left Top-right
+        -1.0f, -1.0f,  1.0f,    // Left Bottom-left
+        -1.0f, -1.0f, -1.0f,    // Left Bottom-right
+
+        -1.0f,  1.0f, -1.0f,    // Top Top-left
+         1.0f,  1.0f, -1.0f,    // Top Top-right
+         1.0f,  1.0f,  1.0f,    // Top Bottom-left
+        -1.0f,  1.0f,  1.0f,    // Top Bottom-right
+
+        -1.0f, -1.0f,  1.0f,    // Bottom Top-left
+         1.0f, -1.0f,  1.0f,    // Bottom Top-right
+         1.0f, -1.0f, -1.0f,    // Bottom Bottom-left
+        -1.0f, -1.0f, -1.0f,    // Bottom Bottom-right
+
+        -1.0f,  1.0f, -1.0f,    // Back Top-left
+         1.0f,  1.0f, -1.0f,    // Back Top-right
+         1.0f, -1.0f, -1.0f,    // Back Bottom-right
+        -1.0f, -1.0f, -1.0f,    // Back Bottom-left
+
+        -1.0f,  1.0f,  1.0f,    // Front Top-left
+         1.0f,  1.0f,  1.0f,    // Front Top-right
+         1.0f, -1.0f,  1.0f,    // Front Bottom-right
+        -1.0f, -1.0f,  1.0f,    // Front Bottom-left
+
+    };
+
+    GLuint indices[] = {
+        0, 1, 2,
+        2, 3, 0,
+
+        4, 5, 6,
+        6, 7, 4,
+
+        8, 9, 10,
+        10, 11, 8,
+
+        12, 13, 14,
+        14, 15, 12,
+
+        16, 17, 18,
+        18, 19, 16,
+
+        20, 21, 22,
+        22, 23, 20,
+    };
+
+    return l3dLoadMesh(
+        vertices, 24,
+        indices, 36,
+        material,
+        L3D_POS3,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
         renderLayer
     );

@@ -62,11 +62,16 @@ namespace l3d
         L3D_POS3 = 3,
         L3D_POS2_UV2 = 4,
         L3D_POS3_UV2 = 5,
+        L3D_POS3_UV3 = 6,
         L3D_POS3_NOR3_UV2 = 8,
+        L3D_POS3_NOR3_UV3 = 9,
+        L3D_POS3_NOR3_UV2_UV2 = 10,
         L3D_POS3_NOR3_TAN3_UV2 = 11,
+        L3D_POS3_NOR3_TAN3_UV3 = 12,
         L3D_POS3_NOR3_TAN3_UV2_UV2 = 13,
         L3D_POS3_NOR3_TAN3_UV2_UV2_UV2 = 15,
-        L3D_POS3_NOR3_TAN3_UV2_UV2_UV2_UV2 = 17
+        L3D_POS3_NOR3_TAN3_UV2_UV2_UV2_UV2 = 17,
+        L3D_MAX_VERTEX_FORMAT
     };
 
     enum L3DImageFormat
@@ -168,6 +173,12 @@ namespace l3d
         float* valueMat4;
     };
 
+    enum L3DDepthFactor
+    {
+        L3D_LESS = 0,
+        L3D_EQUAL
+    };
+
     enum L3DBlendFactor
     {
         L3D_ZERO = 0,
@@ -210,7 +221,8 @@ namespace l3d
     {
         L3D_TEXTURE_1D = 0,
         L3D_TEXTURE_2D,
-        L3D_TEXTURE_3D
+        L3D_TEXTURE_3D,
+        L3D_TEXTURE_CUBE_MAP
     };
 
     enum L3DShaderType
@@ -226,6 +238,7 @@ namespace l3d
         L3D_SWITCH_FRAME_BUFFER,
         L3D_CLEAR_BUFFERS,
         L3D_SET_DEPTH_TEST,
+        L3D_SET_DEPTH_MASK,
         L3D_SET_STENCIL_TEST,
         L3D_SET_BLEND,
         L3D_DRAW_MESHES

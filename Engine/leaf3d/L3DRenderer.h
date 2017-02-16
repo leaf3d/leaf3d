@@ -139,7 +139,11 @@ namespace l3d
             bool stencilBuffer = true,
             const L3DVec4& clearColor = L3DVec4(1, 1, 1, 1)
         );
-        void setDepthTest(bool enable = true);
+        void setDepthTest(
+            bool enable = true,
+            const L3DDepthFactor& factor = L3D_LESS
+        );
+        void setDepthMask(bool enable = true);
         void setStencilTest(bool enable = true);
         void setBlend(
             bool enable = true,

@@ -66,6 +66,55 @@ L3DHandle l3dutLoadTexture2D(const char* filename)
     return texture;
 }
 
+L3DHandle l3dutLoadTextureCube(
+    const char* filenameRight,
+    const char* filenameLeft,
+    const char* filenameTop,
+    const char* filenameBottom,
+    const char* filenameBack,
+    const char* filenameFront
+)
+{
+    if (!filenameRight || !filenameLeft || !filenameTop || !filenameBottom || !filenameBack || !filenameFront)
+        return L3D_INVALID_HANDLE;
+
+    int width, height, comp, size = 0;
+    unsigned char* imgRight = stbi_load((_rootPath + filenameRight).c_str(), &width, &height, &comp, 0);
+    size += width * height * comp;
+    unsigned char* imgLeft = stbi_load((_rootPath + filenameLeft).c_str(), &width, &height, &comp, 0);
+    size += width * height * comp;
+    unsigned char* imgTop = stbi_load((_rootPath + filenameTop).c_str(), &width, &height, &comp, 0);
+    size += width * height * comp;
+    unsigned char* imgBottom = stbi_load((_rootPath + filenameBottom).c_str(), &width, &height, &comp, 0);
+    size += width * height * comp;
+    unsigned char* imgBack = stbi_load((_rootPath + filenameBack).c_str(), &width, &height, &comp, 0);
+    size += width * height * comp;
+    unsigned char* imgFront = stbi_load((_rootPath + filenameFront).c_str(), &width, &height, &comp, 0);
+    size += width * height * comp;
+
+    unsigned char* img = (unsigned char*)malloc(size);
+    unsigned int faceSize = size / 6;
+    memcpy(img, imgRight, faceSize);
+    memcpy(img + faceSize, imgLeft, faceSize);
+    memcpy(img + faceSize * 2, imgTop, faceSize);
+    memcpy(img + faceSize * 3, imgBottom, faceSize);
+    memcpy(img + faceSize * 4, imgBack, faceSize);
+    memcpy(img + faceSize * 5, imgFront, faceSize);
+
+    stbi_image_free(imgRight);
+    stbi_image_free(imgLeft);
+    stbi_image_free(imgTop);
+    stbi_image_free(imgBottom);
+    stbi_image_free(imgBack);
+    stbi_image_free(imgFront);
+
+    L3DHandle texture = l3dLoadTexture(L3D_TEXTURE_CUBE_MAP, comp == 4 ? L3D_RGBA : L3D_RGB, img, width, height, 0);
+
+    stbi_image_free(img);
+
+    return texture;
+}
+
 L3DHandle l3dutLoadShader(const L3DShaderType& type, const char* filename)
 {
     if (!filename)
@@ -169,10 +218,22 @@ L3DHandle* l3dutLoadMeshes(
                 vertexFormat = L3D_POS3_NOR3_TAN3_UV2;
             }
 
-            if (mesh->HasTextureCoords(0))
+            unsigned int uvCount = mesh->GetNumUVChannels();
+            for (unsigned int t = 0; t < uvCount; ++t)
             {
-                vertices.push_back(mesh->mTextureCoords[0][j].x);
-                vertices.push_back(mesh->mTextureCoords[0][j].y);
+                if (mesh->HasTextureCoords(t))
+                {
+                    unsigned int coordSize = mesh->mNumUVComponents[t];
+
+                    vertices.push_back(mesh->mTextureCoords[t][j].x);
+                    vertices.push_back(mesh->mTextureCoords[t][j].y);
+                    if (coordSize > 2)
+                        vertices.push_back(mesh->mTextureCoords[t][j].z);
+
+                    unsigned int vertexSize = vertexFormat + t * coordSize;
+                    if (vertexSize < L3D_MAX_VERTEX_FORMAT)
+                        vertexFormat = (L3DVertexFormat)vertexSize;
+                }
             }
         }
 

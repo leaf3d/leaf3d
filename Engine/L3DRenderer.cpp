@@ -75,6 +75,8 @@ static GLenum _toOpenGL(const L3DTextureType& orig)
         return GL_TEXTURE_2D;
     case L3D_TEXTURE_3D:
         return GL_TEXTURE_3D;
+    case L3D_TEXTURE_CUBE_MAP:
+        return GL_TEXTURE_CUBE_MAP;
     default:
         break;
     }
@@ -260,6 +262,21 @@ static GLenum _toOpenGL(const L3DDrawPrimitive& orig)
         return GL_POINTS;
     case L3D_DRAW_LINES:
         return GL_LINES;
+    default:
+        break;
+    }
+
+    return 0;
+}
+
+static GLenum _toOpenGL(const L3DDepthFactor& orig)
+{
+    switch (orig)
+    {
+    case L3D_LESS:
+        return GL_LESS;
+    case L3D_EQUAL:
+        return GL_EQUAL;
     default:
         break;
     }
@@ -474,7 +491,15 @@ void L3DRenderer::renderFrame(L3DCamera* camera, L3DRenderQueue* renderQueue)
         {
             const L3DSetDepthTestCommand* cmd = static_cast<const L3DSetDepthTestCommand*>(command);
             if (cmd)
-                this->setDepthTest(cmd->enable);
+                this->setDepthTest(cmd->enable, cmd->factor);
+        }
+        break;
+
+        case L3D_SET_DEPTH_MASK:
+        {
+            const L3DSetDepthMaskCommand* cmd = static_cast<const L3DSetDepthMaskCommand*>(command);
+            if (cmd)
+                this->setDepthMask(cmd->enable);
         }
         break;
 
@@ -606,6 +631,20 @@ void L3DRenderer::addTexture(L3DTexture* texture)
         case L3D_TEXTURE_3D:
             glTexImage3D(gl_type, 0, gl_format, texture->width(), texture->height(), texture->depth(), 0, gl_internal_format, gl_pixel_format, texture->data());
             break;
+        case L3D_TEXTURE_CUBE_MAP:
+        {
+            unsigned int faceSize = texture->size() / 6;
+            unsigned int faceWidth = texture->width();
+            unsigned int faceHeight = texture->height();
+            unsigned char* data = texture->data();
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl_format, faceWidth, faceHeight, 0, gl_internal_format, gl_pixel_format, data);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl_format, faceWidth, faceHeight, 0, gl_internal_format, gl_pixel_format, data + faceSize);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl_format, faceWidth, faceHeight, 0, gl_internal_format, gl_pixel_format, data + faceSize * 2);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl_format, faceWidth, faceHeight, 0, gl_internal_format, gl_pixel_format, data + faceSize * 3);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl_format, faceWidth, faceHeight, 0, gl_internal_format, gl_pixel_format, data + faceSize * 4);
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl_format, faceWidth, faceHeight, 0, gl_internal_format, gl_pixel_format, data + faceSize * 5);
+        }
+        break;
         default:
             // Don't store id. Free resource.
             glBindTexture(gl_type, 0);
@@ -739,6 +778,18 @@ void L3DRenderer::addFrameBuffer(L3DFrameBuffer* frameBuffer)
                 case L3D_TEXTURE_3D:
                     glFramebufferTexture3D(GL_FRAMEBUFFER, gl_attachment_type, gl_type, id, 0, 0);
                     break;
+                case L3D_TEXTURE_CUBE_MAP:
+                {
+                    glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment_type, GL_TEXTURE_CUBE_MAP_POSITIVE_X, id, 0);
+                    glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment_type + 1, GL_TEXTURE_CUBE_MAP_NEGATIVE_X, id, 0);
+                    glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment_type + 2, GL_TEXTURE_CUBE_MAP_POSITIVE_Y, id, 0);
+                    glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment_type + 3, GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, id, 0);
+                    glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment_type + 4, GL_TEXTURE_CUBE_MAP_POSITIVE_Z, id, 0);
+                    glFramebufferTexture2D(GL_FRAMEBUFFER, gl_attachment_type + 5, GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, id, 0);
+                }
+                break;
+                default:
+                    break;
                 }
             }
         }
@@ -839,17 +890,37 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
                     _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 5*sizeof(GLfloat), 0);
                     _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 5*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
                     break;
+                case L3D_POS3_UV3:
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 6*sizeof(GLfloat), 0);
+                    _enableVertexAttribute(tex0Attrib, 3, GL_FLOAT, 6*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
                     break;
                 case L3D_POS3_NOR3_UV2:
                     _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 8*sizeof(GLfloat), 0);
                     _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 8*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
                     _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 8*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
                     break;
+                case L3D_POS3_NOR3_UV3:
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 9*sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 9*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 3, GL_FLOAT, 9*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
+                    break;
+                case L3D_POS3_NOR3_UV2_UV2:
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 10*sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 10*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 10*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 10*sizeof(GLfloat), (void*)(8*sizeof(GLfloat)));
+                    break;
                 case L3D_POS3_NOR3_TAN3_UV2:
                     _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 11*sizeof(GLfloat), 0);
                     _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 11*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
                     _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 11*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
                     _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 11*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
+                    break;
+                case L3D_POS3_NOR3_TAN3_UV3:
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 12*sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 12*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
+                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 12*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 3, GL_FLOAT, 12*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
                     break;
                 case L3D_POS3_NOR3_TAN3_UV2_UV2:
                     _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 13*sizeof(GLfloat), 0);
@@ -1221,9 +1292,18 @@ void L3DRenderer::clearBuffers(
     glClear(clearMask);
 }
 
-void L3DRenderer::setDepthTest(bool enable)
+void L3DRenderer::setDepthTest(
+    bool enable,
+    const L3DDepthFactor& factor
+)
 {
     enable ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
+    glDepthFunc(_toOpenGL(factor));
+}
+
+void L3DRenderer::setDepthMask(bool enable)
+{
+    glDepthMask(enable ? GL_TRUE : GL_FALSE);
 }
 
 void L3DRenderer::setStencilTest(bool enable)

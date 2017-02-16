@@ -34,6 +34,15 @@ int l3dutTerminate();
 
 L3DHandle l3dutLoadTexture2D(const char* filename);
 
+L3DHandle l3dutLoadTextureCube(
+    const char* filenameRight,
+    const char* filenameLeft,
+    const char* filenameTop,
+    const char* filenameBottom,
+    const char* filenameBack,
+    const char* filenameFront
+);
+
 L3DHandle l3dutLoadShader(
     const L3DShaderType& type,
     const char* filename

@@ -88,5 +88,9 @@ unsigned int L3DTexture::size() const
         break;
     }
 
+    // Cube maps has 6 faces: total size is 1 face' size * 6.
+    if (m_type == L3D_TEXTURE_CUBE_MAP)
+        size *= 6;
+
     return size;
 }

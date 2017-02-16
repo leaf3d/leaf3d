@@ -248,6 +248,11 @@ L3DHandle l3dLoadCube(
     unsigned int renderLayer = 0
 );
 
+L3DHandle l3dLoadSkyBox(
+    const L3DHandle& material,
+    unsigned int renderLayer = 1
+);
+
 L3DHandle l3dLoadGrid(
     unsigned int n,
     const L3DHandle& material,
