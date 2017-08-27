@@ -16,7 +16,7 @@ https://cmake.org/
 In order to build examples on **Ubuntu**, you have to install some dependencies:
 
 ```
-sudo apt install libassimp-dev libglfw3-dev
+sudo apt install libassimp-dev libglfw3-dev libpng12-dev
 ```
 
 ## License
