@@ -28,7 +28,10 @@
 #define WINDOW_WIDTH    1024
 #define WINDOW_HEIGHT   768
 #define WAVE_COUNT      4
-#define SKY_COLOR       L3DVec4(0.15f, 0.2f, 0.3f, 1)
+#define MOON_COLOR      L3DVec4(1, 1, 0.5f, 0.6f)
+#define WATER_COLOR     L3DVec4(0.3f, 0.5f, 0.6f, 1.0f)
+#define SKY_COLOR       L3DVec4(0.1f, 0.15f, 0.2f, 1.0f)
+#define FOG_DENSITY     0.02f
 
 using namespace l3d;
 
@@ -80,7 +83,9 @@ int main()
     l3dRotateMesh(waterPlane, 1.57f, L3DVec3(-1, 0, 0));
     l3dScaleMesh(waterPlane, L3DVec3(200, 200, 1));
 
-    l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_waterColor", L3DVec4(0.3,0.5,0.6,0.8));
+    l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_waterColor", WATER_COLOR);
+    l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_fogColor", SKY_COLOR);
+    l3dSetShaderProgramUniformF(waterShaderProgram, "u_fogDensity", FOG_DENSITY);
     l3dSetShaderProgramUniformF(waterShaderProgram, "u_waterHeight", 0);
     l3dSetShaderProgramUniformI(waterShaderProgram, "u_numWaves", WAVE_COUNT);
 
@@ -96,7 +101,7 @@ int main()
         float speed = 1.0f + 2*i;
         l3dSetShaderProgramUniformF(waterShaderProgram, "u_speed", speed, i);
 
-        float angle = (float(rand() % 100) / 150.0f) + (float(rand() % 100) / 50.0f) * PI / 3;
+        float angle = (float(rand() % 100) / 120.0f) + (float(rand() % 100) / 80.0f) * PI / 3;
         l3dSetShaderProgramUniformVec2(waterShaderProgram, "u_direction", L3DVec2(cos(angle), sin(angle)), i);
     }
 
@@ -113,10 +118,10 @@ int main()
     l3dTranslateMesh(light1Bulb, light1Pos);
 
     // Load a directional light.
-    L3DHandle directionalLight = l3dLoadDirectionalLight(L3DVec3(0, -1, 0), SKY_COLOR);
+    L3DHandle directionalLight = l3dLoadDirectionalLight(L3DVec3(0, -1, 0), MOON_COLOR);
 
     // Set the global ambient light color.
-    l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_ambientColor", L3DVec4(0.3f, 0.6f, 0.8f, 0.3f));
+    l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_ambientColor", SKY_COLOR);
 
     // Create a camera.
     L3DHandle camera = l3dLoadCamera(

@@ -35,7 +35,6 @@ out vec3    o_tangent;
 out vec3    o_bitangent;
 out vec2    o_texcoord0;
 out vec2    o_texcoord1;
-out vec2    o_texcoord2;
 
 /* WAVE GENERATOR *************************************************************/
 
@@ -108,7 +107,6 @@ void main(void)
     float d2 = u_time * 0.03f;
     o_texcoord0	= i_texcoord0 + vec2(d0, d1);
     o_texcoord1	= i_texcoord0 * mat2x2(cos(0.5f), -sin(0.5f), sin(0.5f), cos(0.5f)) + vec2(d1, d0);
-    o_texcoord2	= i_texcoord0 * mat2x2(cos(0.1f), -sin(0.1f), sin(0.1f), cos(0.1f)) + vec2(d1, d2);
 
     // Vertex position in screen space.
     gl_Position = u_projMat * u_viewMat * worldSpacePosition;

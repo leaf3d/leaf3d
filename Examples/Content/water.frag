@@ -30,7 +30,6 @@ in vec3 o_tangent;
 in vec3 o_bitangent;
 in vec2 o_texcoord0;
 in vec2 o_texcoord1;
-in vec2 o_texcoord2;
 
 /* UNIFORMS *******************************************************************/
 
@@ -49,6 +48,8 @@ uniform int         u_lightNr;
 uniform Light       u_light[NR_MAX_LIGHTS];
 uniform vec4        u_ambientColor;
 uniform vec4        u_waterColor;
+uniform vec4        u_fogColor;
+uniform float       u_fogDensity;
 
 /* UTILS **********************************************************************/
 
@@ -114,7 +115,7 @@ void main()
     {
         // Calculate fragment bump normal using TBN matrix.
         mat3 TBN = mat3(o_tangent, o_bitangent, o_normal);
-        normal = texture(u_normalMap, o_texcoord0).rgb + texture(u_normalMap, o_texcoord1).rgb + texture(u_normalMap, o_texcoord2).rgb;
+        normal = texture(u_normalMap, o_texcoord0).rgb * 0.8 + texture(u_normalMap, o_texcoord1 * 2).rgb * 0.6;
         normal = TBN * normalize(normal * 2.0 - 1.0);
     }
 
@@ -122,6 +123,10 @@ void main()
     vec3 Iamb = ambientLighting();
     vec3 Idif = vec3(0);
     vec3 Ispe = vec3(0);
+
+    // Calculate fragment distance and direction from camera.
+    float surfaceToCameraDistance = length(u_cameraPos - o_position);
+    vec3  surfaceToCameraDirection = normalize(u_cameraPos - o_position);
 
     // Iterate over all lights.
     for (int i = 0; i < min(u_lightNr, NR_MAX_LIGHTS); i++)
@@ -136,7 +141,6 @@ void main()
         // Normalize vectors after interpolation.
         float   surfaceToLightDistance = length(surfaceToLight);
         vec3    surfaceToLightDirection = normalize(surfaceToLight);
-        vec3    surfaceToCameraDirection = normalize(u_cameraPos - o_position);
         vec3    lightDirection = normalize(-u_light[i].direction);
 
         // Point light.
@@ -176,11 +180,16 @@ void main()
         );
     }
 
+    // Calculate fog factor.
+    float fogFactor = 1.0f / exp((surfaceToCameraDistance * u_fogDensity) * (surfaceToCameraDistance * u_fogDensity));
+    fogFactor = clamp(fogFactor, 0.0, 1.0);
+
     // Combine all components into the final color.
     vec4 ambientColor = diffuse * vec4(Iamb, 1.0f);
     vec4 diffuseColor = diffuse * vec4(Idif, 1.0f);
     vec4 specularColor = specular * vec4(Ispe, 1.0f);
+    vec4 lightColor = ambientColor + diffuseColor + specularColor;
 
     // Final fragment color.
-    gl_FragColor = ambientColor + diffuseColor + specularColor;
+    gl_FragColor = mix(u_fogColor, lightColor, fogFactor);
 }
