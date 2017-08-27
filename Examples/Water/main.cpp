@@ -28,7 +28,7 @@
 #define WINDOW_WIDTH    1024
 #define WINDOW_HEIGHT   768
 #define WAVE_COUNT      4
-#define SKY_COLOR       L3DVec4(0.1f, 0.15f, 0.2f, 0.5f)
+#define SKY_COLOR       L3DVec4(0.15f, 0.2f, 0.3f, 1)
 
 using namespace l3d;
 
@@ -80,21 +80,23 @@ int main()
     l3dRotateMesh(waterPlane, 1.57f, L3DVec3(-1, 0, 0));
     l3dScaleMesh(waterPlane, L3DVec3(200, 200, 1));
 
-    l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_waterColor", L3DVec4(0.3,0.5,0.6,1));
+    l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_waterColor", L3DVec4(0.3,0.5,0.6,0.8));
     l3dSetShaderProgramUniformF(waterShaderProgram, "u_waterHeight", 0);
     l3dSetShaderProgramUniformI(waterShaderProgram, "u_numWaves", WAVE_COUNT);
+
+    const float PI = glm::pi<float>();
 
     for (int i = 0; i < WAVE_COUNT; ++i) {
         float amplitude = 0.5f / (i + 1);
         l3dSetShaderProgramUniformF(waterShaderProgram, "u_amplitude", amplitude, i);
 
-        float wavelength = 10 * glm::pi<float>() / (i + 1);
+        float wavelength = 10 * PI / (i + 1);
         l3dSetShaderProgramUniformF(waterShaderProgram, "u_wavelength", wavelength, i);
 
         float speed = 1.0f + 2*i;
         l3dSetShaderProgramUniformF(waterShaderProgram, "u_speed", speed, i);
 
-        float angle = (float(rand() % 100) / 150.0f) + (float(rand() % 100) / 50.0f) * glm::pi<float>() / 3;
+        float angle = (float(rand() % 100) / 150.0f) + (float(rand() % 100) / 50.0f) * PI / 3;
         l3dSetShaderProgramUniformVec2(waterShaderProgram, "u_direction", L3DVec2(cos(angle), sin(angle)), i);
     }
 
@@ -114,7 +116,7 @@ int main()
     L3DHandle directionalLight = l3dLoadDirectionalLight(L3DVec3(0, -1, 0), SKY_COLOR);
 
     // Set the global ambient light color.
-    l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_ambientColor", L3DVec4(0.3f, 0.6f, 0.8f, 0.2f));
+    l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_ambientColor", L3DVec4(0.3f, 0.6f, 0.8f, 0.3f));
 
     // Create a camera.
     L3DHandle camera = l3dLoadCamera(
