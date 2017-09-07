@@ -1330,6 +1330,7 @@ void L3DRenderer::drawMeshes(
         return;
 
     L3DVec3 cameraPos = camera->position();
+    L3DMat4 vpMat = camera->proj * camera->view;
 
     for (L3DMeshPool::iterator it = m_meshes.begin(); it != m_meshes.end(); ++it)
     {
@@ -1355,6 +1356,7 @@ void L3DRenderer::drawMeshes(
 
             // Binds matrices and vectors.
             glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_cameraPos"), 1, glm::value_ptr(cameraPos));
+            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_vpMat"), 1, GL_FALSE, glm::value_ptr(vpMat));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_viewMat"), 1, GL_FALSE, glm::value_ptr(camera->view));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_projMat"), 1, GL_FALSE, glm::value_ptr(camera->proj));
             glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_modelMat"), 1, GL_FALSE, glm::value_ptr(mesh->transMatrix));
