@@ -4,7 +4,9 @@
 
 // Data from vertex shader.
 // Direction vector representing a 3D texture coordinate.
-in vec3 o_textureDir;
+in VertexData {
+   vec3 textureDir;
+} fs_in;
 
 /* UNIFORMS *******************************************************************/
 
@@ -16,5 +18,5 @@ uniform samplerCube u_cubemap;
 void main()
 {
     // Final fragment color.
-    gl_FragColor = texture(u_cubemap, o_textureDir);
+    gl_FragColor = texture(u_cubemap, fs_in.textureDir);
 }

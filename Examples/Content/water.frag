@@ -24,12 +24,14 @@ struct Light {
 /* INPUTS *********************************************************************/
 
 // Data from vertex shader.
-in vec3 o_position;
-in vec3 o_normal;
-in vec3 o_tangent;
-in vec3 o_bitangent;
-in vec2 o_texcoord0;
-in vec2 o_texcoord1;
+in VertexData {
+  vec3 position;
+  vec3 normal;
+  vec3 tangent;
+  vec3 bitangent;
+  vec2 texcoord0;
+  vec2 texcoord1;
+} fs_in;
 
 /* UNIFORMS *******************************************************************/
 
@@ -48,7 +50,6 @@ uniform int         u_lightNr;
 uniform Light       u_light[NR_MAX_LIGHTS];
 uniform vec4        u_ambientColor;
 uniform vec4        u_waterColor;
-uniform vec4        u_fogColor;
 uniform float       u_fogDensity;
 
 /* UTILS **********************************************************************/
@@ -106,7 +107,7 @@ float lightingAttenuation(
 
 void main()
 {
-    vec3 normal = o_normal;
+    vec3 normal = fs_in.normal;
     vec4 diffuse = u_waterColor;
     vec4 specular = diffuse;
 
@@ -114,8 +115,8 @@ void main()
     if (u_normalMapEnabled)
     {
         // Calculate fragment bump normal using TBN matrix.
-        mat3 TBN = mat3(o_tangent, o_bitangent, o_normal);
-        normal = texture(u_normalMap, o_texcoord0).rgb * 0.8 + texture(u_normalMap, o_texcoord1 * 2).rgb * 0.6;
+        mat3 TBN = mat3(fs_in.tangent, fs_in.bitangent, fs_in.normal);
+        normal = texture(u_normalMap, fs_in.texcoord0).rgb * 0.8 + texture(u_normalMap, fs_in.texcoord1 * 2).rgb * 0.6;
         normal = TBN * normalize(normal * 2.0 - 1.0);
     }
 
@@ -125,13 +126,13 @@ void main()
     vec3 Ispe = vec3(0);
 
     // Calculate fragment distance and direction from camera.
-    float surfaceToCameraDistance = length(u_cameraPos - o_position);
-    vec3  surfaceToCameraDirection = normalize(u_cameraPos - o_position);
+    float surfaceToCameraDistance = length(u_cameraPos - fs_in.position);
+    vec3  surfaceToCameraDirection = normalize(u_cameraPos - fs_in.position);
 
     // Iterate over all lights.
     for (int i = 0; i < min(u_lightNr, NR_MAX_LIGHTS); i++)
     {
-        vec3    surfaceToLight = u_light[i].position - o_position;
+        vec3    surfaceToLight = u_light[i].position - fs_in.position;
         float   attenuation = 1.0f;
 
         // Directional light.
@@ -181,7 +182,7 @@ void main()
     }
 
     // Calculate fog factor.
-    float fogFactor = 1.0f / exp((surfaceToCameraDistance * u_fogDensity) * (surfaceToCameraDistance * u_fogDensity));
+    float fogFactor = 1.0f / exp(surfaceToCameraDistance * u_fogDensity);
     fogFactor = clamp(fogFactor, 0.0, 1.0);
 
     // Combine all components into the final color.
@@ -191,5 +192,5 @@ void main()
     vec4 lightColor = ambientColor + diffuseColor + specularColor;
 
     // Final fragment color.
-    gl_FragColor = mix(u_fogColor, lightColor, fogFactor);
+    gl_FragColor = vec4(lightColor.rgb, lightColor.a * fogFactor);
 }

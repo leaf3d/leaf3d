@@ -24,11 +24,13 @@ struct Light {
 /* INPUTS *********************************************************************/
 
 // Data from vertex shader.
-in vec3 o_position;
-in vec3 o_normal;
-in vec3 o_tangent;
-in vec3 o_bitangent;
-in vec2 o_texcoord0;
+in VertexData {
+  vec3 position;
+  vec3 normal;
+  vec3 tangent;
+  vec3 bitangent;
+  vec2 texcoord0;
+} fs_in;
 
 /* UNIFORMS *******************************************************************/
 
@@ -105,20 +107,20 @@ float lightingAttenuation(
 
 void main()
 {
-    vec3 normal = o_normal;
-    vec4 diffuse = texture(u_diffuseMap, o_texcoord0);
+    vec3 normal = fs_in.normal;
+    vec4 diffuse = texture(u_diffuseMap, fs_in.texcoord0);
     vec4 specular = diffuse;
 
     // Specular mapping.
     if (u_specularMapEnabled)
-        specular = texture(u_specularMap, o_texcoord0);
+        specular = texture(u_specularMap, fs_in.texcoord0);
 
     // Normal mapping.
     if (u_normalMapEnabled)
     {
         // Calculate fragment bump normal using TBN matrix.
-        mat3 TBN = mat3(o_tangent, o_bitangent, o_normal);
-        normal = texture(u_normalMap, o_texcoord0).rgb;
+        mat3 TBN = mat3(fs_in.tangent, fs_in.bitangent, fs_in.normal);
+        normal = texture(u_normalMap, fs_in.texcoord0).rgb;
         normal = TBN * normalize(normal * 2.0 - 1.0);
     }
 
@@ -130,7 +132,7 @@ void main()
     // Iterate over all lights.
     for (int i = 0; i < min(u_lightNr, NR_MAX_LIGHTS); i++)
     {
-        vec3    surfaceToLight = u_light[i].position - o_position;
+        vec3    surfaceToLight = u_light[i].position - fs_in.position;
         float   attenuation = 1.0f;
 
         // Directional light.
@@ -140,7 +142,7 @@ void main()
         // Normalize vectors after interpolation.
         float   surfaceToLightDistance = length(surfaceToLight);
         vec3    surfaceToLightDirection = normalize(surfaceToLight);
-        vec3    surfaceToCameraDirection = normalize(u_cameraPos - o_position);
+        vec3    surfaceToCameraDirection = normalize(u_cameraPos - fs_in.position);
         vec3    lightDirection = normalize(-u_light[i].direction);
 
         // Point light.
@@ -184,7 +186,8 @@ void main()
     vec4 ambientColor = diffuse * vec4(Iamb, 1.0f);
     vec4 diffuseColor = diffuse * vec4(Idif, 1.0f);
     vec4 specularColor = specular * vec4(Ispe, 1.0f);
+    vec4 finalColor = ambientColor + diffuseColor + specularColor;
 
     // Final fragment color.
-    gl_FragColor = ambientColor + diffuseColor + specularColor;
+    gl_FragColor = finalColor;
 }

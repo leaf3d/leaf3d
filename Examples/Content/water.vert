@@ -13,8 +13,7 @@ in vec2 i_texcoord0;    // xy - texture0 coords
 
 // Matrices.
 uniform mat4 u_modelMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
+uniform mat4 u_vpMat;
 uniform mat3 u_normalMat;
 
 // Simulation.
@@ -29,12 +28,14 @@ uniform vec2    u_direction[8];
 /* OUTPUTS ********************************************************************/
 
 // Data for fragment shader.
-out vec3    o_position;
-out vec3    o_normal;
-out vec3    o_tangent;
-out vec3    o_bitangent;
-out vec2    o_texcoord0;
-out vec2    o_texcoord1;
+out VertexData {
+  vec3    position;
+  vec3    normal;
+  vec3    tangent;
+  vec3    bitangent;
+  vec2    texcoord0;
+  vec2    texcoord1;
+} vs_out;
 
 /* WAVE GENERATOR *************************************************************/
 
@@ -88,26 +89,26 @@ void main(void)
     // Vertex position in world space.
     vec4 worldSpacePosition = u_modelMat * vec4(i_position, 1);
     worldSpacePosition.y = u_waterHeight + waveHeight(worldSpacePosition.x, worldSpacePosition.z);
-    o_position = worldSpacePosition.xyz / worldSpacePosition.w;
+    vs_out.position = worldSpacePosition.xyz / worldSpacePosition.w;
 
     // Normal in world space.
-    o_normal	= normalize(u_normalMat * waveNormal(o_position.x, o_position.y));
+    vs_out.normal	= normalize(u_normalMat * waveNormal(vs_out.position.x, vs_out.position.y));
 
     // Tangent in world space.
-    o_tangent	= normalize(u_normalMat * i_tangent);
+    vs_out.tangent	= normalize(u_normalMat * i_tangent);
     // Re-orthogonalize tangent with respect to normal
-    o_tangent = normalize(o_tangent - dot(o_tangent, o_normal) * o_normal);
+    vs_out.tangent = normalize(vs_out.tangent - dot(vs_out.tangent, vs_out.normal) * vs_out.normal);
 
     // Bi-tagent in world space.
-    o_bitangent = cross(o_tangent, o_normal);
+    vs_out.bitangent = cross(vs_out.tangent, vs_out.normal);
 
     // Texture coordinates to fragment shader.
     float d0 = u_time * -0.02f;
     float d1 = u_time * 0.05f;
     float d2 = u_time * 0.03f;
-    o_texcoord0	= i_texcoord0 + vec2(d0, d1);
-    o_texcoord1	= i_texcoord0 * mat2x2(cos(0.5f), -sin(0.5f), sin(0.5f), cos(0.5f)) + vec2(d1, d0);
+    vs_out.texcoord0	= i_texcoord0 + vec2(d0, d1);
+    vs_out.texcoord1	= i_texcoord0 * mat2x2(cos(0.5f), -sin(0.5f), sin(0.5f), cos(0.5f)) + vec2(d1, d0);
 
     // Vertex position in screen space.
-    gl_Position = u_projMat * u_viewMat * worldSpacePosition;
+    gl_Position = u_vpMat * worldSpacePosition;
 }

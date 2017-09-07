@@ -15,7 +15,9 @@ uniform mat3 u_normalMat;
 /* OUTPUTS ********************************************************************/
 
 // Data for fragment shader.
-out vec3    o_textureDir;
+out VertexData {
+  vec3    textureDir;
+} vs_out;
 
 /* MAIN ***********************************************************************/
 
@@ -24,5 +26,5 @@ void main()
     vec4 pos = u_projMat * mat4(mat3(u_viewMat)) * vec4(i_position, 1.0);
     gl_Position = pos.xyww;
 
-    o_textureDir = i_position;
+    vs_out.textureDir = i_position;
 }

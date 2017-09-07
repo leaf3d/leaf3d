@@ -11,18 +11,19 @@ in vec2 i_texcoord0;    // xy - texture0 coords
 
 // Matrices.
 uniform mat4 u_modelMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
+uniform mat4 u_vpMat;
 uniform mat3 u_normalMat;
 
 /* OUTPUTS ********************************************************************/
 
 // Data for fragment shader.
-out vec3    o_position;
-out vec3    o_normal;
-out vec3    o_tangent;
-out vec3    o_bitangent;
-out vec2    o_texcoord0;
+out VertexData {
+  vec3    position;
+  vec3    normal;
+  vec3    tangent;
+  vec3    bitangent;
+  vec2    texcoord0;
+} vs_out;
 
 /* MAIN ***********************************************************************/
 
@@ -30,22 +31,22 @@ void main(void)
 {
     // Vertex position in world space.
     vec4 worldSpacePosition = u_modelMat * vec4(i_position, 1);
-    o_position = worldSpacePosition.xyz / worldSpacePosition.w;
+    vs_out.position = worldSpacePosition.xyz / worldSpacePosition.w;
 
     // Normal in world space.
-    o_normal	= normalize(u_normalMat * i_normal);
+    vs_out.normal	= normalize(u_normalMat * i_normal);
 
     // Tangent in world space.
-    o_tangent	= normalize(u_normalMat * i_tangent);
+    vs_out.tangent	= normalize(u_normalMat * i_tangent);
     // Re-orthogonalize tangent with respect to normal
-    o_tangent = normalize(o_tangent - dot(o_tangent, o_normal) * o_normal);
+    vs_out.tangent = normalize(vs_out.tangent - dot(vs_out.tangent, vs_out.normal) * vs_out.normal);
 
     // Bi-tagent in world space.
-    o_bitangent = cross(o_tangent, o_normal);
+    vs_out.bitangent = cross(vs_out.tangent, vs_out.normal);
 
     // Texture coordinates to fragment shader.
-    o_texcoord0	= i_texcoord0;
+    vs_out.texcoord0	= i_texcoord0;
 
     // Vertex position in screen space.
-    gl_Position	= u_projMat * u_viewMat * worldSpacePosition;
+    gl_Position	= u_vpMat * worldSpacePosition;
 }
