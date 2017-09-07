@@ -32,7 +32,10 @@ int l3dutInit(const char* rootPath = "Content/");
 
 int l3dutTerminate();
 
-L3DHandle l3dutLoadTexture2D(const char* filename);
+L3DHandle l3dutLoadTexture2D(
+    const char* filename,
+    const L3DImageFormat& desiredFormat = L3D_UNKNOWN
+);
 
 L3DHandle l3dutLoadTextureCube(
     const char* filenameRight,
@@ -40,7 +43,8 @@ L3DHandle l3dutLoadTextureCube(
     const char* filenameTop,
     const char* filenameBottom,
     const char* filenameBack,
-    const char* filenameFront
+    const char* filenameFront,
+    const L3DImageFormat& desiredFormat = L3D_UNKNOWN
 );
 
 L3DHandle l3dutLoadShader(
@@ -58,7 +62,7 @@ L3DHandle* l3dutLoadMeshes(
     const char* filename,
     const L3DHandle& shaderProgram,
     unsigned int* meshCount,
-    unsigned int renderLayer = 0
+    unsigned int renderLayer = 1
 );
 
 #endif // L3D_LEAF3DUT_H

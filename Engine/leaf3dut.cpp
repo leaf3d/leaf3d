@@ -53,13 +53,16 @@ int l3dutTerminate()
     return L3D_TRUE;
 }
 
-L3DHandle l3dutLoadTexture2D(const char* filename)
+L3DHandle l3dutLoadTexture2D(
+  const char* filename,
+  const L3DImageFormat& desiredFormat
+)
 {
     if (!filename)
         return L3D_INVALID_HANDLE;
 
     int width, height, comp = 0;
-    unsigned char* img = stbi_load((_rootPath + filename).c_str(), &width, &height, &comp, 0);
+    unsigned char* img = stbi_load((_rootPath + filename).c_str(), &width, &height, &comp, desiredFormat);
     L3DHandle texture = l3dLoadTexture(L3D_TEXTURE_2D, comp == 4 ? L3D_RGBA : L3D_RGB, img, width, height, 0);
     stbi_image_free(img);
 
@@ -72,24 +75,25 @@ L3DHandle l3dutLoadTextureCube(
     const char* filenameTop,
     const char* filenameBottom,
     const char* filenameBack,
-    const char* filenameFront
+    const char* filenameFront,
+    const L3DImageFormat& desiredFormat
 )
 {
     if (!filenameRight || !filenameLeft || !filenameTop || !filenameBottom || !filenameBack || !filenameFront)
         return L3D_INVALID_HANDLE;
 
     int width, height, comp, size = 0;
-    unsigned char* imgRight = stbi_load((_rootPath + filenameRight).c_str(), &width, &height, &comp, 0);
+    unsigned char* imgRight = stbi_load((_rootPath + filenameRight).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char* imgLeft = stbi_load((_rootPath + filenameLeft).c_str(), &width, &height, &comp, 0);
+    unsigned char* imgLeft = stbi_load((_rootPath + filenameLeft).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char* imgTop = stbi_load((_rootPath + filenameTop).c_str(), &width, &height, &comp, 0);
+    unsigned char* imgTop = stbi_load((_rootPath + filenameTop).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char* imgBottom = stbi_load((_rootPath + filenameBottom).c_str(), &width, &height, &comp, 0);
+    unsigned char* imgBottom = stbi_load((_rootPath + filenameBottom).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char* imgBack = stbi_load((_rootPath + filenameBack).c_str(), &width, &height, &comp, 0);
+    unsigned char* imgBack = stbi_load((_rootPath + filenameBack).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char* imgFront = stbi_load((_rootPath + filenameFront).c_str(), &width, &height, &comp, 0);
+    unsigned char* imgFront = stbi_load((_rootPath + filenameFront).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
 
     unsigned char* img = (unsigned char*)malloc(size);

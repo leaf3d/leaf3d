@@ -76,6 +76,7 @@ namespace l3d
 
     enum L3DImageFormat
     {
+        L3D_UNKNOWN = 0,
         L3D_RGB = 3,
         L3D_RGBA,
         L3D_DEPTH24_STENCIL8
