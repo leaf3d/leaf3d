@@ -62,7 +62,7 @@ L3DHandle* l3dutLoadMeshes(
     const char* filename,
     const L3DHandle& shaderProgram,
     unsigned int* meshCount,
-    unsigned int renderLayer = 1
+    unsigned int renderLayerMask = L3D_DEFAULT_MESH_RENDERLAYER_MASK
 );
 
 #endif // L3D_LEAF3DUT_H

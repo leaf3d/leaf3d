@@ -34,7 +34,7 @@ namespace l3d
     {
     public:
         L3DMat4             transMatrix;
-        unsigned int        renderLayer;
+        unsigned int        renderLayerMask;
 
     private:
         L3DBuffer*          m_vertexBuffer;
@@ -55,7 +55,7 @@ namespace l3d
             const L3DMat4& transMatrix = L3DMat4(),
             const L3DDrawType& drawType = L3D_DRAW_STATIC,
             const L3DDrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES,
-            unsigned int renderLayer = 0
+            unsigned int renderLayerMask = L3D_DEFAULT_MESH_RENDERLAYER_MASK
         );
         L3DMesh(
             L3DRenderer *renderer,
@@ -66,7 +66,7 @@ namespace l3d
             const L3DMat4& transMatrix = L3DMat4(),
             const L3DDrawType& drawType = L3D_DRAW_STATIC,
             const L3DDrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES,
-            unsigned int renderLayer = 0
+            unsigned int renderLayerMask = L3D_DEFAULT_MESH_RENDERLAYER_MASK
         );
         ~L3DMesh() {}
 

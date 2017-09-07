@@ -135,6 +135,21 @@ namespace l3d
             dstFactor(dstFactor) {}
     };
 
+    class L3DSetCullFaceCommand : public L3DRenderCommand
+    {
+    public:
+        bool enable;
+        L3DCullFace cullFace;
+
+    public:
+        L3DSetCullFaceCommand(
+            bool enable = true,
+            const L3DCullFace& cullFace = L3D_BACK_FACE
+        ) : L3DRenderCommand(L3D_SET_BLEND),
+            enable(enable),
+            cullFace(cullFace) {}
+    };
+
     class L3DDrawMeshesCommand : public L3DRenderCommand
     {
     public:
@@ -190,9 +205,12 @@ namespace l3d
             const L3DBlendFactor& srcFactor = L3D_SRC_ALPHA,
             const L3DBlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
         );
+        void addSetCullFaceCommand(
+            bool enable = true,
+            const L3DCullFace& cullFace = L3D_BACK_FACE
+        );
         void addDrawMeshesCommand(unsigned int renderLayer = 0);
     };
 }
 
 #endif // L3D_L3DRENDERQUEUE_H
-

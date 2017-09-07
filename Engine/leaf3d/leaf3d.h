@@ -233,31 +233,31 @@ L3DHandle l3dLoadMesh(
     const L3DMat4& transMatrix = L3DMat4(),
     const L3DDrawType& drawType = L3D_DRAW_STATIC,
     const L3DDrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES,
-    unsigned int renderLayer = 0
+    unsigned int renderLayerMask = L3D_DEFAULT_MESH_RENDERLAYER_MASK
 );
 
 L3DHandle l3dLoadQuad(
     const L3DHandle& material,
     const L3DVec2& texMulFactor = L3DVec2(1, 1),
-    unsigned int renderLayer = 0
+    unsigned int renderLayerMask = L3D_DEFAULT_MESH_RENDERLAYER_MASK
 );
 
 L3DHandle l3dLoadCube(
     const L3DHandle& material,
     const L3DVec2& texMulFactor = L3DVec2(1, 1),
-    unsigned int renderLayer = 0
+    unsigned int renderLayerMask = L3D_DEFAULT_MESH_RENDERLAYER_MASK
 );
 
 L3DHandle l3dLoadSkyBox(
     const L3DHandle& material,
-    unsigned int renderLayer = 1
+    unsigned int renderLayerMask = L3D_BIT(0)
 );
 
 L3DHandle l3dLoadGrid(
     unsigned int n,
     const L3DHandle& material,
     const L3DVec2& texMulFactor = L3DVec2(1, 1),
-    unsigned int renderLayer = 0
+    unsigned int renderLayerMask = L3D_DEFAULT_MESH_RENDERLAYER_MASK
 );
 
 L3DMat4 l3dGetMeshTrans(
@@ -290,14 +290,14 @@ void l3dScaleMesh(
 L3DHandle l3dLoadDirectionalLight(
     const L3DVec3& direction,
     const L3DVec4& color = L3DVec4(1, 1, 1, 1),
-    unsigned int renderLayer = 0
+    unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
 );
 
 L3DHandle l3dLoadPointLight(
     const L3DVec3& position,
     const L3DVec4& color = L3DVec4(1, 1, 1, 1),
     const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
-    unsigned int renderLayer = 0
+    unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
 );
 
 L3DHandle l3dLoadSpotLight(
@@ -305,7 +305,7 @@ L3DHandle l3dLoadSpotLight(
     const L3DVec3& direction = L3DVec3(0, -1, 0),
     const L3DVec4& color = L3DVec4(1, 1, 1, 1),
     const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
-    unsigned int renderLayer = 0
+    unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
 );
 
 int l3dLightType(const L3DHandle& target);

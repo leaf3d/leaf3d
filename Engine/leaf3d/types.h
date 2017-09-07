@@ -34,6 +34,10 @@
 #define L3D_TRUE 1
 #define L3D_FALSE 0
 #define L3D_NULLPTR 0
+#define L3D_BIT(pos) (1<<(pos))
+#define L3D_TEST_BIT(var, pos) ((var) & L3D_BIT(pos))
+#define L3D_DEFAULT_MESH_RENDERLAYER_MASK L3D_BIT(1)
+#define L3D_DEFAULT_LIGHT_RENDERLAYER_MASK L3D_BIT(1) | L3D_BIT(2)
 
 #define GLSL(src) "#version 330 core\n" #src
 
@@ -196,6 +200,13 @@ namespace l3d
         L3D_ONE_MINUS_CONSTANT_COLOR,
         L3D_CONSTANT_ALPHA,
         L3D_ONE_MINUS_CONSTANT_ALPHA
+    };
+
+    enum L3DCullFace
+    {
+      L3D_FRONT_FACE = 0,
+      L3D_BACK_FACE,
+      L3D_BOTH_FACES
     };
 
     enum L3DResourceType

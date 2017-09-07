@@ -31,9 +31,9 @@ L3DLight::L3DLight(
     const L3DVec3& direction,
     const L3DVec4& color,
     const L3DLightAttenuation& attenuation,
-    unsigned int renderLayer
+    unsigned int renderLayerMask
 ) : L3DResource(L3D_LIGHT, renderer),
-    renderLayer(renderLayer),
+    renderLayerMask(renderLayerMask),
     type(type),
     position(position),
     direction(direction),
@@ -57,7 +57,7 @@ L3DLight* L3DLight::createDirectionalLight(
     L3DRenderer* renderer,
     const L3DVec3& direction,
     const L3DVec4& color,
-    unsigned int renderLayer
+    unsigned int renderLayerMask
 )
 {
     return new L3DLight(
@@ -67,7 +67,7 @@ L3DLight* L3DLight::createDirectionalLight(
         glm::normalize(direction),
         color,
         L3DLightAttenuation(0, 0, 0),
-        renderLayer
+        renderLayerMask
     );
 }
 
@@ -76,7 +76,7 @@ L3DLight* L3DLight::createPointLight(
     const L3DVec3& position,
     const L3DVec4& color,
     const L3DLightAttenuation& attenuation,
-    unsigned int renderLayer
+    unsigned int renderLayerMask
 )
 {
     return new L3DLight(
@@ -86,7 +86,7 @@ L3DLight* L3DLight::createPointLight(
         L3DVec3(0, 0, 0),
         color,
         attenuation,
-        renderLayer
+        renderLayerMask
     );
 }
 
@@ -96,7 +96,7 @@ L3DLight* L3DLight::createSpotLight(
     const L3DVec3& direction,
     const L3DVec4& color,
     const L3DLightAttenuation& attenuation,
-    unsigned int renderLayer
+    unsigned int renderLayerMask
 )
 {
     return new L3DLight(
@@ -106,6 +106,6 @@ L3DLight* L3DLight::createSpotLight(
         direction,
         color,
         attenuation,
-        renderLayer
+        renderLayerMask
     );
 }

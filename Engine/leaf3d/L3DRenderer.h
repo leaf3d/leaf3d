@@ -150,6 +150,10 @@ namespace l3d
             const L3DBlendFactor& srcFactor = L3D_SRC_ALPHA,
             const L3DBlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
         );
+        void setCullFace(
+            bool enable = true,
+            const L3DCullFace& cullFace = L3D_BACK_FACE
+        );
         void drawMeshes(
             L3DCamera* camera,
             unsigned int renderLayer = 0

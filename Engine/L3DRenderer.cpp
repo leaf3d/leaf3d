@@ -323,6 +323,23 @@ static GLenum _toOpenGL(const L3DBlendFactor& orig)
     return 0;
 }
 
+static GLenum _toOpenGL(const L3DCullFace& orig)
+{
+    switch (orig)
+    {
+    case L3D_FRONT_FACE:
+        return GL_FRONT;
+    case L3D_BACK_FACE:
+        return GL_BACK;
+    case L3D_BOTH_FACES:
+        return GL_FRONT_AND_BACK;
+    default:
+        break;
+    }
+
+    return 0;
+}
+
 static GLenum _toOpenGL(const L3DShaderType& orig)
 {
     switch (orig)
@@ -333,6 +350,8 @@ static GLenum _toOpenGL(const L3DShaderType& orig)
         return GL_FRAGMENT_SHADER;
     case L3D_SHADER_GEOMETRY:
         return GL_GEOMETRY_SHADER;
+    default:
+        break;
     }
 
     return 0;
@@ -1321,6 +1340,15 @@ void L3DRenderer::setBlend(
     glBlendFunc(_toOpenGL(srcFactor), _toOpenGL(dstFactor));
 }
 
+void L3DRenderer::setCullFace(
+    bool enable,
+    const L3DCullFace& cullFace
+)
+{
+    enable ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
+    glCullFace(_toOpenGL(cullFace));
+}
+
 void L3DRenderer::drawMeshes(
     L3DCamera* camera,
     unsigned int renderLayer
@@ -1336,7 +1364,7 @@ void L3DRenderer::drawMeshes(
     {
         L3DMesh* mesh = it->second;
 
-        if (mesh && mesh->renderLayer == renderLayer && mesh->material() && mesh->material()->shaderProgram())
+        if (mesh && L3D_TEST_BIT(mesh->renderLayerMask, renderLayer) && mesh->material() && mesh->material()->shaderProgram())
         {
             L3DMaterial* material = mesh->material();
             L3DShaderProgram* shaderProgram = material->shaderProgram();
@@ -1413,7 +1441,7 @@ void L3DRenderer::drawMeshes(
             {
                 L3DLight* light = light_it->second;
 
-                if (light && light->renderLayer == renderLayer && light->isOn())
+                if (light && L3D_TEST_BIT(light->renderLayerMask, renderLayer) && light->isOn())
                 {
                     std::ostringstream sstream;
                     sstream << "u_light[" << activeLightCount << "]";

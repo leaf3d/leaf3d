@@ -79,12 +79,11 @@ int main()
     l3dAddTextureToMaterial(waterMaterial, "normalMap", normalMap);
 
     // Load a water plane.
-    L3DHandle waterPlane = l3dLoadGrid(200, waterMaterial, L3DVec2(0.05f, 0.05f));
+    L3DHandle waterPlane = l3dLoadGrid(200, waterMaterial, L3DVec2(0.05f, 0.05f), L3D_BIT(2));
     l3dRotateMesh(waterPlane, 1.57f, L3DVec3(-1, 0, 0));
-    l3dScaleMesh(waterPlane, L3DVec3(200, 200, 1));
+    l3dScaleMesh(waterPlane, L3DVec3(400, 400, 1));
 
     l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_waterColor", WATER_COLOR);
-    l3dSetShaderProgramUniformVec4(waterShaderProgram, "u_fogColor", SKY_COLOR);
     l3dSetShaderProgramUniformF(waterShaderProgram, "u_fogDensity", FOG_DENSITY);
     l3dSetShaderProgramUniformF(waterShaderProgram, "u_waterHeight", 0);
     l3dSetShaderProgramUniformI(waterShaderProgram, "u_numWaves", WAVE_COUNT);
@@ -131,7 +130,7 @@ int main()
            glm::vec3(0.0f, 0.0f, 0.0f),
            glm::vec3(0.0f, 1.0f, 0.0f)
         ),
-        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH/(GLfloat)WINDOW_HEIGHT, 1.0f, 100.0f)
+        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH/(GLfloat)WINDOW_HEIGHT, 1.0f, 1000.0f)
     );
 
     // Create a forward rendering pipeline.

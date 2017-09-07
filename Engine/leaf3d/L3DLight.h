@@ -30,7 +30,7 @@ namespace l3d
     class L3DLight : public L3DResource
     {
     public:
-        unsigned int        renderLayer;
+        unsigned int        renderLayerMask;
         L3DLightType        type;
         L3DVec3             position;
         L3DVec3             direction;
@@ -45,7 +45,7 @@ namespace l3d
             const L3DVec3& direction,
             const L3DVec4& color = L3DVec4(1, 1, 1, 1),
             const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
-            unsigned int renderLayer = 0
+            unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
         );
         ~L3DLight() {}
 
@@ -58,7 +58,7 @@ namespace l3d
             L3DRenderer* renderer,
             const L3DVec3& direction,
             const L3DVec4& color = L3DVec4(1, 1, 1, 1),
-            unsigned int renderLayer = 0
+            unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
         );
 
         static L3DLight* createPointLight(
@@ -66,7 +66,7 @@ namespace l3d
             const L3DVec3& position,
             const L3DVec4& color = L3DVec4(1, 1, 1, 1),
             const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
-            unsigned int renderLayer = 0
+            unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
         );
 
         static L3DLight* createSpotLight(
@@ -75,7 +75,7 @@ namespace l3d
             const L3DVec3& direction = L3DVec3(0, -1, 0),
             const L3DVec4& color = L3DVec4(1, 1, 1, 1),
             const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
-            unsigned int renderLayer = 0
+            unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
         );
     };
 }

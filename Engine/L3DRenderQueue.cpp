@@ -104,6 +104,16 @@ void L3DRenderQueue::addSetBlendCommand(
     );
 }
 
+void L3DRenderQueue::addSetCullFaceCommand(
+    bool enable,
+    const L3DCullFace& cullFace
+)
+{
+    m_commands.push_back(
+        new L3DSetCullFaceCommand(enable, cullFace)
+    );
+}
+
 void L3DRenderQueue::addDrawMeshesCommand(unsigned int renderLayer)
 {
     m_commands.push_back(
