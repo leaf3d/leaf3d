@@ -295,6 +295,15 @@ L3DHandle* l3dutLoadMeshes(
                 l3dAddTextureToMaterial(material, "specularMap", texture);
             }
 
+            if (mat->GetTextureCount(aiTextureType_OPACITY) > 0)
+            {
+                aiString textureFilename;
+                mat->GetTexture(aiTextureType_OPACITY, 0, &textureFilename);
+                L3DHandle texture = l3dutLoadTexture2D(textureFilename.C_Str());
+
+                l3dAddTextureToMaterial(material, "alphaMap", texture);
+            }
+
             if (mat->GetTextureCount(aiTextureType_HEIGHT) > 0)
             {
                 aiString textureFilename;
