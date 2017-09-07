@@ -31,3 +31,6 @@ Build*
 
 # QtCreator, Cmake
 *.user
+
+# Backup files
+*~
