@@ -37,11 +37,13 @@ in VertexData {
 // Flags.
 uniform bool        u_specularMapEnabled;
 uniform bool        u_normalMapEnabled;
+uniform bool        u_alphaMapEnabled;
 
-// Diffuse map.
+// Maps.
 uniform sampler2D   u_diffuseMap;
 uniform sampler2D   u_specularMap;
 uniform sampler2D   u_normalMap;
+uniform sampler2D   u_alphaMap;
 
 // Camera position.
 uniform vec3        u_cameraPos;
@@ -110,6 +112,14 @@ void main()
     vec3 normal = fs_in.normal;
     vec4 diffuse = texture(u_diffuseMap, fs_in.texcoord0);
     vec4 specular = diffuse;
+
+    // Alpha mapping.
+    if (u_alphaMapEnabled)
+        diffuse.a *= texture(u_alphaMap, fs_in.texcoord0).x;
+
+    // Discrad if alpha is very low.
+    if (diffuse.a < 0.1f)
+        discard;
 
     // Specular mapping.
     if (u_specularMapEnabled)

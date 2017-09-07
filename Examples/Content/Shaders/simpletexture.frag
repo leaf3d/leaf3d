@@ -13,12 +13,24 @@ in VertexData {
 
 /* UNIFORMS *******************************************************************/
 
-// Diffuse map.
-uniform sampler2D u_diffuseMap;
+// Flags.
+uniform bool        u_alphaMapEnabled;
+
+// Maps.
+uniform sampler2D   u_diffuseMap;
+uniform sampler2D   u_alphaMap;
 
 /* MAIN ***********************************************************************/
 
 void main()
 {
-    gl_FragColor = texture(u_diffuseMap, fs_in.texcoord0);
+    vec4 diffuse = texture(u_diffuseMap, fs_in.texcoord0);
+
+    if (u_alphaMapEnabled)
+        diffuse.a *= texture(u_alphaMap, fs_in.texcoord0).x;
+
+    if (diffuse.a < 0.1f)
+        discard;
+
+    gl_FragColor = diffuse;
 }

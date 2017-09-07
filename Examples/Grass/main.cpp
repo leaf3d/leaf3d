@@ -125,7 +125,7 @@ int main()
     l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassHeight", GRASS_HEIGHT);
     l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassHeightVariation", GRASS_HEIGHT_VAR);
 
-    // Load some crates.
+    // Load a crate.
     L3DHandle crateTexture = l3dutLoadTexture2D("Textures/Crate/crate.png");
     L3DHandle crateSpecTexture = l3dutLoadTexture2D("Textures/Crate/crate_spec.png");
     L3DHandle crateNormTexture = l3dutLoadTexture2D("Textures/Crate/crate_norm.png");
@@ -139,14 +139,19 @@ int main()
     l3dTranslateMesh(cube1, L3DVec3(10, 3, -20));
     l3dScaleMesh(cube1, L3DVec3(6, 6, 6));
 
-    L3DHandle cube2 = l3dLoadCube(crateMaterial);
-    l3dRotateMesh(cube2, 0.75f);
-    l3dTranslateMesh(cube2, L3DVec3(-30, 2, 30));
-    l3dScaleMesh(cube2, L3DVec3(4, 4, 4));
+    // Load a tree.
+    unsigned int meshCount = 0;
+    L3DHandle* tree = l3dutLoadMeshes("Models/tree.obj", blinnPhongShaderProgram, &meshCount, L3D_BIT(2));
+    for (int i=0; i<meshCount; ++i)
+    {
+      l3dRotateMesh(tree[i], 0.75f);
+      l3dTranslateMesh(tree[i], L3DVec3(-45, 0, 20));
+      l3dScaleMesh(tree[i], L3DVec3(10, 10, 10));
+    }
 
     // Load a directional light.
     L3DVec4 sunLightColor = L3DVec4(0.8f, 0.7f, 0.6f, 1);
-    L3DHandle sunLight = l3dLoadDirectionalLight(L3DVec3(-5, -1, -1), sunLightColor);
+    L3DHandle sunLight = l3dLoadDirectionalLight(L3DVec3(-2, -1, 5), sunLightColor);
 
     // Set the global ambient light color.
     l3dSetShaderProgramUniformVec4(blinnPhongShaderProgram, "u_ambientColor", L3DVec4(0.8f, 0.8f, 1, 0.6f));
