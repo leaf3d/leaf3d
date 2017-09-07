@@ -74,12 +74,12 @@ int main()
 
     // Load a sky box.
     L3DHandle skyBoxCubeMap = l3dutLoadTextureCube(
-        "SkyBox/right.jpg",
-        "SkyBox/left.jpg",
-        "SkyBox/top.jpg",
-        "SkyBox/bottom.jpg",
-        "SkyBox/back.jpg",
-        "SkyBox/front.jpg"
+        "SkyBox1/right.jpg",
+        "SkyBox1/left.jpg",
+        "SkyBox1/top.jpg",
+        "SkyBox1/bottom.jpg",
+        "SkyBox1/back.jpg",
+        "SkyBox1/front.jpg"
     );
     L3DHandle skyBoxMaterial = l3dLoadMaterial("skyBoxMaterial", skyBoxShaderProgram);
     l3dAddTextureToMaterial(skyBoxMaterial, "cubeMap", skyBoxCubeMap);
