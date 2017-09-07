@@ -70,9 +70,9 @@ int main()
     L3DHandle blinnPhongShaderProgram = l3dutLoadShaderProgram("Shaders/basic.vert", "Shaders/blinnphong.frag");
 
     // Load a floor.
-    L3DHandle floorTexture = l3dutLoadTexture2D("Textures/floor.png");
-    L3DHandle floorSpecTexture = l3dutLoadTexture2D("Textures/floor_spec.png");
-    L3DHandle floorNormTexture = l3dutLoadTexture2D("Textures/floor_norm.png");
+    L3DHandle floorTexture = l3dutLoadTexture2D("Textures/Floor/floor.png");
+    L3DHandle floorSpecTexture = l3dutLoadTexture2D("Textures/Floor/floor_spec.png");
+    L3DHandle floorNormTexture = l3dutLoadTexture2D("Textures/Floor/floor_norm.png");
     L3DHandle floorMaterial = l3dLoadMaterial("floorMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(floorMaterial, "diffuseMap", floorTexture);
     l3dAddTextureToMaterial(floorMaterial, "specularMap", floorSpecTexture);
@@ -91,9 +91,9 @@ int main()
     }
 
     // Load a cube.
-    L3DHandle crateTexture = l3dutLoadTexture2D("Textures/crate.png");
-    L3DHandle crateSpecTexture = l3dutLoadTexture2D("Textures/crate_spec.png");
-    L3DHandle crateNormTexture = l3dutLoadTexture2D("Textures/crate_norm.png");
+    L3DHandle crateTexture = l3dutLoadTexture2D("Textures/Crate/crate.png");
+    L3DHandle crateSpecTexture = l3dutLoadTexture2D("Textures/Crate/crate_spec.png");
+    L3DHandle crateNormTexture = l3dutLoadTexture2D("Textures/Crate/crate_norm.png");
     L3DHandle crateMaterial = l3dLoadMaterial("crateMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(crateMaterial, "diffuseMap", crateTexture);
     l3dAddTextureToMaterial(crateMaterial, "specularMap", crateSpecTexture);

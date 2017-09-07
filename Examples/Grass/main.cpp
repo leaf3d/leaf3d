@@ -98,7 +98,7 @@ int main()
     L3DHandle skyBox = l3dLoadSkyBox(skyBoxMaterial);
 
     // Load a grass plane.
-    L3DHandle grassTexture = l3dutLoadTexture2D("Textures/grass.jpg");
+    L3DHandle grassTexture = l3dutLoadTexture2D("Textures/Grass/grass_diffuse.jpg");
     L3DHandle grassPlaneMaterial = l3dLoadMaterial("grassPlaneMaterial", grassPlaneShaderProgram, GRASS_COLOR);
     l3dAddTextureToMaterial(grassPlaneMaterial, "diffuseMap", grassTexture);
     L3DHandle grassPlane = l3dLoadGrid(1, grassPlaneMaterial, L3DVec2(50, 50), L3D_BIT(2));
@@ -111,7 +111,7 @@ int main()
     l3dSetShaderProgramUniformF(grassPlaneShaderProgram, "u_grassDistanceLOD1", GRASS_DISTANCE_LOD1);
 
     // Load grass blades.
-    L3DHandle grassBladesTexture = l3dutLoadTexture2D("Textures/grass_blade.png");
+    L3DHandle grassBladesTexture = l3dutLoadTexture2D("Textures/Grass/grass_blade_diffuse.png");
     L3DHandle grassBladesMaterial = l3dLoadMaterial("grassBladeMaterial", grassBladesShaderProgram, GRASS_COLOR);
     l3dAddTextureToMaterial(grassBladesMaterial, "diffuseMap", grassBladesTexture);
     L3DHandle grassBlades = l3dLoadGrid(GRASS_DENSITY, grassBladesMaterial, L3DVec2(1, 1), L3D_BIT(2));
@@ -126,9 +126,9 @@ int main()
     l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassHeightVariation", GRASS_HEIGHT_VAR);
 
     // Load some crates.
-    L3DHandle crateTexture = l3dutLoadTexture2D("Textures/crate.png");
-    L3DHandle crateSpecTexture = l3dutLoadTexture2D("Textures/crate_spec.png");
-    L3DHandle crateNormTexture = l3dutLoadTexture2D("Textures/crate_norm.png");
+    L3DHandle crateTexture = l3dutLoadTexture2D("Textures/Crate/crate.png");
+    L3DHandle crateSpecTexture = l3dutLoadTexture2D("Textures/Crate/crate_spec.png");
+    L3DHandle crateNormTexture = l3dutLoadTexture2D("Textures/Crate/crate_norm.png");
     L3DHandle crateMaterial = l3dLoadMaterial("crateMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(crateMaterial, "diffuseMap", crateTexture);
     l3dAddTextureToMaterial(crateMaterial, "specularMap", crateSpecTexture);

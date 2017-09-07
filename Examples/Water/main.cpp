@@ -72,7 +72,7 @@ int main()
     L3DHandle waterShaderProgram = l3dutLoadShaderProgram("Shaders/water.vert", "Shaders/water.frag");
 
     // Load water's textures.
-    L3DHandle normalMap = l3dutLoadTexture2D("Textures/water_norm.png");
+    L3DHandle normalMap = l3dutLoadTexture2D("Textures/Water/water_norm.png");
 
     // Load a material.
     L3DHandle waterMaterial = l3dLoadMaterial("waterPlaneMaterial", waterShaderProgram, L3DVec3(0,0,0));
