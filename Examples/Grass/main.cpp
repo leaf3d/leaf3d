@@ -73,32 +73,32 @@ int main()
     // ----------------------------- RESOURCES ----------------------------- //
 
     // Load a shader program with support for lighting (Blinn-Phong).
-    L3DHandle blinnPhongShaderProgram = l3dutLoadShaderProgram("basic.vert", "blinnphong.frag");
+    L3DHandle blinnPhongShaderProgram = l3dutLoadShaderProgram("Shaders/basic.vert", "Shaders/blinnphong.frag");
 
     // Load a shader program for sky box.
-    L3DHandle skyBoxShaderProgram = l3dutLoadShaderProgram("skyBox.vert", "skyBox.frag");
+    L3DHandle skyBoxShaderProgram = l3dutLoadShaderProgram("Shaders/skyBox.vert", "Shaders/skyBox.frag");
 
     // Load a shader program for grass plane rendering.
-    L3DHandle grassPlaneShaderProgram = l3dutLoadShaderProgram("basic.vert", "grassPlane.frag");
+    L3DHandle grassPlaneShaderProgram = l3dutLoadShaderProgram("Shaders/basic.vert", "Shaders/grassPlane.frag");
 
     // Load a shader program for realistic grass blades rendering.
-    L3DHandle grassBladesShaderProgram = l3dutLoadShaderProgram("basic.vert", "grassBlades.frag", "grassBlades.geom");
+    L3DHandle grassBladesShaderProgram = l3dutLoadShaderProgram("Shaders/basic.vert", "Shaders/grassBlades.frag", "Shaders/grassBlades.geom");
 
     // Load a sky box.
     L3DHandle skyBoxCubeMap = l3dutLoadTextureCube(
-        "SkyBox2/right.jpg",
-        "SkyBox2/left.jpg",
-        "SkyBox2/top.jpg",
-        "SkyBox2/bottom.jpg",
-        "SkyBox2/back.jpg",
-        "SkyBox2/front.jpg"
+        "Textures/SkyBox2/right.jpg",
+        "Textures/SkyBox2/left.jpg",
+        "Textures/SkyBox2/top.jpg",
+        "Textures/SkyBox2/bottom.jpg",
+        "Textures/SkyBox2/back.jpg",
+        "Textures/SkyBox2/front.jpg"
     );
     L3DHandle skyBoxMaterial = l3dLoadMaterial("skyBoxMaterial", skyBoxShaderProgram);
     l3dAddTextureToMaterial(skyBoxMaterial, "cubeMap", skyBoxCubeMap);
     L3DHandle skyBox = l3dLoadSkyBox(skyBoxMaterial);
 
     // Load a grass plane.
-    L3DHandle grassTexture = l3dutLoadTexture2D("grass.jpg");
+    L3DHandle grassTexture = l3dutLoadTexture2D("Textures/grass.jpg");
     L3DHandle grassPlaneMaterial = l3dLoadMaterial("grassPlaneMaterial", grassPlaneShaderProgram, GRASS_COLOR);
     l3dAddTextureToMaterial(grassPlaneMaterial, "diffuseMap", grassTexture);
     L3DHandle grassPlane = l3dLoadGrid(1, grassPlaneMaterial, L3DVec2(50, 50), L3D_BIT(2));
@@ -111,7 +111,7 @@ int main()
     l3dSetShaderProgramUniformF(grassPlaneShaderProgram, "u_grassDistanceLOD1", GRASS_DISTANCE_LOD1);
 
     // Load grass blades.
-    L3DHandle grassBladesTexture = l3dutLoadTexture2D("grass_blade.png");
+    L3DHandle grassBladesTexture = l3dutLoadTexture2D("Textures/grass_blade.png");
     L3DHandle grassBladesMaterial = l3dLoadMaterial("grassBladeMaterial", grassBladesShaderProgram, GRASS_COLOR);
     l3dAddTextureToMaterial(grassBladesMaterial, "diffuseMap", grassBladesTexture);
     L3DHandle grassBlades = l3dLoadGrid(GRASS_DENSITY, grassBladesMaterial, L3DVec2(1, 1), L3D_BIT(2));
@@ -126,9 +126,9 @@ int main()
     l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassHeightVariation", GRASS_HEIGHT_VAR);
 
     // Load some crates.
-    L3DHandle crateTexture = l3dutLoadTexture2D("crate.png");
-    L3DHandle crateSpecTexture = l3dutLoadTexture2D("crate_spec.png");
-    L3DHandle crateNormTexture = l3dutLoadTexture2D("crate_norm.png");
+    L3DHandle crateTexture = l3dutLoadTexture2D("Textures/crate.png");
+    L3DHandle crateSpecTexture = l3dutLoadTexture2D("Textures/crate_spec.png");
+    L3DHandle crateNormTexture = l3dutLoadTexture2D("Textures/crate_norm.png");
     L3DHandle crateMaterial = l3dLoadMaterial("crateMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(crateMaterial, "diffuseMap", crateTexture);
     l3dAddTextureToMaterial(crateMaterial, "specularMap", crateSpecTexture);

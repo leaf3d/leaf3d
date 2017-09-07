@@ -10,5 +10,5 @@ Ke 2.000000 2.000000 2.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd lamp.png
-map_Ks lamp_spec.png
+map_Kd Textures/lamp.png
+map_Ks Textures/lamp_spec.png

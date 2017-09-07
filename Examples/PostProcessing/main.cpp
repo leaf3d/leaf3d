@@ -63,11 +63,11 @@ int main()
 
     // ----------------------------- RESOURCES ----------------------------- //
     // Load a shader program.
-    L3DHandle shaderProgram = l3dutLoadShaderProgram("basic.vert", "simpletexture.frag");
+    L3DHandle shaderProgram = l3dutLoadShaderProgram("Shaders/basic.vert", "Shaders/simpletexture.frag");
 
     // Load a model.
     unsigned int meshCount = 0;
-    L3DHandle* meshes = l3dutLoadMeshes("frankie.obj", shaderProgram, &meshCount);
+    L3DHandle* meshes = l3dutLoadMeshes("Models/frankie.obj", shaderProgram, &meshCount);
 
     // Create a camera.
     L3DHandle camera = l3dLoadCamera(
