@@ -145,8 +145,7 @@ void main()
         vec3 cameraLookAt = vec3(u_vpMat[2][0], u_vpMat[2][1], u_vpMat[2][2]);
         vec3 surfaceToCamera = center - cameraPos;
         float surfaceToCameraDistance = length(surfaceToCamera);
-        //bool inFront = (dot(surfaceToCamera, cameraLookAt) > 0);
-        bool inFront = true;
+        bool inFront = (dot(surfaceToCamera, cameraLookAt) > 0);
 
         if (inFront && surfaceToCameraDistance < u_grassDistanceLOD3)
         {
