@@ -141,7 +141,7 @@ int main()
 
     // Load a tree.
     unsigned int meshCount = 0;
-    L3DHandle* tree = l3dutLoadMeshes("Models/tree1.obj", blinnPhongShaderProgram, &meshCount, L3D_BIT(2));
+    L3DHandle* tree = l3dutLoadMeshes("Models/tree1.obj", blinnPhongShaderProgram, &meshCount, L3D_BIT(1));
     for (int i=0; i<meshCount; ++i)
     {
       l3dRotateMesh(tree[i], 0.75f);
