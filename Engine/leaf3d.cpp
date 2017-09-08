@@ -38,24 +38,10 @@ using namespace l3d;
 static L3DRenderer* _renderer = L3D_NULLPTR;
 
 static const char* _defaultScreenVertexShader = GLSL(
-    /* ATTRIBUTES *****************************************************************/
-
-    in vec2 i_position;     // xyz - position
-    in vec2 i_texcoord0;    // xy - texture0 coords
-
-    /* UNIFORMS *******************************************************************/
-
-    // Matrices.
-    uniform mat4 u_modelMat;
-    uniform mat4 u_viewMat;
-    uniform mat4 u_projMat;
-    uniform mat3 u_normalMat;
-
-    /* OUTPUTS ********************************************************************/
+    in vec2 i_position;
+    in vec2 i_texcoord0;
 
     out vec2    o_texcoord0;
-
-    /* MAIN ***********************************************************************/
 
     void main()
     {
