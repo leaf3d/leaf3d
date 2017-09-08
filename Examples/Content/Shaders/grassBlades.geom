@@ -75,6 +75,7 @@ void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVari
 
     vec3 up = normalize((n1 + n2) * 0.5);
     vec3 right = normalize(rotationMatrix(up, angle) * cross(forward, up));
+    up = rotationMatrix(right, angle * rand(p2.xy) * 0.25) * up;
     vec3 normal = normalize(cross(right, up));
 
     vec4 v1 = vec4(pos + right * 0.5 * randWidth + up * 0 * randHeight, 1.0);
@@ -149,7 +150,7 @@ void main()
 
         if (inFront && surfaceToCameraDistance < u_grassDistanceLOD3)
         {
-            float distanceK = (u_grassDistanceLOD3 - surfaceToCameraDistance) / (u_grassDistanceLOD3 - u_grassDistanceLOD1);
+            float distanceK = (u_grassDistanceLOD3 - surfaceToCameraDistance) / (u_grassDistanceLOD3 - u_grassDistanceLOD2);
             makeQuad(p1, p2, n1, n2, u_grassHeight, u_grassHeightVariation, u_vpMat, distanceK, 3);
 
             if (surfaceToCameraDistance < u_grassDistanceLOD2)

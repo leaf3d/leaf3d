@@ -30,8 +30,8 @@
 #define FOG_DENSITY         0.003f
 #define GRASS_DENSITY       300
 #define GRASS_COLOR         L3DVec3(0.38f,0.43f,0.20f)
-#define GRASS_HEIGHT        1.5f
-#define GRASS_HEIGHT_VAR    3.0f
+#define GRASS_HEIGHT        1.0f
+#define GRASS_HEIGHT_VAR    5.0f
 #define GRASS_FIELD_SIZE    800.0f
 #define GRASS_DISTANCE_LOD3 GRASS_FIELD_SIZE * 0.5 * 1.0f
 #define GRASS_DISTANCE_LOD2 GRASS_FIELD_SIZE * 0.5 * 0.4f
@@ -160,7 +160,7 @@ int main()
     L3DHandle camera = l3dLoadCamera(
         "Default",
         glm::lookAt(
-           glm::vec3(0.0f, 150.0f, 40.0f),
+           glm::vec3(0.0f, 15.0f, 40.0f),
            glm::vec3(0.0f, 5.0f, 0.0f),
            glm::vec3(0.0f, 1.0f, 0.0f)
         ),
