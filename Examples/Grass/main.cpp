@@ -29,7 +29,7 @@
 #define WINDOW_HEIGHT       768
 #define FOG_DENSITY         0.003f
 #define GRASS_DENSITY       300
-#define GRASS_COLOR         L3DVec3(0.38f,0.43f,0.20f)
+#define GRASS_COLOR         L3DVec3(0.52f,0.58f,0.30f)
 #define GRASS_HEIGHT        1.0f
 #define GRASS_HEIGHT_VAR    5.0f
 #define GRASS_FIELD_SIZE    800.0f
@@ -164,7 +164,7 @@ int main()
            glm::vec3(0.0f, 5.0f, 0.0f),
            glm::vec3(0.0f, 1.0f, 0.0f)
         ),
-        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH/(GLfloat)WINDOW_HEIGHT, 1.0f, 1000.0f)
+        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH/(GLfloat)WINDOW_HEIGHT, 10.0f, GRASS_FIELD_SIZE)
     );
 
     // Create a forward rendering pipeline.
