@@ -193,7 +193,7 @@ L3DHandle l3dLoadForwardRenderQueue(
 
     // Draw fullscreen quad on layer 3
     // while the scene is rendered on layer 0, 1, 2.
-    fsQuad->renderLayerMask = L3D_BIT(3);
+    fsQuad->renderLayer = L3D_POSTPROCESSING_RENDERLAYER;
 
     // 1. Clear frame buffer.
     renderQueue->addSwitchFrameBufferCommand(backendBuffer);
@@ -204,24 +204,24 @@ L3DHandle l3dLoadForwardRenderQueue(
     // 2. Render meshes not writing on depth buffer of frame buffer.
     renderQueue->addSetDepthTestCommand(false);
     renderQueue->addSetDepthMaskCommand(false);
-    renderQueue->addDrawMeshesCommand(0);
+    renderQueue->addDrawMeshesCommand(L3D_SKYBOX_MESH_RENDERLAYER);
 
     // 3. Render opaque models on frame buffer.
     renderQueue->addSetDepthTestCommand(true, L3D_LESS);
     renderQueue->addSetDepthMaskCommand(true);
-    renderQueue->addDrawMeshesCommand(1);
+    renderQueue->addDrawMeshesCommand(L3D_OPAQUE_MESH_RENDERLAYER);
 
     // 4. Render meshes with alpha-blend.
     renderQueue->addSetCullFaceCommand(false);
     renderQueue->addSetBlendCommand(true);
-    renderQueue->addDrawMeshesCommand(2);
+    renderQueue->addDrawMeshesCommand(L3D_ALPHA_BLEND_MESH_RENDERLAYER);
 
     // 5. Render fullscreen quad to screen, sampling from framebuffer.
     renderQueue->addSwitchFrameBufferCommand(0);
     renderQueue->addClearBuffersCommand(true, false, false, clearColor);
     renderQueue->addSetDepthTestCommand(false);
     renderQueue->addSetBlendCommand(false);
-    renderQueue->addDrawMeshesCommand(3);
+    renderQueue->addDrawMeshesCommand(L3D_POSTPROCESSING_RENDERLAYER);
 
     if (renderQueue)
         return renderQueue->handle();
@@ -710,7 +710,7 @@ L3DHandle l3dLoadMesh(
     const L3DMat4& transMatrix,
     const L3DDrawType& drawType,
     const L3DDrawPrimitive& drawPrimitive,
-    unsigned int renderLayerMask
+    unsigned int renderLayer
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
@@ -726,7 +726,7 @@ L3DHandle l3dLoadMesh(
         transMatrix,
         drawType,
         drawPrimitive,
-        renderLayerMask
+        renderLayer
     );
 
     if (mesh)
@@ -738,7 +738,7 @@ L3DHandle l3dLoadMesh(
 L3DHandle l3dLoadQuad(
     const L3DHandle& material,
     const L3DVec2& texMulFactor,
-    unsigned int renderLayerMask
+    unsigned int renderLayer
 )
 {
     GLfloat vertices[] = {
@@ -760,14 +760,14 @@ L3DHandle l3dLoadQuad(
         material,
         L3D_POS3_NOR3_TAN3_UV2,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
-        renderLayerMask
+        renderLayer
     );
 }
 
 L3DHandle l3dLoadCube(
     const L3DHandle& material,
     const L3DVec2& texMulFactor,
-    unsigned int renderLayerMask
+    unsigned int renderLayer
 )
 {
     GLfloat vertices[] = {
@@ -829,13 +829,13 @@ L3DHandle l3dLoadCube(
         material,
         L3D_POS3_NOR3_TAN3_UV2,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
-        renderLayerMask
+        renderLayer
     );
 }
 
 L3DHandle l3dLoadSkyBox(
     const L3DHandle& material,
-    unsigned int renderLayerMask
+    unsigned int renderLayer
 )
 {
     GLfloat vertices[] = {
@@ -898,7 +898,7 @@ L3DHandle l3dLoadSkyBox(
         material,
         L3D_POS3,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
-        renderLayerMask
+        renderLayer
     );
 }
 
@@ -906,7 +906,7 @@ L3DHandle l3dLoadGrid(
     unsigned int n,
     const L3DHandle& material,
     const L3DVec2& texMulFactor,
-    unsigned int renderLayerMask
+    unsigned int renderLayer
 )
 {
     unsigned int numVertices = (n + 1) * (n + 1);
@@ -968,7 +968,7 @@ L3DHandle l3dLoadGrid(
         material,
         L3D_POS3_NOR3_TAN3_UV2,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
-        renderLayerMask
+        renderLayer
     );
 }
 

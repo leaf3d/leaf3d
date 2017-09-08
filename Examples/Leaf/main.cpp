@@ -74,7 +74,7 @@ int main()
     l3dAddTextureToMaterial(material, "diffuseMap", texture);
 
     // Load a simple textured quad.
-    L3DHandle logo = l3dLoadQuad(material, L3DVec2(1, 1), L3D_BIT(2));
+    L3DHandle logo = l3dLoadQuad(material, L3DVec2(1, 1), L3D_ALPHA_BLEND_MESH_RENDERLAYER);
 
     // Create a camera.
     L3DHandle camera = l3dLoadCamera(

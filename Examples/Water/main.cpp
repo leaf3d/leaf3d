@@ -79,7 +79,7 @@ int main()
     l3dAddTextureToMaterial(waterMaterial, "normalMap", normalMap);
 
     // Load a water plane.
-    L3DHandle waterPlane = l3dLoadGrid(200, waterMaterial, L3DVec2(0.05f, 0.05f), L3D_BIT(2));
+    L3DHandle waterPlane = l3dLoadGrid(200, waterMaterial, L3DVec2(0.05f, 0.05f), L3D_ALPHA_BLEND_MESH_RENDERLAYER);
     l3dRotateMesh(waterPlane, 1.57f, L3DVec3(-1, 0, 0));
     l3dScaleMesh(waterPlane, L3DVec3(400, 400, 1));
 

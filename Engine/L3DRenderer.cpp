@@ -1364,7 +1364,7 @@ void L3DRenderer::drawMeshes(
     {
         L3DMesh* mesh = it->second;
 
-        if (mesh && L3D_TEST_BIT(mesh->renderLayerMask, renderLayer) && mesh->material() && mesh->material()->shaderProgram())
+        if (mesh && mesh->renderLayer == renderLayer && mesh->material() && mesh->material()->shaderProgram())
         {
             L3DMaterial* material = mesh->material();
             L3DShaderProgram* shaderProgram = material->shaderProgram();

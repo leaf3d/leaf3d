@@ -162,7 +162,7 @@ L3DHandle* l3dutLoadMeshes(
     const char* filename,
     const L3DHandle& shaderProgram,
     unsigned int* meshCount,
-    unsigned int renderLayerMask
+    unsigned int renderLayer
 )
 {
     if (!filename)
@@ -320,7 +320,7 @@ L3DHandle* l3dutLoadMeshes(
             material,
             vertexFormat,
             L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
-            renderLayerMask
+            renderLayer
         );
 
         if (loadedMesh.repr)

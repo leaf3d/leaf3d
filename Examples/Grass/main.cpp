@@ -101,7 +101,7 @@ int main()
     L3DHandle grassTexture = l3dutLoadTexture2D("Textures/Grass/grass_diffuse.jpg");
     L3DHandle grassPlaneMaterial = l3dLoadMaterial("grassPlaneMaterial", grassPlaneShaderProgram, GRASS_COLOR);
     l3dAddTextureToMaterial(grassPlaneMaterial, "diffuseMap", grassTexture);
-    L3DHandle grassPlane = l3dLoadGrid(1, grassPlaneMaterial, L3DVec2(50, 50), L3D_BIT(2));
+    L3DHandle grassPlane = l3dLoadGrid(1, grassPlaneMaterial, L3DVec2(40, 40), L3D_ALPHA_BLEND_MESH_RENDERLAYER);
 
     l3dRotateMesh(grassPlane, 1.57f, L3DVec3(-1, 0, 0));
     l3dScaleMesh(grassPlane, L3DVec3(GRASS_FIELD_SIZE, GRASS_FIELD_SIZE, 1));
@@ -114,7 +114,7 @@ int main()
     L3DHandle grassBladesTexture = l3dutLoadTexture2D("Textures/Grass/grass_blade_diffuse.png");
     L3DHandle grassBladesMaterial = l3dLoadMaterial("grassBladeMaterial", grassBladesShaderProgram, GRASS_COLOR);
     l3dAddTextureToMaterial(grassBladesMaterial, "diffuseMap", grassBladesTexture);
-    L3DHandle grassBlades = l3dLoadGrid(GRASS_DENSITY, grassBladesMaterial, L3DVec2(1, 1), L3D_BIT(2));
+    L3DHandle grassBlades = l3dLoadGrid(GRASS_DENSITY, grassBladesMaterial, L3DVec2(1, 1), L3D_ALPHA_BLEND_MESH_RENDERLAYER);
 
     l3dRotateMesh(grassBlades, 1.57f, L3DVec3(-1, 0, 0));
     l3dScaleMesh(grassBlades, L3DVec3(GRASS_FIELD_SIZE, GRASS_FIELD_SIZE, 1));
@@ -141,7 +141,7 @@ int main()
 
     // Load a tree.
     unsigned int meshCount = 0;
-    L3DHandle* tree = l3dutLoadMeshes("Models/tree1.obj", blinnPhongShaderProgram, &meshCount, L3D_BIT(1));
+    L3DHandle* tree = l3dutLoadMeshes("Models/tree1.obj", blinnPhongShaderProgram, &meshCount);
     for (int i=0; i<meshCount; ++i)
     {
       l3dRotateMesh(tree[i], 0.75f);
