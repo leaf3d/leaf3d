@@ -1369,6 +1369,7 @@ void L3DRenderer::drawMeshes(
 
     L3DRenderBucket renderBucket;
 
+    // Iterate over all meshes, putting all with correct render layer to bucket.
     for (L3DMeshPool::iterator it = m_meshes.begin(); it != m_meshes.end(); ++it)
     {
         L3DMesh* mesh = it->second;
@@ -1379,8 +1380,13 @@ void L3DRenderer::drawMeshes(
         }
     }
 
+    // Sort the generated render bucket.
+    // TODO: no need to do it every frame! Make things smart allowing meshes to
+    //       notify when the bucket should be sorted again...
     renderBucket.sort(_l3dMeshSortFunctor());
 
+    // Iterate over render bucket and render each collected mesh.
+    // Meshes in bucket are ordered now by material to reduce context changes.
     for (L3DRenderBucket::iterator it = renderBucket.begin(); it != renderBucket.end(); ++it)
     {
         L3DMesh* mesh = *it;
