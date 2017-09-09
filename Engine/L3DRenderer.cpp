@@ -611,7 +611,7 @@ void L3DRenderer::addBuffer(L3DBuffer* buffer)
             glBindBuffer(gl_type, 0);
         }
 
-        buffer->setId(id);
+        buffer->setId((unsigned short int)id);
 
         m_buffers[id] = buffer;
     }
@@ -699,7 +699,7 @@ void L3DRenderer::addTexture(L3DTexture* texture)
 
         glBindTexture(gl_type, 0);
 
-        texture->setId(id);
+        texture->setId((unsigned short int)id);
 
         m_textures[id] = texture;
     }
@@ -726,7 +726,7 @@ void L3DRenderer::addShader(L3DShader* shader)
             fprintf(stderr, "%s", infoLog);
         }
 
-        shader->setId(id);
+        shader->setId((unsigned short int)id);
 
         m_shaders[id] = shader;
     }
@@ -758,7 +758,7 @@ void L3DRenderer::addShaderProgram(L3DShaderProgram* shaderProgram)
             fprintf(stderr, "%s", infoLog);
         }
 
-        shaderProgram->setId(id);
+        shaderProgram->setId((unsigned short int)id);
 
         m_shaderPrograms[id] = shaderProgram;
     }
@@ -815,7 +815,7 @@ void L3DRenderer::addFrameBuffer(L3DFrameBuffer* frameBuffer)
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-        frameBuffer->setId(id);
+        frameBuffer->setId((unsigned short int)id);
 
         m_frameBuffers[id] = frameBuffer;
     }
@@ -829,7 +829,7 @@ void L3DRenderer::addMaterial(L3DMaterial* material)
         if (m_materials.size() > 0)
             id = m_materials.rbegin()->second->id() + 1;
 
-        material->setId(id);
+        material->setId((unsigned short int)id);
 
         m_materials[id] = material;
     }
@@ -843,7 +843,7 @@ void L3DRenderer::addCamera(L3DCamera* camera)
         if (m_cameras.size() > 0)
             id = m_cameras.rbegin()->second->id() + 1;
 
-        camera->setId(id);
+        camera->setId((unsigned short int)id);
 
         m_cameras[id] = camera;
     }
@@ -857,7 +857,7 @@ void L3DRenderer::addLight(L3DLight* light)
         if (m_lights.size() > 0)
             id = m_lights.rbegin()->second->id() + 1;
 
-        light->setId(id);
+        light->setId((unsigned short int)id);
 
         m_lights[id] = light;
     }
@@ -981,7 +981,7 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
 
         glBindVertexArray(0);
 
-        mesh->setId(id);
+        mesh->setId((unsigned short int)id);
 
         m_meshes[id] = mesh;
     }
@@ -995,7 +995,7 @@ void L3DRenderer::addRenderQueue(L3DRenderQueue* renderQueue)
         if (m_renderQueues.size() > 0)
             id = m_renderQueues.rbegin()->second->id() + 1;
 
-        renderQueue->setId(id);
+        renderQueue->setId((unsigned short int)id);
 
         m_renderQueues[id] = renderQueue;
     }

@@ -38,10 +38,12 @@ namespace l3d
     public:
         virtual ~L3DResource();
 
-        L3DHandle       handle() const { return m_handle; }
-        L3DResourceType    resourceType() const { return (L3DResourceType)m_handle.data.type; }
-        unsigned int    id() const { return m_handle.data.id; }
-        L3DRenderer*    renderer() const { return m_renderer; }
+        L3DHandle           handle() const { return m_handle; }
+        L3DResourceType     resourceType() const { return (L3DResourceType)m_handle.data.type; }
+        unsigned short int  id() const { return m_handle.data.id; }
+        unsigned char       flags() const { return m_handle.data.flags; }
+        bool                hasFlag(unsigned char bit) const { return L3D_TEST_BIT(m_handle.data.flags, bit); }
+        L3DRenderer*        renderer() const { return m_renderer; }
 
     protected:
         L3DResource(L3DRenderer* renderer = L3D_NULLPTR);
@@ -50,7 +52,9 @@ namespace l3d
             L3DRenderer* renderer  = L3D_NULLPTR
         );
 
-        void setId(unsigned int id);
+        void setId(unsigned short int id) { m_handle.data.id = id; }
+        void setFlags(unsigned char flags) { m_handle.data.flags = flags; }
+        void setFlag(unsigned char flag, bool enable = true) { L3D_SET_BIT(m_handle.data.flags, flag, enable); }
 
         friend class L3DRenderer;
     };

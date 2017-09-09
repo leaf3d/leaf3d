@@ -36,7 +36,8 @@
 #define L3D_NULLPTR 0
 
 #define L3D_BIT(pos) (1<<(pos))
-#define L3D_TEST_BIT(var, pos) ((var) & L3D_BIT(pos))
+#define L3D_SET_BIT(var, pos, enable) (enable ? var | L3D_BIT(pos) : var & ~L3D_BIT(pos))
+#define L3D_TEST_BIT(var, pos) (((var) & L3D_BIT(pos)) > 0)
 
 #define L3D_SKYBOX_MESH_RENDERLAYER 0
 #define L3D_OPAQUE_MESH_RENDERLAYER 1
@@ -284,21 +285,23 @@ namespace l3d
 
     // Almost-opaque resource handle:
     //
-    // x----------- repr -----------X
-    // x---- type ----xx---- id ----x
+    // x-------------------- repr ---------------------X
+    // |-- type --|-- flags --|---------- id ----------|
     //
     // Could be used in different ways:
     //
     // > handle.repr
-    // > handle.data.type
-    // > handle.data.id
+    // > handle.data.type   (8bits)
+    // > handle.data.flags  (8bits, bitfield)
+    // > handle.data.id     (16bits)
     typedef union
     {
-        unsigned long long repr;
+        unsigned int repr;
         struct L3DHandleData
         {
-            unsigned int type;
-            unsigned int id;
+            unsigned char type;
+            unsigned char flags;
+            unsigned short int id;
         } data;
     } L3DHandle;
 

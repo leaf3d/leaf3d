@@ -12,6 +12,7 @@ set(LEAF3D_TESTS_LIBRARIES
     ${LEAF3D_REQUIRED_LIBS}
 )
 
+add_subdirectory(core)
 add_subdirectory(camera)
 add_subdirectory(light)
 add_subdirectory(mesh)
