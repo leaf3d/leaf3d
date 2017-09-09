@@ -34,7 +34,6 @@ namespace l3d
     {
     public:
         L3DMat4             transMatrix;
-        unsigned int        renderLayer;
 
     private:
         L3DBuffer*          m_vertexBuffer;
@@ -42,6 +41,8 @@ namespace l3d
         L3DMaterial*        m_material;
         L3DVertexFormat     m_vertexFormat;
         L3DDrawPrimitive    m_drawPrimitive;
+        unsigned char       m_renderLayer;
+        unsigned int        m_sortKey;
 
     public:
         L3DMesh(
@@ -55,7 +56,7 @@ namespace l3d
             const L3DMat4& transMatrix = L3DMat4(),
             const L3DDrawType& drawType = L3D_DRAW_STATIC,
             const L3DDrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES,
-            unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER
+            unsigned char renderLayer = L3D_OPAQUE_MESH_RENDERLAYER
         );
         L3DMesh(
             L3DRenderer *renderer,
@@ -66,7 +67,7 @@ namespace l3d
             const L3DMat4& transMatrix = L3DMat4(),
             const L3DDrawType& drawType = L3D_DRAW_STATIC,
             const L3DDrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES,
-            unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER
+            unsigned char renderLayer = L3D_OPAQUE_MESH_RENDERLAYER
         );
         ~L3DMesh() {}
 
@@ -75,6 +76,9 @@ namespace l3d
         L3DMaterial*        material() const { return m_material; }
         L3DVertexFormat     vertexFormat() const { return m_vertexFormat; }
         L3DDrawPrimitive    drawPrimitive() const { return m_drawPrimitive; }
+        unsigned char       renderLayer() const { return m_renderLayer; }
+        unsigned int        sortKey() const { return m_sortKey; }
+
         L3DMat3             normalMatrix() const;
         unsigned int        vertexCount() const;
         unsigned int        indexCount() const;
@@ -88,6 +92,12 @@ namespace l3d
             const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
         );
         void scale(const L3DVec3& factor);
+
+        void setMaterial(L3DMaterial* material);
+        void setRenderLayer(unsigned char renderLayer);
+
+    protected:
+        void updateSortKey();
     };
 }
 

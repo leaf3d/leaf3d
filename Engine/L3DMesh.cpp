@@ -39,21 +39,24 @@ L3DMesh::L3DMesh(
     const L3DMat4& transMatrix,
     const L3DDrawType& drawType,
     const L3DDrawPrimitive& drawPrimitive,
-    unsigned int renderLayer
+    unsigned char renderLayer
 ) : L3DResource(L3D_MESH, renderer),
     transMatrix(transMatrix),
-    renderLayer(renderLayer),
     m_vertexBuffer(0),
     m_indexBuffer(0),
     m_material(material),
     m_vertexFormat(vertexFormat),
-    m_drawPrimitive(drawPrimitive)
+    m_drawPrimitive(drawPrimitive),
+    m_renderLayer(renderLayer),
+    m_sortKey(0)
 {
     if (vertices && vertexCount)
         m_vertexBuffer = new L3DBuffer(renderer, L3D_BUFFER_VERTEX, vertices, vertexCount * vertexFormat * sizeof(float), vertexFormat * sizeof(float), drawType);
 
     if (indices && indexCount)
         m_indexBuffer = new L3DBuffer(renderer, L3D_BUFFER_INDEX, indices, indexCount * sizeof(unsigned int), sizeof(unsigned int), drawType);
+
+    this->updateSortKey();
 
     if (renderer) renderer->addMesh(this);
 }
@@ -67,15 +70,16 @@ L3DMesh::L3DMesh(
     const L3DMat4& transMatrix,
     const L3DDrawType& drawType,
     const L3DDrawPrimitive& drawPrimitive,
-    unsigned int renderLayer
+    unsigned char renderLayer
 ) : L3DResource(L3D_MESH, renderer),
     transMatrix(transMatrix),
-    renderLayer(renderLayer),
     m_vertexBuffer(0),
     m_indexBuffer(0),
     m_material(material),
     m_vertexFormat(vertexFormat),
-    m_drawPrimitive(drawPrimitive)
+    m_drawPrimitive(drawPrimitive),
+    m_renderLayer(renderLayer),
+    m_sortKey(0)
 {
     if (vertexBuffer
         && vertexBuffer->stride() == vertexFormat * sizeof(float)
@@ -86,6 +90,8 @@ L3DMesh::L3DMesh(
         && indexBuffer->stride() == sizeof(unsigned int)
         && indexBuffer->drawType() == drawType)
         m_indexBuffer = indexBuffer;
+
+    this->updateSortKey();
 
     if (renderer) renderer->addMesh(this);
 }
@@ -194,4 +200,29 @@ void L3DMesh::scale(
 )
 {
     this->transMatrix = glm::scale(this->transMatrix, factor);
+}
+
+void L3DMesh::setMaterial(L3DMaterial* material)
+{
+    if (m_material != material)
+    {
+        m_material = material;
+        this->updateSortKey();
+    }
+}
+
+void L3DMesh::setRenderLayer(unsigned char renderLayer)
+{
+    if (m_renderLayer != renderLayer)
+    {
+        m_renderLayer = renderLayer;
+        this->updateSortKey();
+    }
+}
+
+void L3DMesh::updateSortKey()
+{
+    m_sortKey = (m_renderLayer << 24) | ((m_material ? m_material->id() : 0) << 8);
+
+    // TODO Update L3DRenderer's render bucket...
 }

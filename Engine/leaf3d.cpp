@@ -191,9 +191,8 @@ L3DHandle l3dLoadForwardRenderQueue(
         L3D_POS2_UV2
     );
 
-    // Draw fullscreen quad on layer 3
-    // while the scene is rendered on layer 0, 1, 2.
-    fsQuad->renderLayer = L3D_POSTPROCESSING_RENDERLAYER;
+    // Draw fullscreen quad on last layer.
+    fsQuad->setRenderLayer(L3D_POSTPROCESSING_RENDERLAYER);
 
     // 1. Clear frame buffer.
     renderQueue->addSwitchFrameBufferCommand(backendBuffer);
@@ -986,6 +985,18 @@ L3DMat4 l3dGetMeshTrans(
     return L3DMat4();
 }
 
+unsigned char l3dMeshRenderLayer(const L3DHandle& target)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DMesh* mesh = _renderer->getMesh(target);
+
+    if (mesh)
+        return mesh->renderLayer();
+
+    return 0;
+}
+
 void l3dSetMeshTrans(
     const L3DHandle& target,
     const L3DMat4& trans
@@ -1037,6 +1048,33 @@ void l3dScaleMesh(
 
     if (mesh)
         mesh->scale(factor);
+}
+
+void l3dSetMeshMaterial(
+    const L3DHandle& target,
+    const L3DHandle& material
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DMesh* mesh = _renderer->getMesh(target);
+    L3DMaterial* mat = _renderer->getMaterial(material);
+
+    if (mesh)
+        mesh->setMaterial(mat);
+}
+
+void l3dSetMeshRenderLayer(
+    const L3DHandle& target,
+    unsigned char renderLayer
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DMesh* mesh = _renderer->getMesh(target);
+
+    if (mesh)
+        mesh->setRenderLayer(renderLayer);
 }
 
 L3DHandle l3dLoadDirectionalLight(
@@ -1120,6 +1158,18 @@ int l3dLightType(const L3DHandle& target)
     return -1;
 }
 
+unsigned int l3dLightRenderLayerMask(const L3DHandle& target)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DLight* light = _renderer->getLight(target);
+
+    if (light)
+        return light->renderLayerMask();
+
+    return 0;
+}
+
 bool l3dIsLightOn(
     const L3DHandle& target
 )
@@ -1134,9 +1184,9 @@ bool l3dIsLightOn(
     return false;
 }
 
-void l3dTranslateLight(
+void l3dSetLightRenderLayerMask(
     const L3DHandle& target,
-    const L3DVec3& movement
+    unsigned int renderLayerMask
 )
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
@@ -1144,7 +1194,7 @@ void l3dTranslateLight(
     L3DLight* light = _renderer->getLight(target);
 
     if (light)
-        light->translate(movement);
+        return light->setRenderLayerMask(renderLayerMask);
 }
 
 void l3dSetLightDirection(
@@ -1186,6 +1236,19 @@ void l3dSetLightColor(
 
     if (light)
         light->color = color;
+}
+
+void l3dTranslateLight(
+    const L3DHandle& target,
+    const L3DVec3& movement
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DLight* light = _renderer->getLight(target);
+
+    if (light)
+        light->translate(movement);
 }
 
 void l3dLightLookAt(

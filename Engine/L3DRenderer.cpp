@@ -21,6 +21,7 @@
 
 #include <stdio.h>
 #include <sstream>
+#include <list>
 #include <leaf3d/L3DBuffer.h>
 #include <leaf3d/L3DTexture.h>
 #include <leaf3d/L3DShader.h>
@@ -34,6 +35,12 @@
 #include <leaf3d/L3DRenderer.h>
 
 using namespace l3d;
+
+typedef std::list<L3DMesh*> L3DRenderBucket;
+
+struct _l3dMeshSortFunctor {
+    bool operator() (L3DMesh* i, L3DMesh* j) { return i->sortKey() < j->sortKey(); }
+};
 
 static GLenum _toOpenGL(const L3DBufferType& orig)
 {
@@ -1360,119 +1367,129 @@ void L3DRenderer::drawMeshes(
     L3DVec3 cameraPos = camera->position();
     L3DMat4 vpMat = camera->proj * camera->view;
 
+    L3DRenderBucket renderBucket;
+
     for (L3DMeshPool::iterator it = m_meshes.begin(); it != m_meshes.end(); ++it)
     {
         L3DMesh* mesh = it->second;
 
-        if (mesh && mesh->renderLayer == renderLayer && mesh->material() && mesh->material()->shaderProgram())
+        if (mesh && mesh->renderLayer() == renderLayer && mesh->material() && mesh->material()->shaderProgram())
         {
-            L3DMaterial* material = mesh->material();
-            L3DShaderProgram* shaderProgram = material->shaderProgram();
-            GLenum gl_draw_primitive = _toOpenGL(mesh->drawPrimitive());
-            unsigned int index_count = mesh->indexCount();
+            renderBucket.push_back(mesh);
+        }
+    }
 
-            // Binds VAO.
-            glBindVertexArray(mesh->id());
+    renderBucket.sort(_l3dMeshSortFunctor());
 
-            // Binds shaders.
-            glUseProgram(shaderProgram->id());
+    for (L3DRenderBucket::iterator it = renderBucket.begin(); it != renderBucket.end(); ++it)
+    {
+        L3DMesh* mesh = *it;
+        L3DMaterial* material = mesh->material();
+        L3DShaderProgram* shaderProgram = material->shaderProgram();
+        GLenum gl_draw_primitive = _toOpenGL(mesh->drawPrimitive());
+        unsigned int index_count = mesh->indexCount();
 
-            // Binds uniforms.
-            L3DUniformMap uniforms = shaderProgram->uniforms();
-            for (L3DUniformMap::iterator unif_it = uniforms.begin(); unif_it!=uniforms.end(); ++unif_it)
-                _setUniform(shaderProgram->id(), unif_it->first.c_str(), unif_it->second);
+        // Binds VAO.
+        glBindVertexArray(mesh->id());
 
-            // Binds matrices and vectors.
-            glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_cameraPos"), 1, glm::value_ptr(cameraPos));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_vpMat"), 1, GL_FALSE, glm::value_ptr(vpMat));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_viewMat"), 1, GL_FALSE, glm::value_ptr(camera->view));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_projMat"), 1, GL_FALSE, glm::value_ptr(camera->proj));
-            glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_modelMat"), 1, GL_FALSE, glm::value_ptr(mesh->transMatrix));
-            glUniformMatrix3fv(glGetUniformLocation(shaderProgram->id(), "u_normalMat"), 1, GL_FALSE, glm::value_ptr(mesh->normalMatrix()));
+        // Binds shaders.
+        glUseProgram(shaderProgram->id());
 
-            // Binds material:
-            std::string materialName = "u_material.";
+        // Binds uniforms.
+        L3DUniformMap uniforms = shaderProgram->uniforms();
+        for (L3DUniformMap::iterator unif_it = uniforms.begin(); unif_it!=uniforms.end(); ++unif_it)
+            _setUniform(shaderProgram->id(), unif_it->first.c_str(), unif_it->second);
 
-            // 1. Colors.
-            for (L3DColorRegistry::iterator col_it = material->colors.begin(); col_it!=material->colors.end(); ++col_it)
-                _setUniform(shaderProgram->id(), (materialName + col_it->first).c_str(), col_it->second);
+        // Binds matrices and vectors.
+        glUniform3fv(glGetUniformLocation(shaderProgram->id(), "u_cameraPos"), 1, glm::value_ptr(cameraPos));
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_vpMat"), 1, GL_FALSE, glm::value_ptr(vpMat));
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_viewMat"), 1, GL_FALSE, glm::value_ptr(camera->view));
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_projMat"), 1, GL_FALSE, glm::value_ptr(camera->proj));
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram->id(), "u_modelMat"), 1, GL_FALSE, glm::value_ptr(mesh->transMatrix));
+        glUniformMatrix3fv(glGetUniformLocation(shaderProgram->id(), "u_normalMat"), 1, GL_FALSE, glm::value_ptr(mesh->normalMatrix()));
 
-            // 2. Parameters.
-            for (L3DParameterRegistry::iterator par_it = material->params.begin(); par_it!=material->params.end(); ++par_it)
-                _setUniform(shaderProgram->id(), (materialName + par_it->first).c_str(), par_it->second);
+        // Binds material:
+        std::string materialName = "u_material.";
 
-            // 3. Textures.
-            if (material->textures.size() > 0)
+        // 1. Colors.
+        for (L3DColorRegistry::iterator col_it = material->colors.begin(); col_it!=material->colors.end(); ++col_it)
+            _setUniform(shaderProgram->id(), (materialName + col_it->first).c_str(), col_it->second);
+
+        // 2. Parameters.
+        for (L3DParameterRegistry::iterator par_it = material->params.begin(); par_it!=material->params.end(); ++par_it)
+            _setUniform(shaderProgram->id(), (materialName + par_it->first).c_str(), par_it->second);
+
+        // 3. Textures.
+        if (material->textures.size() > 0)
+        {
+            std::string samplerName = "u_";
+
+            unsigned int i = 0;
+            for (L3DTextureRegistry::iterator tex_it = material->textures.begin(); tex_it!=material->textures.end(); ++tex_it)
             {
-                std::string samplerName = "u_";
+                L3DTexture* texture = tex_it->second;
 
-                unsigned int i = 0;
-                for (L3DTextureRegistry::iterator tex_it = material->textures.begin(); tex_it!=material->textures.end(); ++tex_it)
+                if (texture)
                 {
-                    L3DTexture* texture = tex_it->second;
+                    GLenum gl_type = _toOpenGL(texture->type());
+                    GLint gl_sampler = glGetUniformLocation(shaderProgram->id(), (samplerName + tex_it->first).c_str());
 
-                    if (texture)
-                    {
-                        GLenum gl_type = _toOpenGL(texture->type());
-                        GLint gl_sampler = glGetUniformLocation(shaderProgram->id(), (samplerName + tex_it->first).c_str());
+                    // Activate texture unit and bind sampler.
+                    glActiveTexture(GL_TEXTURE0 + i);
+                    glBindTexture(gl_type, texture->id());
+                    glUniform1i(gl_sampler, i);
 
-                        // Activate texture unit and bind sampler.
-                        glActiveTexture(GL_TEXTURE0 + i);
-                        glBindTexture(gl_type, texture->id());
-                        glUniform1i(gl_sampler, i);
+                    // Set map flag.
+                    glUniform1i(glGetUniformLocation(shaderProgram->id(), (samplerName + tex_it->first + "Enabled").c_str()), GL_TRUE);
 
-                        // Set map flag.
-                        glUniform1i(glGetUniformLocation(shaderProgram->id(), (samplerName + tex_it->first + "Enabled").c_str()), GL_TRUE);
-
-                        ++i;
-                    }
+                    ++i;
                 }
             }
-            else
+        }
+        else
+        {
+            glBindTexture(GL_TEXTURE_1D, 0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glBindTexture(GL_TEXTURE_3D, 0);
+        }
+
+        // Binds lights.
+        int activeLightCount = 0;
+        for (L3DLightPool::iterator light_it = m_lights.begin(); light_it!=m_lights.end(); ++light_it)
+        {
+            L3DLight* light = light_it->second;
+
+            if (light && light->isOn() && L3D_TEST_BIT(light->renderLayerMask(), renderLayer))
             {
-                glBindTexture(GL_TEXTURE_1D, 0);
-                glBindTexture(GL_TEXTURE_2D, 0);
-                glBindTexture(GL_TEXTURE_3D, 0);
+                std::ostringstream sstream;
+                sstream << "u_light[" << activeLightCount << "]";
+                std::string lightName = sstream.str();
+
+                _setUniform(shaderProgram->id(), (lightName + ".type").c_str(), light->type);
+                _setUniform(shaderProgram->id(), (lightName + ".position").c_str(), light->position);
+                _setUniform(shaderProgram->id(), (lightName + ".direction").c_str(), light->direction);
+                _setUniform(shaderProgram->id(), (lightName + ".color").c_str(), light->color);
+                _setUniform(shaderProgram->id(), (lightName + ".kc").c_str(), light->attenuation.kc);
+                _setUniform(shaderProgram->id(), (lightName + ".kl").c_str(), light->attenuation.kl);
+                _setUniform(shaderProgram->id(), (lightName + ".kq").c_str(), light->attenuation.kq);
+
+                ++activeLightCount;
             }
+        }
 
-            // Binds lights.
-            int activeLightCount = 0;
-            for (L3DLightPool::iterator light_it = m_lights.begin(); light_it!=m_lights.end(); ++light_it)
-            {
-                L3DLight* light = light_it->second;
+        // Passes count of active lights.
+        _setUniform(shaderProgram->id(), "u_lightNr", (int)activeLightCount);
 
-                if (light && L3D_TEST_BIT(light->renderLayerMask, renderLayer) && light->isOn())
-                {
-                    std::ostringstream sstream;
-                    sstream << "u_light[" << activeLightCount << "]";
-                    std::string lightName = sstream.str();
-
-                    _setUniform(shaderProgram->id(), (lightName + ".type").c_str(), light->type);
-                    _setUniform(shaderProgram->id(), (lightName + ".position").c_str(), light->position);
-                    _setUniform(shaderProgram->id(), (lightName + ".direction").c_str(), light->direction);
-                    _setUniform(shaderProgram->id(), (lightName + ".color").c_str(), light->color);
-                    _setUniform(shaderProgram->id(), (lightName + ".kc").c_str(), light->attenuation.kc);
-                    _setUniform(shaderProgram->id(), (lightName + ".kl").c_str(), light->attenuation.kl);
-                    _setUniform(shaderProgram->id(), (lightName + ".kq").c_str(), light->attenuation.kq);
-
-                    ++activeLightCount;
-                }
-            }
-
-            // Passes count of active lights.
-            _setUniform(shaderProgram->id(), "u_lightNr", (int)activeLightCount);
-
-            // Renders geometry.
-            if (index_count > 0)
-            {
-                // Renders vertices using indices.
-                glDrawElements(gl_draw_primitive, index_count, GL_UNSIGNED_INT, 0);
-            }
-            else
-            {
-                // Renders vertices without using indices.
-                glDrawArrays(gl_draw_primitive, 0, mesh->vertexCount());
-            }
+        // Renders geometry.
+        if (index_count > 0)
+        {
+            // Renders vertices using indices.
+            glDrawElements(gl_draw_primitive, index_count, GL_UNSIGNED_INT, 0);
+        }
+        else
+        {
+            // Renders vertices without using indices.
+            glDrawArrays(gl_draw_primitive, 0, mesh->vertexCount());
         }
     }
 

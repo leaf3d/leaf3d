@@ -33,14 +33,21 @@ L3DLight::L3DLight(
     const L3DLightAttenuation& attenuation,
     unsigned int renderLayerMask
 ) : L3DResource(L3D_LIGHT, renderer),
-    renderLayerMask(renderLayerMask),
     type(type),
     position(position),
     direction(direction),
     color(color),
-    attenuation(attenuation)
+    attenuation(attenuation),
+    m_renderLayerMask(renderLayerMask)
 {
     if (renderer) renderer->addLight(this);
+}
+
+void L3DLight::setRenderLayerMask(unsigned int renderLayerMask)
+{
+    m_renderLayerMask = renderLayerMask;
+
+    // TODO: can we optimize rendering from here?
 }
 
 void L3DLight::translate(const L3DVec3& movement)

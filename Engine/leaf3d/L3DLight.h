@@ -30,12 +30,14 @@ namespace l3d
     class L3DLight : public L3DResource
     {
     public:
-        unsigned int        renderLayerMask;
         L3DLightType        type;
         L3DVec3             position;
         L3DVec3             direction;
         L3DVec4             color;
         L3DLightAttenuation attenuation;
+
+    protected:
+        unsigned int        m_renderLayerMask;
 
     public:
         L3DLight(
@@ -49,10 +51,13 @@ namespace l3d
         );
         ~L3DLight() {}
 
+        unsigned int  renderLayerMask() const { return m_renderLayerMask; }
+        bool          isOn() const { return (this->color.a > 0.0f); }
+
+        void setRenderLayerMask(unsigned int renderLayerMask);
+
         void translate(const L3DVec3& movement);
         void lookAt(const L3DVec3& targetPosition);
-
-        bool isOn() const { return (this->color.a > 0.0f); }
 
         static L3DLight* createDirectionalLight(
             L3DRenderer* renderer,

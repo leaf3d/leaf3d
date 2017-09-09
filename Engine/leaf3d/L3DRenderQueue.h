@@ -153,11 +153,11 @@ namespace l3d
     class L3DDrawMeshesCommand : public L3DRenderCommand
     {
     public:
-        unsigned int renderLayer;
+        unsigned char renderLayer;
 
     public:
         L3DDrawMeshesCommand(
-            unsigned int renderLayer = 0
+            unsigned char renderLayer = 0
         ) : L3DRenderCommand(L3D_DRAW_MESHES),
             renderLayer(renderLayer) {}
     };
@@ -209,7 +209,7 @@ namespace l3d
             bool enable = true,
             const L3DCullFace& cullFace = L3D_BACK_FACE
         );
-        void addDrawMeshesCommand(unsigned int renderLayer = 0);
+        void addDrawMeshesCommand(unsigned char renderLayer = 0);
     };
 }
 

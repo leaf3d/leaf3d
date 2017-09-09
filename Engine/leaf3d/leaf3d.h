@@ -264,6 +264,8 @@ L3DMat4 l3dGetMeshTrans(
     const L3DHandle& target
 );
 
+unsigned char l3dMeshRenderLayer(const L3DHandle& target);
+
 void l3dSetMeshTrans(
     const L3DHandle& target,
     const L3DMat4& trans
@@ -283,6 +285,16 @@ void l3dRotateMesh(
 void l3dScaleMesh(
     const L3DHandle& target,
     const L3DVec3& factor
+);
+
+void l3dSetMeshMaterial(
+    const L3DHandle& target,
+    const L3DHandle& material
+);
+
+void l3dSetMeshRenderLayer(
+    const L3DHandle& target,
+    unsigned char renderLayer
 );
 
 /* Lights *********************************************************************/
@@ -310,11 +322,13 @@ L3DHandle l3dLoadSpotLight(
 
 int l3dLightType(const L3DHandle& target);
 
+unsigned int l3dLightRenderLayerMask(const L3DHandle& target);
+
 bool l3dIsLightOn(const L3DHandle& target);
 
-void l3dTranslateLight(
+void l3dSetLightRenderLayerMask(
     const L3DHandle& target,
-    const L3DVec3& movement
+    unsigned int renderLayerMask
 );
 
 void l3dSetLightDirection(
@@ -332,6 +346,11 @@ void l3dSetLightAttenuation(
 void l3dSetLightColor(
     const L3DHandle& target,
     const L3DVec4& color
+);
+
+void l3dTranslateLight(
+    const L3DHandle& target,
+    const L3DVec3& movement
 );
 
 void l3dLightLookAt(

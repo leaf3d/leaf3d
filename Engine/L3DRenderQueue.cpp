@@ -114,7 +114,7 @@ void L3DRenderQueue::addSetCullFaceCommand(
     );
 }
 
-void L3DRenderQueue::addDrawMeshesCommand(unsigned int renderLayer)
+void L3DRenderQueue::addDrawMeshesCommand(unsigned char renderLayer)
 {
     m_commands.push_back(
         new L3DDrawMeshesCommand(renderLayer)
