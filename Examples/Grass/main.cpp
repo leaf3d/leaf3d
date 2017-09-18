@@ -28,13 +28,14 @@
 #define WINDOW_WIDTH        1024
 #define WINDOW_HEIGHT       768
 #define GRASS_DENSITY       300
-#define GRASS_COLOR         L3DVec3(0.52f,0.58f,0.30f)
+#define GRASS_COLOR         L3DVec3(0.67f,0.68f,0.41f)
+#define GRASS_COLOR_VAR     L3DVec3(0.1f,0.08f,0.15f)
 #define GRASS_HEIGHT        1.0f
-#define GRASS_HEIGHT_VAR    5.0f
+#define GRASS_HEIGHT_VAR    4.0f
 #define GRASS_FIELD_SIZE    800.0f
-#define GRASS_DISTANCE_LOD3 GRASS_FIELD_SIZE * 0.5 * 1.0f
-#define GRASS_DISTANCE_LOD2 GRASS_FIELD_SIZE * 0.5 * 0.5f
-#define GRASS_DISTANCE_LOD1 GRASS_FIELD_SIZE * 0.5 * 0.3f
+#define GRASS_DISTANCE_LOD3 GRASS_FIELD_SIZE * GRASS_HEIGHT * 0.5 * 1.0f
+#define GRASS_DISTANCE_LOD2 GRASS_FIELD_SIZE * GRASS_HEIGHT * 0.5 * 0.4f
+#define GRASS_DISTANCE_LOD1 GRASS_FIELD_SIZE * GRASS_HEIGHT * 0.5 * 0.3f
 
 using namespace l3d;
 
@@ -123,6 +124,7 @@ int main()
     l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassDistanceLOD1", GRASS_DISTANCE_LOD1 * 0.75f);
     l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassHeight", GRASS_HEIGHT);
     l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassHeightVariation", GRASS_HEIGHT_VAR);
+    l3dSetShaderProgramUniformVec3(grassBladesShaderProgram, "u_grassColorVariation", GRASS_COLOR_VAR);
 
     // Load a crate.
     L3DHandle crateTexture = l3dutLoadTexture2D("Textures/Crate/crate.png");

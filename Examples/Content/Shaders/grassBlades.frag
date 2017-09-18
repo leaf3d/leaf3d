@@ -15,6 +15,7 @@ in VertexData {
   vec3      tangent;
   vec3      bitangent;
   vec2      texcoord0;
+  vec3      diffuseVariation;
   float     distanceK;
   flat int  LOD;
 } fs_in;
@@ -37,7 +38,7 @@ uniform Material    u_material;
 void main()
 {
     vec4 diffuse = texture(u_diffuseMap, fs_in.texcoord0);
-    vec3 diffuseColor = u_material.diffuse;
+    vec3 diffuseColor = u_material.diffuse + fs_in.diffuseVariation;
 
     // Discard fragments with low alpha value.
     if (diffuse.a < 0.5f)

@@ -43,5 +43,5 @@ void main()
     float alphaOpacity = (u_grassDistanceLOD3 - surfaceToCenterDistance) / (u_grassDistanceLOD3 - u_grassDistanceLOD2);
 
     // Calculate final color.
-    gl_FragColor = vec4(diffuse.rgb, alphaOpacity);
+    gl_FragColor = vec4(diffuse.rgb * u_material.diffuse, alphaOpacity);
 }

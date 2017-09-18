@@ -30,6 +30,7 @@ uniform float u_grassDistanceLOD2;
 uniform float u_grassDistanceLOD3;
 uniform float u_grassHeight;
 uniform float u_grassHeightVariation;
+uniform vec3  u_grassColorVariation;
 
 /* OUTPUTS ********************************************************************/
 
@@ -39,6 +40,7 @@ out VertexData {
   vec3      tangent;
   vec3      bitangent;
   vec2      texcoord0;
+  vec3      diffuseVariation;
   float     distanceK;
   flat int  LOD;
 } gs_out;
@@ -62,7 +64,7 @@ float rand(vec2 seed)
     return fract(sin(dot(seed, vec2(12.9898, 4.1414))) * 43758.5453);
 }
 
-void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVariation, mat4 vpMat, float distanceK, int LOD)
+void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVariation, vec3 colorVariation, mat4 vpMat, float distanceK, int LOD)
 {
     vec3 pos = (p1 + p2) * 0.5;
     vec3 forward = normalize(pos);
@@ -89,6 +91,7 @@ void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVari
     gs_out.tangent = right;
     gs_out.bitangent = up;
     gs_out.texcoord0 = vec2(0, 1);
+    gs_out.diffuseVariation = randK * colorVariation;
     gs_out.distanceK = distanceK;
     gs_out.LOD = LOD;
     EmitVertex();
@@ -99,6 +102,7 @@ void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVari
     gs_out.tangent = right;
     gs_out.bitangent = up;
     gs_out.texcoord0 = vec2(0, 0);
+    gs_out.diffuseVariation = - randK * colorVariation;
     gs_out.distanceK = distanceK;
     gs_out.LOD = LOD;
     EmitVertex();
@@ -109,6 +113,7 @@ void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVari
     gs_out.tangent = right;
     gs_out.bitangent = up;
     gs_out.texcoord0 = vec2(1, 1);
+    gs_out.diffuseVariation = - randK * colorVariation;
     gs_out.distanceK = distanceK;
     gs_out.LOD = LOD;
     EmitVertex();
@@ -119,6 +124,7 @@ void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVari
     gs_out.tangent = right;
     gs_out.bitangent = up;
     gs_out.texcoord0 = vec2(1, 0);
+    gs_out.diffuseVariation = randK * colorVariation;
     gs_out.distanceK = distanceK;
     gs_out.LOD = LOD;
     EmitVertex();
@@ -150,15 +156,15 @@ void main()
         if (inFront && surfaceToCameraDistance < u_grassDistanceLOD3)
         {
             float distanceK = (u_grassDistanceLOD3 - surfaceToCameraDistance) / (u_grassDistanceLOD3 - u_grassDistanceLOD2);
-            makeQuad(p1, p2, n1, n2, u_grassHeight, u_grassHeightVariation, u_vpMat, distanceK, 3);
+            makeQuad(p1, p2, n1, n2, u_grassHeight, u_grassHeightVariation, u_grassColorVariation, u_vpMat, distanceK, 3);
 
             if (surfaceToCameraDistance < u_grassDistanceLOD2)
             {
-                makeQuad(p2, p3, n2, n3, u_grassHeight, u_grassHeightVariation, u_vpMat, distanceK, 2);
+                makeQuad(p2, p3, n2, n3, u_grassHeight, u_grassHeightVariation, u_grassColorVariation, u_vpMat, distanceK, 2);
 
                 if (surfaceToCameraDistance < u_grassDistanceLOD1)
                 {
-                    makeQuad(p1, p3, n1, n3, u_grassHeight, u_grassHeightVariation, u_vpMat, distanceK, 1);
+                    makeQuad(p1, p3, n1, n3, u_grassHeight, u_grassHeightVariation, u_grassColorVariation, u_vpMat, distanceK, 1);
                 }
             }
         }
