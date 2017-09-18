@@ -27,7 +27,6 @@
 
 #define WINDOW_WIDTH        1024
 #define WINDOW_HEIGHT       768
-#define FOG_DENSITY         0.003f
 #define GRASS_DENSITY       300
 #define GRASS_COLOR         L3DVec3(0.52f,0.58f,0.30f)
 #define GRASS_HEIGHT        1.0f
