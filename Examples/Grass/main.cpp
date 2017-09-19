@@ -30,12 +30,14 @@
 #define GRASS_DENSITY       200
 #define GRASS_COLOR         L3DVec3(0.85f,0.85f,0.55f)
 #define GRASS_COLOR_VAR     L3DVec3(0.2f,0.2f,0.3f)
-#define GRASS_HEIGHT        1.0f
-#define GRASS_HEIGHT_VAR    4.0f
+#define GRASS_HEIGHT        0.75f
+#define GRASS_HEIGHT_VAR    5.0f
 #define GRASS_FIELD_SIZE    1000.0f
 #define GRASS_DISTANCE_LOD3 GRASS_FIELD_SIZE * 0.5 * 1.0f
 #define GRASS_DISTANCE_LOD2 GRASS_FIELD_SIZE * 0.5 * 0.6f
 #define GRASS_DISTANCE_LOD1 GRASS_FIELD_SIZE * 0.5 * 0.3f
+#define AMBIENT_COLOR       L3DVec4(0.8f, 0.8f, 1, 0.6f)
+#define SUN_LIGHT_COLOR     L3DVec4(0.8f, 0.7f, 0.6f, 1)
 
 using namespace l3d;
 
@@ -103,7 +105,7 @@ int main()
     L3DHandle grassPlaneMaterial = l3dLoadMaterial("grassPlaneMaterial", grassPlaneShaderProgram, GRASS_COLOR);
     l3dAddTextureToMaterial(grassPlaneMaterial, "diffuseMap", grassTexture);
     l3dAddTextureToMaterial(grassPlaneMaterial, "dirtMap", grassDirtTexture);
-    L3DHandle grassPlane = l3dLoadGrid(1, grassPlaneMaterial, L3DVec2(80, 80), L3D_ALPHA_BLEND_MESH_RENDERLAYER);
+    L3DHandle grassPlane = l3dLoadGrid(1, grassPlaneMaterial, L3DVec2(30, 30), L3D_ALPHA_BLEND_MESH_RENDERLAYER);
 
     l3dRotateMesh(grassPlane, 1.57f, L3DVec3(-1, 0, 0));
     l3dScaleMesh(grassPlane, L3DVec3(GRASS_FIELD_SIZE, GRASS_FIELD_SIZE, 1));
@@ -129,9 +131,9 @@ int main()
     l3dSetShaderProgramUniformVec3(grassBladesShaderProgram, "u_grassColorVariation", GRASS_COLOR_VAR);
 
     // Load a crate.
-    L3DHandle crateTexture = l3dutLoadTexture2D("Textures/Crate/crate.png");
-    L3DHandle crateSpecTexture = l3dutLoadTexture2D("Textures/Crate/crate_spec.png");
-    L3DHandle crateNormTexture = l3dutLoadTexture2D("Textures/Crate/crate_norm.png");
+    L3DHandle crateTexture = l3dutLoadTexture2D("Textures/Crate/crate.jpg");
+    L3DHandle crateSpecTexture = l3dutLoadTexture2D("Textures/Crate/crate_spec.jpg");
+    L3DHandle crateNormTexture = l3dutLoadTexture2D("Textures/Crate/crate_norm.jpg");
     L3DHandle crateMaterial = l3dLoadMaterial("crateMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(crateMaterial, "diffuseMap", crateTexture);
     l3dAddTextureToMaterial(crateMaterial, "specularMap", crateSpecTexture);
@@ -153,11 +155,10 @@ int main()
     }
 
     // Load a directional light.
-    L3DVec4 sunLightColor = L3DVec4(0.8f, 0.7f, 0.6f, 1);
-    L3DHandle sunLight = l3dLoadDirectionalLight(L3DVec3(-2, -1, 5), sunLightColor);
+    L3DHandle sunLight = l3dLoadDirectionalLight(L3DVec3(-2, -1, 5), SUN_LIGHT_COLOR);
 
     // Set the global ambient light color.
-    l3dSetShaderProgramUniformVec4(blinnPhongShaderProgram, "u_ambientColor", L3DVec4(0.8f, 0.8f, 1, 0.6f));
+    l3dSetShaderProgramUniformVec4(blinnPhongShaderProgram, "u_ambientColor", AMBIENT_COLOR);
 
     // Create a camera.
     L3DHandle camera = l3dLoadCamera(

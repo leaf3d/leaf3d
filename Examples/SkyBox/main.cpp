@@ -86,9 +86,9 @@ int main()
     L3DHandle skyBox = l3dLoadSkyBox(skyBoxMaterial);
 
     // Load a cube.
-    L3DHandle crateTexture = l3dutLoadTexture2D("Textures/Crate/crate.png");
-    L3DHandle crateSpecTexture = l3dutLoadTexture2D("Textures/Crate/crate_spec.png");
-    L3DHandle crateNormTexture = l3dutLoadTexture2D("Textures/Crate/crate_norm.png");
+    L3DHandle crateTexture = l3dutLoadTexture2D("Textures/Crate/crate.jpg");
+    L3DHandle crateSpecTexture = l3dutLoadTexture2D("Textures/Crate/crate_spec.jpg");
+    L3DHandle crateNormTexture = l3dutLoadTexture2D("Textures/Crate/crate_norm.jpg");
     L3DHandle crateMaterial = l3dLoadMaterial("crateMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(crateMaterial, "diffuseMap", crateTexture);
     l3dAddTextureToMaterial(crateMaterial, "specularMap", crateSpecTexture);
