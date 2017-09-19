@@ -28,14 +28,14 @@
 #define WINDOW_WIDTH        1024
 #define WINDOW_HEIGHT       768
 #define GRASS_DENSITY       200
-#define GRASS_COLOR         L3DVec3(0.67f,0.68f,0.41f)
-#define GRASS_COLOR_VAR     L3DVec3(0.1f,0.08f,0.15f)
+#define GRASS_COLOR         L3DVec3(0.85f,0.85f,0.55f)
+#define GRASS_COLOR_VAR     L3DVec3(0.2f,0.2f,0.3f)
 #define GRASS_HEIGHT        1.0f
 #define GRASS_HEIGHT_VAR    4.0f
 #define GRASS_FIELD_SIZE    1000.0f
-#define GRASS_DISTANCE_LOD3 GRASS_FIELD_SIZE * GRASS_HEIGHT * 0.5 * 1.0f
-#define GRASS_DISTANCE_LOD2 GRASS_FIELD_SIZE * GRASS_HEIGHT * 0.5 * 0.4f
-#define GRASS_DISTANCE_LOD1 GRASS_FIELD_SIZE * GRASS_HEIGHT * 0.5 * 0.3f
+#define GRASS_DISTANCE_LOD3 GRASS_FIELD_SIZE * 0.5 * 1.0f
+#define GRASS_DISTANCE_LOD2 GRASS_FIELD_SIZE * 0.5 * 0.6f
+#define GRASS_DISTANCE_LOD1 GRASS_FIELD_SIZE * 0.5 * 0.3f
 
 using namespace l3d;
 
@@ -99,9 +99,11 @@ int main()
 
     // Load a grass plane.
     L3DHandle grassTexture = l3dutLoadTexture2D("Textures/Grass/grass_diffuse.jpg");
+    L3DHandle grassDirtTexture = l3dutLoadTexture2D("Textures/Grass/grass_dirt_diffuse.jpg");
     L3DHandle grassPlaneMaterial = l3dLoadMaterial("grassPlaneMaterial", grassPlaneShaderProgram, GRASS_COLOR);
     l3dAddTextureToMaterial(grassPlaneMaterial, "diffuseMap", grassTexture);
-    L3DHandle grassPlane = l3dLoadGrid(1, grassPlaneMaterial, L3DVec2(40, 40), L3D_ALPHA_BLEND_MESH_RENDERLAYER);
+    l3dAddTextureToMaterial(grassPlaneMaterial, "dirtMap", grassDirtTexture);
+    L3DHandle grassPlane = l3dLoadGrid(1, grassPlaneMaterial, L3DVec2(80, 80), L3D_ALPHA_BLEND_MESH_RENDERLAYER);
 
     l3dRotateMesh(grassPlane, 1.57f, L3DVec3(-1, 0, 0));
     l3dScaleMesh(grassPlane, L3DVec3(GRASS_FIELD_SIZE, GRASS_FIELD_SIZE, 1));
@@ -119,9 +121,9 @@ int main()
     l3dRotateMesh(grassBlades, 1.57f, L3DVec3(-1, 0, 0));
     l3dScaleMesh(grassBlades, L3DVec3(GRASS_FIELD_SIZE * 0.5, GRASS_FIELD_SIZE * 0.5, 1));
 
-    l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassDistanceLOD3", GRASS_DISTANCE_LOD3 * 0.75f);
-    l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassDistanceLOD2", GRASS_DISTANCE_LOD2 * 0.75f);
-    l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassDistanceLOD1", GRASS_DISTANCE_LOD1 * 0.75f);
+    l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassDistanceLOD3", GRASS_DISTANCE_LOD3 * 0.5f);
+    l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassDistanceLOD2", GRASS_DISTANCE_LOD2 * 0.5f);
+    l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassDistanceLOD1", GRASS_DISTANCE_LOD1 * 0.5f);
     l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassHeight", GRASS_HEIGHT);
     l3dSetShaderProgramUniformF(grassBladesShaderProgram, "u_grassHeightVariation", GRASS_HEIGHT_VAR);
     l3dSetShaderProgramUniformVec3(grassBladesShaderProgram, "u_grassColorVariation", GRASS_COLOR_VAR);

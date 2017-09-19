@@ -21,6 +21,7 @@ in VertexData {
 
 // Diffuse map.
 uniform sampler2D   u_diffuseMap;
+uniform sampler2D   u_dirtMap;
 
 // Camera position.
 uniform vec3        u_cameraPos;
@@ -35,13 +36,17 @@ uniform float       u_grassDistanceLOD1;
 
 void main()
 {
-    // Calculate diffuse color.
-    vec4 diffuse = texture(u_diffuseMap, fs_in.texcoord0);
+    // Calculate distance from camera.
+    float surfaceToCameraDistance = length(fs_in.position - u_cameraPos);
 
-    // Calculate fog factor.
-    float surfaceToCenterDistance = length(fs_in.position);
-    float alphaOpacity = (u_grassDistanceLOD3 - surfaceToCenterDistance) / (u_grassDistanceLOD3 - u_grassDistanceLOD2);
+    // Calculate fade factors.
+    float alphaOpacity = clamp((u_grassDistanceLOD3 - surfaceToCameraDistance) / (u_grassDistanceLOD3 - u_grassDistanceLOD2), 0, 1);
+    float grassToDirt = clamp((u_grassDistanceLOD1 - surfaceToCameraDistance) / u_grassDistanceLOD1, 0, 1);
+
+    // Calculate diffuse color.
+    vec4 diffuse = texture(u_diffuseMap, fs_in.texcoord0) * vec4(u_material.diffuse, 1);
+    vec4 dirt = texture(u_dirtMap, fs_in.texcoord0);
 
     // Calculate final color.
-    gl_FragColor = vec4(diffuse.rgb * u_material.diffuse, alphaOpacity);
+    gl_FragColor = vec4(mix(diffuse, dirt, grassToDirt).rgb, alphaOpacity);
 }

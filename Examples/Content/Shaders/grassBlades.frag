@@ -16,7 +16,6 @@ in VertexData {
   vec3      bitangent;
   vec2      texcoord0;
   vec3      diffuseVariation;
-  float     distanceK;
   flat int  LOD;
 } fs_in;
 
@@ -27,6 +26,9 @@ uniform sampler2D   u_diffuseMap;
 
 // Camera position.
 uniform vec3        u_cameraPos;
+uniform float       u_grassDistanceLOD1;
+uniform float       u_grassDistanceLOD2;
+uniform float       u_grassDistanceLOD3;
 
 // Material and lights.
 uniform Material    u_material;
@@ -53,9 +55,10 @@ void main()
         diffuseColor = vec3(0, 0, 1);
     /**/
 
-    // Calculate fog factor.
+    // Calculate fade factors.
     float surfaceToCameraDistance = length(fs_in.position - u_cameraPos);
+    float alphaOpacity = clamp((u_grassDistanceLOD3 - surfaceToCameraDistance) / (u_grassDistanceLOD3 - u_grassDistanceLOD1), 0, 1);
 
     // Final fragment color.
-    gl_FragColor = vec4(diffuse.rgb * diffuseColor, fs_in.distanceK);
+    gl_FragColor = vec4(diffuse.rgb * diffuseColor, alphaOpacity);
 }

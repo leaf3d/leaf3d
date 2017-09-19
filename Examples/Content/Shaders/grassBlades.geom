@@ -41,7 +41,6 @@ out VertexData {
   vec3      bitangent;
   vec2      texcoord0;
   vec3      diffuseVariation;
-  float     distanceK;
   flat int  LOD;
 } gs_out;
 
@@ -92,7 +91,6 @@ void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVari
     gs_out.bitangent = up;
     gs_out.texcoord0 = vec2(0, 1);
     gs_out.diffuseVariation = randK * colorVariation;
-    gs_out.distanceK = distanceK;
     gs_out.LOD = LOD;
     EmitVertex();
 
@@ -103,7 +101,6 @@ void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVari
     gs_out.bitangent = up;
     gs_out.texcoord0 = vec2(0, 0);
     gs_out.diffuseVariation = - randK * colorVariation;
-    gs_out.distanceK = distanceK;
     gs_out.LOD = LOD;
     EmitVertex();
 
@@ -114,7 +111,6 @@ void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVari
     gs_out.bitangent = up;
     gs_out.texcoord0 = vec2(1, 1);
     gs_out.diffuseVariation = - randK * colorVariation;
-    gs_out.distanceK = distanceK;
     gs_out.LOD = LOD;
     EmitVertex();
 
@@ -125,7 +121,6 @@ void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVari
     gs_out.bitangent = up;
     gs_out.texcoord0 = vec2(1, 0);
     gs_out.diffuseVariation = randK * colorVariation;
-    gs_out.distanceK = distanceK;
     gs_out.LOD = LOD;
     EmitVertex();
 
