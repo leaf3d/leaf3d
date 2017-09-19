@@ -640,6 +640,7 @@ void L3DRenderer::addTexture(L3DTexture* texture)
         GLenum gl_wrap_r = _toOpenGL(texture->wrapR());
         GLenum gl_min_filter = _toOpenGL(texture->minFilter());
         GLenum gl_mag_filter = _toOpenGL(texture->magFilter());
+        bool   use_mipmaps = texture->useMipmap();
 
         if (gl_format == GL_DEPTH24_STENCIL8)
             gl_internal_format = GL_DEPTH_STENCIL;
@@ -678,19 +679,6 @@ void L3DRenderer::addTexture(L3DTexture* texture)
             return;
         }
 
-        // Mipmap.
-        if (texture->useMipmap())
-        {
-            glGenerateMipmap(gl_type);
-        }
-        else
-        {
-            if (gl_min_filter == GL_NEAREST_MIPMAP_LINEAR)
-                gl_min_filter = GL_LINEAR;
-            else if (gl_min_filter == GL_NEAREST_MIPMAP_NEAREST)
-                gl_min_filter = GL_NEAREST;
-        }
-
         // Wrap mode for S, T, R coordinates.
         glTexParameteri(gl_type, GL_TEXTURE_WRAP_S, gl_wrap_s);
 
@@ -701,8 +689,20 @@ void L3DRenderer::addTexture(L3DTexture* texture)
             glTexParameteri(gl_type, GL_TEXTURE_WRAP_R, gl_wrap_r);
 
         // Min and mag filters.
+        if (!use_mipmaps)
+        {
+            if (gl_min_filter == GL_NEAREST_MIPMAP_LINEAR)
+                gl_min_filter = GL_LINEAR;
+            else if (gl_min_filter == GL_NEAREST_MIPMAP_NEAREST)
+                gl_min_filter = GL_NEAREST;
+        }
+
         glTexParameteri(gl_type, GL_TEXTURE_MIN_FILTER, gl_min_filter);
         glTexParameteri(gl_type, GL_TEXTURE_MAG_FILTER, gl_mag_filter);
+
+        // Generate mipmaps.
+        if (use_mipmaps)
+          glGenerateMipmap(gl_type);
 
         glBindTexture(gl_type, 0);
 
