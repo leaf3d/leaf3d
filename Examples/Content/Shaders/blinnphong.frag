@@ -117,8 +117,8 @@ void main()
     if (u_alphaMapEnabled)
         diffuse.a *= texture(u_alphaMap, fs_in.texcoord0).x;
 
-    // Discrad if alpha is very low.
-    if (diffuse.a < 0.1f)
+    // Discard if alpha is very low.
+    if (diffuse.a < 0.1)
         discard;
 
     // Specular mapping.
