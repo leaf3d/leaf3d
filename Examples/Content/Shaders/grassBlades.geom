@@ -70,9 +70,10 @@ void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVari
 
     float width = distance(p1, p2);
     float randK = rand(pos.xy * LOD + p1.xy - p2.xy);
-    float angle = randK * M_PI;
+    float angle = randK * M_PI * LOD * 0.5;
     float randWidth = width * (1 + randK);
     float randHeight = height * (distanceK + randK * heightVariation);
+    float tx = floor(randWidth / (1 + randHeight) * 1.5);
 
     vec3 up = normalize((n1 + n2) * 0.5);
     vec3 right = normalize(rotationMatrix(up, angle) * cross(forward, up));
@@ -109,7 +110,7 @@ void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVari
     gs_out.normal = normal;
     gs_out.tangent = right;
     gs_out.bitangent = up;
-    gs_out.texcoord0 = vec2(1, 1);
+    gs_out.texcoord0 = vec2(tx, 1);
     gs_out.diffuseVariation = - randK * colorVariation;
     gs_out.LOD = LOD;
     EmitVertex();
@@ -119,7 +120,7 @@ void makeQuad(vec3 p1, vec3 p2, vec3 n1, vec3 n2, float height, float heightVari
     gs_out.normal = normal;
     gs_out.tangent = right;
     gs_out.bitangent = up;
-    gs_out.texcoord0 = vec2(1, 0);
+    gs_out.texcoord0 = vec2(tx, 0);
     gs_out.diffuseVariation = randK * colorVariation;
     gs_out.LOD = LOD;
     EmitVertex();
@@ -148,7 +149,7 @@ void main()
         float surfaceToCameraDistance = length(surfaceToCamera);
         bool inFront = (dot(surfaceToCamera, cameraLookAt) > 0);
 
-        if (inFront && surfaceToCameraDistance < u_grassDistanceLOD3)
+        if (inFront && (surfaceToCameraDistance < u_grassDistanceLOD3))
         {
             float distanceK = (u_grassDistanceLOD3 - surfaceToCameraDistance) / (u_grassDistanceLOD3 - u_grassDistanceLOD2);
             makeQuad(p1, p2, n1, n2, u_grassHeight, u_grassHeightVariation, u_grassColorVariation, u_vpMat, distanceK, 3);

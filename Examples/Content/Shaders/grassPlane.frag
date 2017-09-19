@@ -41,7 +41,7 @@ void main()
 
     // Calculate fade factors.
     float alphaOpacity = clamp((u_grassDistanceLOD3 - surfaceToCameraDistance) / (u_grassDistanceLOD3 - u_grassDistanceLOD2), 0, 1);
-    float grassToDirt = clamp((u_grassDistanceLOD1 - surfaceToCameraDistance) / u_grassDistanceLOD1 * 0.5, 0, 1);
+    float grassToDirt = clamp((u_grassDistanceLOD1 - surfaceToCameraDistance) / u_grassDistanceLOD1, 0, 1);
 
     // Calculate diffuse color.
     vec4 diffuse = texture(u_diffuseMap, fs_in.texcoord0) * vec4(u_material.diffuse, 1);
