@@ -27,10 +27,13 @@
 
 using namespace l3d;
 
+/* Init & terminate ***********************************************************/
 
 int l3dutInit(const char* rootPath = "Content/");
 
 int l3dutTerminate();
+
+/* Debug helpers **************************************************************/
 
 void l3dutPrintVec2(const L3DVec2& vec);
 void l3dutPrintVec3(const L3DVec3& vec);
@@ -39,6 +42,8 @@ void l3dutPrintMat3(const L3DMat3& mat);
 void l3dutPrintMat4(const L3DMat4& mat);
 
 void l3dutPrintFrameStats(double currentTime, double& lastTime, int& fps);
+
+/* Resource loading ***********************************************************/
 
 L3DHandle l3dutLoadTexture2D(
     const char* filename,

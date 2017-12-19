@@ -40,7 +40,6 @@ using namespace l3d;
 static std::string _rootPath = "";
 
 
-
 int l3dutInit(const char* rootPath)
 {
     _rootPath = rootPath;
@@ -57,17 +56,17 @@ int l3dutTerminate()
 
 void l3dutPrintVec2(const L3DVec2& vec)
 {
-  printf("( % .3f, % .3f  )\n", vec.x, vec.y);
+    printf("( % .3f, % .3f  )\n", vec.x, vec.y);
 }
 
 void l3dutPrintVec3(const L3DVec3& vec)
 {
-  printf("( % .3f, % .3f, % .3f  )\n", vec.x, vec.y, vec.z);
+    printf("( % .3f, % .3f, % .3f  )\n", vec.x, vec.y, vec.z);
 }
 
 void l3dutPrintVec4(const L3DVec4& vec)
 {
-  printf("( % .3f, % .3f, % .3f, % .3f  )\n", vec.x, vec.y, vec.z, vec.w);
+    printf("( % .3f, % .3f, % .3f, % .3f  )\n", vec.x, vec.y, vec.z, vec.w);
 }
 
 void l3dutPrintMat3(const L3DMat3& mat)
@@ -133,8 +132,8 @@ void l3dutPrintFrameStats(double currentTime, double& lastTime, int& fps)
 }
 
 L3DHandle l3dutLoadTexture2D(
-  const char* filename,
-  const L3DImageFormat& desiredFormat
+    const char* filename,
+    const L3DImageFormat& desiredFormat
 )
 {
     if (!filename)

@@ -8,7 +8,7 @@ include_directories(${GLFW_INCLUDE_DIR})
 
 # Set necessary libs.
 set(LEAF3D_EXAMPLES_REQUIRED_LIBS
-    leaf3d
+    leaf3dut
     glfw
     ${LEAF3DUT_REQUIRED_LIBS}
     ${LEAF3D_REQUIRED_LIBS}

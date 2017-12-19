@@ -32,18 +32,24 @@ set(LEAF3D_SOURCES
     leaf3d.cpp
 )
 
-if (L3D_BUILD_UTILITY)
-    set(LEAF3D_SOURCES
-        ${LEAF3D_SOURCES}
-        leaf3d/leaf3dut.h
-        leaf3dut.cpp
-    )
-endif (L3D_BUILD_UTILITY)
-
 add_library(leaf3d SHARED ${LEAF3D_SOURCES} ${GLAD_SOURCES})
 
 target_link_libraries(leaf3d
     ${LEAF3_REQUIRED_LIBS}
-    ${LEAF3DUT_REQUIRED_LIBS}
     -ldl
 )
+
+if (L3D_BUILD_UTILITY)
+    set(LEAF3DUT_SOURCES
+        leaf3d/leaf3dut.h
+        leaf3dut.cpp
+    )
+
+    add_library(leaf3dut SHARED ${LEAF3DUT_SOURCES})
+
+    target_link_libraries(leaf3dut
+        leaf3d
+        ${LEAF3DUT_REQUIRED_LIBS}
+        -ldl
+    )
+endif (L3D_BUILD_UTILITY)
