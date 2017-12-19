@@ -42,7 +42,7 @@ namespace l3d
             const L3DBufferType& type,
             void* data,
             unsigned int size,
-            unsigned int stride = sizeof(unsigned int),
+            unsigned int stride,
             const L3DDrawType& drawType = L3D_DRAW_STATIC
         );
         ~L3DBuffer();

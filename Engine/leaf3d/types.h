@@ -58,31 +58,53 @@ namespace l3d
 
     enum L3DVertexAttribute
     {
-        L3D_POSITION = 0,
-        L3D_NORMAL,
-        L3D_TANGENT,
-        L3D_UV0,
-        L3D_UV1,
-        L3D_UV2,
-        L3D_UV3
+        L3D_VERTEX_POSITION = 0,
+        L3D_VERTEX_NORMAL,
+        L3D_VERTEX_TANGENT,
+        L3D_VERTEX_UV0,
+        L3D_VERTEX_UV1,
+        L3D_VERTEX_UV2,
+        L3D_VERTEX_UV3,
+        L3D_MAX_VERTEX_ATTRIBUTE
+    };
+
+    enum L3DInstanceAttribute
+    {
+        L3D_INSTANCE_POSITION = L3D_MAX_VERTEX_ATTRIBUTE,
+        L3D_INSTANCE_UV,
+        L3D_INSTANCE_MATRIX,
+        L3D_MAX_INSTANCE_ATTRIBUTE
     };
 
     enum L3DVertexFormat
     {
-        L3D_POS2 = 2,
-        L3D_POS3 = 3,
-        L3D_POS2_UV2 = 4,
-        L3D_POS3_UV2 = 5,
-        L3D_POS3_UV3 = 6,
-        L3D_POS3_NOR3_UV2 = 8,
-        L3D_POS3_NOR3_UV3 = 9,
-        L3D_POS3_NOR3_UV2_UV2 = 10,
-        L3D_POS3_NOR3_TAN3_UV2 = 11,
-        L3D_POS3_NOR3_TAN3_UV3 = 12,
-        L3D_POS3_NOR3_TAN3_UV2_UV2 = 13,
-        L3D_POS3_NOR3_TAN3_UV2_UV2_UV2 = 15,
-        L3D_POS3_NOR3_TAN3_UV2_UV2_UV2_UV2 = 17,
+        L3D_INVALID_VERTEX_FORMAT = 0,
+        L3D_VERTEX_POS2 = 2,
+        L3D_VERTEX_POS3 = 3,
+        L3D_VERTEX_POS2_UV2 = 4,
+        L3D_VERTEX_POS3_UV2 = 5,
+        L3D_VERTEX_POS3_UV3 = 6,
+        L3D_VERTEX_POS3_NOR3_UV2 = 8,
+        L3D_VERTEX_POS3_NOR3_UV3 = 9,
+        L3D_VERTEX_POS3_NOR3_UV2_UV2 = 10,
+        L3D_VERTEX_POS3_NOR3_TAN3_UV2 = 11,
+        L3D_VERTEX_POS3_NOR3_TAN3_UV3 = 12,
+        L3D_VERTEX_POS3_NOR3_TAN3_UV2_UV2 = 13,
+        L3D_VERTEX_POS3_NOR3_TAN3_UV2_UV2_UV2 = 15,
+        L3D_VERTEX_POS3_NOR3_TAN3_UV2_UV2_UV2_UV2 = 17,
         L3D_MAX_VERTEX_FORMAT
+    };
+
+    enum L3DInstanceFormat
+    {
+      L3D_INVALID_INSTANCE_FORMAT = 0,
+      L3D_INSTANCE_POS2 = 2,
+      L3D_INSTANCE_POS3 = 3,
+      L3D_INSTANCE_POS2_UV2 = 4,
+      L3D_INSTANCE_POS3_UV2 = 5,
+      L3D_INSTANCE_TRANS4_TRANS4_TRANS4_TRANS4 = 16,
+      L3D_INSTANCE_TRANS4_TRANS4_TRANS4_TRANS4_UV2 = 18,
+      L3D_MAX_INSTANCE_FORMAT
     };
 
     enum L3DImageFormat
@@ -233,7 +255,8 @@ namespace l3d
     enum L3DBufferType
     {
         L3D_BUFFER_VERTEX = 0,
-        L3D_BUFFER_INDEX
+        L3D_BUFFER_INDEX,
+        L3D_BUFFER_INSTANCE
     };
 
     enum L3DTextureType

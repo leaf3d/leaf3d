@@ -44,8 +44,10 @@ L3DMesh::L3DMesh(
     transMatrix(transMatrix),
     m_vertexBuffer(0),
     m_indexBuffer(0),
+    m_instanceBuffer(0),
     m_material(material),
     m_vertexFormat(vertexFormat),
+    m_instanceFormat(L3D_INVALID_INSTANCE_FORMAT),
     m_drawPrimitive(drawPrimitive),
     m_renderLayer(renderLayer),
     m_sortKey(0)
@@ -75,8 +77,10 @@ L3DMesh::L3DMesh(
     transMatrix(transMatrix),
     m_vertexBuffer(0),
     m_indexBuffer(0),
+    m_instanceBuffer(0),
     m_material(material),
     m_vertexFormat(vertexFormat),
+    m_instanceFormat(L3D_INVALID_INSTANCE_FORMAT),
     m_drawPrimitive(drawPrimitive),
     m_renderLayer(renderLayer),
     m_sortKey(0)
@@ -111,6 +115,11 @@ unsigned int L3DMesh::indexCount() const
     return m_indexBuffer ? m_indexBuffer->count() : 0;
 }
 
+unsigned int L3DMesh::instanceCount() const
+{
+    return m_instanceBuffer ? m_instanceBuffer->count() : 1;
+}
+
 unsigned int L3DMesh::primitiveCount() const
 {
     return m_indexBuffer ? m_indexBuffer->count() / m_drawPrimitive : 0;
@@ -118,7 +127,7 @@ unsigned int L3DMesh::primitiveCount() const
 
 void L3DMesh::recalculateTangents()
 {
-    if (this->vertexFormat() < L3D_POS3_NOR3_TAN3_UV2)
+    if (this->vertexFormat() < L3D_VERTEX_POS3_NOR3_TAN3_UV2)
         return;
 
     std::map<unsigned int, L3DVec3> tans;
@@ -217,6 +226,45 @@ void L3DMesh::setRenderLayer(unsigned char renderLayer)
     {
         m_renderLayer = renderLayer;
         this->updateSortKey();
+    }
+}
+
+void L3DMesh::setInstances(
+    L3DBuffer* instanceBuffer,
+    const L3DInstanceFormat& instanceFormat
+)
+{
+    if (instanceBuffer && instanceFormat)
+    {
+        // TODO: clean previous instance buffer.
+        m_instanceBuffer = instanceBuffer;
+        m_instanceFormat = instanceFormat;
+        this->updateSortKey();
+
+        L3DRenderer* renderer = this->renderer();
+        renderer->removeMesh(this);
+        renderer->addMesh(this);
+    }
+}
+
+void L3DMesh::setInstances(
+    void* instances,
+    unsigned int instanceCount,
+    const L3DInstanceFormat& instanceFormat
+)
+{
+    if (instances && instanceCount && instanceFormat)
+    {
+        L3DBuffer* instanceBuffer = new L3DBuffer(
+          this->renderer(),
+          L3D_BUFFER_INSTANCE,
+          instances,
+          instanceCount * instanceFormat * sizeof(float),
+          instanceFormat * sizeof(float),
+          L3D_DRAW_STATIC
+        );
+
+        this->setInstances(instanceBuffer, instanceFormat);
     }
 }
 

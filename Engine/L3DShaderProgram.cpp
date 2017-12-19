@@ -132,13 +132,16 @@ L3DShaderProgram::L3DShaderProgram(
 
     if (m_attributes.empty())
     {
-        m_attributes[L3D_POSITION] = "i_position";
-        m_attributes[L3D_NORMAL] = "i_normal";
-        m_attributes[L3D_TANGENT] = "i_tangent";
-        m_attributes[L3D_UV0] = "i_texcoord0";
-        m_attributes[L3D_UV1] = "i_texcoord1";
-        m_attributes[L3D_UV2] = "i_texcoord2";
-        m_attributes[L3D_UV3] = "i_texcoord3";
+        m_attributes[L3D_VERTEX_POSITION] = "i_position";
+        m_attributes[L3D_VERTEX_NORMAL] = "i_normal";
+        m_attributes[L3D_VERTEX_TANGENT] = "i_tangent";
+        m_attributes[L3D_VERTEX_UV0] = "i_texcoord0";
+        m_attributes[L3D_VERTEX_UV1] = "i_texcoord1";
+        m_attributes[L3D_VERTEX_UV2] = "i_texcoord2";
+        m_attributes[L3D_VERTEX_UV3] = "i_texcoord3";
+        m_attributes[L3D_INSTANCE_POSITION] = "i_instancePos";
+        m_attributes[L3D_INSTANCE_UV] = "i_instanceUv";
+        m_attributes[L3D_INSTANCE_MATRIX] = "i_instanceMat";
     }
 }
 
@@ -152,12 +155,12 @@ void L3DShaderProgram::removeUniform(const char* name)
     m_uniforms.erase(name);
 }
 
-void L3DShaderProgram::addAttribute(const L3DVertexAttribute& attribute, const char* name)
+void L3DShaderProgram::addAttribute(int attribute, const char* name)
 {
     m_attributes[attribute] = name;
 }
 
-void L3DShaderProgram::removeAttribute(const L3DVertexAttribute& attribute)
+void L3DShaderProgram::removeAttribute(int attribute)
 {
     m_attributes.erase(attribute);
 }

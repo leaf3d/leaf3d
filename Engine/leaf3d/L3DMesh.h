@@ -38,8 +38,10 @@ namespace l3d
     private:
         L3DBuffer*          m_vertexBuffer;
         L3DBuffer*          m_indexBuffer;
+        L3DBuffer*          m_instanceBuffer;
         L3DMaterial*        m_material;
         L3DVertexFormat     m_vertexFormat;
+        L3DInstanceFormat   m_instanceFormat;
         L3DDrawPrimitive    m_drawPrimitive;
         unsigned char       m_renderLayer;
         unsigned int        m_sortKey;
@@ -52,7 +54,7 @@ namespace l3d
             unsigned int* indices,
             unsigned int indexCount,
             L3DMaterial* material,
-            const L3DVertexFormat& L3DVertexFormat,
+            const L3DVertexFormat& vertexFormat,
             const L3DMat4& transMatrix = L3DMat4(),
             const L3DDrawType& drawType = L3D_DRAW_STATIC,
             const L3DDrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES,
@@ -63,7 +65,7 @@ namespace l3d
             L3DBuffer* vertexBuffer,
             L3DBuffer* indexBuffer,
             L3DMaterial* material,
-            const L3DVertexFormat &L3DVertexFormat,
+            const L3DVertexFormat& vertexFormat,
             const L3DMat4& transMatrix = L3DMat4(),
             const L3DDrawType& drawType = L3D_DRAW_STATIC,
             const L3DDrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES,
@@ -73,8 +75,10 @@ namespace l3d
 
         L3DBuffer*          vertexBuffer() const { return m_vertexBuffer; }
         L3DBuffer*          indexBuffer() const { return m_indexBuffer; }
+        L3DBuffer*          instanceBuffer() const { return m_instanceBuffer; }
         L3DMaterial*        material() const { return m_material; }
         L3DVertexFormat     vertexFormat() const { return m_vertexFormat; }
+        L3DInstanceFormat   instanceFormat() const { return m_instanceFormat; }
         L3DDrawPrimitive    drawPrimitive() const { return m_drawPrimitive; }
         unsigned char       renderLayer() const { return m_renderLayer; }
         unsigned int        sortKey() const { return m_sortKey; }
@@ -82,6 +86,7 @@ namespace l3d
         L3DMat3             normalMatrix() const;
         unsigned int        vertexCount() const;
         unsigned int        indexCount() const;
+        unsigned int        instanceCount() const;
         unsigned int        primitiveCount() const;
 
         void recalculateTangents();
@@ -95,6 +100,15 @@ namespace l3d
 
         void setMaterial(L3DMaterial* material);
         void setRenderLayer(unsigned char renderLayer);
+        void setInstances(
+            L3DBuffer* instanceBuffer,
+            const L3DInstanceFormat& instanceFormat
+        );
+        void setInstances(
+            void* instances,
+            unsigned int instanceCount,
+            const L3DInstanceFormat& instanceFormat
+        );
 
     protected:
         void updateSortKey();

@@ -39,6 +39,8 @@ using namespace l3d;
 
 static std::string _rootPath = "";
 
+
+
 int l3dutInit(const char* rootPath)
 {
     _rootPath = rootPath;
@@ -51,6 +53,70 @@ int l3dutTerminate()
     _rootPath = "";
 
     return L3D_TRUE;
+}
+
+void l3dutPrintVec2(const L3DVec2& vec)
+{
+  printf("( % .3f, % .3f  )\n", vec.x, vec.y);
+}
+
+void l3dutPrintVec3(const L3DVec3& vec)
+{
+  printf("( % .3f, % .3f, % .3f  )\n", vec.x, vec.y, vec.z);
+}
+
+void l3dutPrintVec4(const L3DVec4& vec)
+{
+  printf("( % .3f, % .3f, % .3f, % .3f  )\n", vec.x, vec.y, vec.z, vec.w);
+}
+
+void l3dutPrintMat3(const L3DMat3& mat)
+{
+    printf(" % .3f", mat[0][0]);
+    printf(" % .3f", mat[1][0]);
+    printf(" % .3f", mat[2][0]);
+    printf("\n");
+
+    printf(" % .3f", mat[0][1]);
+    printf(" % .3f", mat[1][1]);
+    printf(" % .3f", mat[2][1]);
+    printf("\n");
+
+    printf(" % .3f", mat[0][2]);
+    printf(" % .3f", mat[1][2]);
+    printf(" % .3f", mat[2][2]);
+    printf("\n");
+
+    printf("\n");
+}
+
+void l3dutPrintMat4(const L3DMat4& mat)
+{
+    printf(" % .3f", mat[0][0]);
+    printf(" % .3f", mat[1][0]);
+    printf(" % .3f", mat[2][0]);
+    printf(" % .3f", mat[3][0]);
+    printf("\n");
+
+    printf(" % .3f", mat[0][1]);
+    printf(" % .3f", mat[1][1]);
+    printf(" % .3f", mat[2][1]);
+    printf(" % .3f", mat[3][1]);
+    printf("\n");
+
+    printf(" % .3f", mat[0][2]);
+    printf(" % .3f", mat[1][2]);
+    printf(" % .3f", mat[2][2]);
+    printf(" % .3f", mat[3][2]);
+    printf("\n");
+
+    printf(" % .3f", mat[0][3]);
+    printf(" % .3f", mat[1][3]);
+    printf(" % .3f", mat[2][3]);
+    printf(" % .3f", mat[3][3]);
+    printf("\n");
+
+    printf("\n");
 }
 
 L3DHandle l3dutLoadTexture2D(
@@ -193,7 +259,7 @@ L3DHandle* l3dutLoadMeshes(
 
         std::vector<float> vertices;
         std::vector<unsigned int> indices;
-        L3DVertexFormat vertexFormat = L3D_POS3_UV2;
+        L3DVertexFormat vertexFormat = L3D_VERTEX_POS3_UV2;
 
         for (unsigned int j = 0; j < mesh->mNumVertices; ++j)
         {
@@ -210,7 +276,7 @@ L3DHandle* l3dutLoadMeshes(
                 vertices.push_back(mesh->mNormals[j].y);
                 vertices.push_back(mesh->mNormals[j].z);
 
-                vertexFormat = L3D_POS3_NOR3_UV2;
+                vertexFormat = L3D_VERTEX_POS3_NOR3_UV2;
             }
 
             if (mesh->HasTangentsAndBitangents())
@@ -219,7 +285,7 @@ L3DHandle* l3dutLoadMeshes(
                 vertices.push_back(mesh->mTangents[j].y);
                 vertices.push_back(mesh->mTangents[j].z);
 
-                vertexFormat = L3D_POS3_NOR3_TAN3_UV2;
+                vertexFormat = L3D_VERTEX_POS3_NOR3_TAN3_UV2;
             }
 
             unsigned int uvCount = mesh->GetNumUVChannels();

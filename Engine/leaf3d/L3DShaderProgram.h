@@ -86,8 +86,8 @@ namespace l3d
         void setUniform(const char* name, const L3DUniform& value);
         void removeUniform(const char* name);
 
-        void addAttribute(const L3DVertexAttribute& attribute, const char* name);
-        void removeAttribute(const L3DVertexAttribute& attribute);
+        void addAttribute(int attribute, const char* name);
+        void removeAttribute(int attribute);
     };
 }
 

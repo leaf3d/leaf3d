@@ -188,7 +188,7 @@ L3DHandle l3dLoadForwardRenderQueue(
         vertices, 4,
         indices, 6,
         fsQuadMaterial,
-        L3D_POS2_UV2
+        L3D_VERTEX_POS2_UV2
     );
 
     // Draw fullscreen quad on last layer.
@@ -757,7 +757,7 @@ L3DHandle l3dLoadQuad(
         vertices, 4,
         indices, 6,
         material,
-        L3D_POS3_NOR3_TAN3_UV2,
+        L3D_VERTEX_POS3_NOR3_TAN3_UV2,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
         renderLayer
     );
@@ -826,7 +826,7 @@ L3DHandle l3dLoadCube(
         vertices, 24,
         indices, 36,
         material,
-        L3D_POS3_NOR3_TAN3_UV2,
+        L3D_VERTEX_POS3_NOR3_TAN3_UV2,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
         renderLayer
     );
@@ -895,7 +895,7 @@ L3DHandle l3dLoadSkyBox(
         vertices, 24,
         indices, 36,
         material,
-        L3D_POS3,
+        L3D_VERTEX_POS3,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
         renderLayer
     );
@@ -965,7 +965,7 @@ L3DHandle l3dLoadGrid(
         vertices, numVertices,
         indices, numIndices,
         material,
-        L3D_POS3_NOR3_TAN3_UV2,
+        L3D_VERTEX_POS3_NOR3_TAN3_UV2,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
         renderLayer
     );
@@ -1075,6 +1075,21 @@ void l3dSetMeshRenderLayer(
 
     if (mesh)
         mesh->setRenderLayer(renderLayer);
+}
+
+void l3dSetMeshInstances(
+  const L3DHandle& target,
+  void* instances,
+  unsigned int instanceCount,
+  const L3DInstanceFormat& instanceFormat
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DMesh* mesh = _renderer->getMesh(target);
+
+    if (mesh && instances && instanceCount && instanceFormat)
+      mesh->setInstances(instances, instanceCount, instanceFormat);
 }
 
 L3DHandle l3dLoadDirectionalLight(

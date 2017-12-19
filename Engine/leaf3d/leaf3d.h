@@ -297,6 +297,13 @@ void l3dSetMeshRenderLayer(
     unsigned char renderLayer
 );
 
+void l3dSetMeshInstances(
+    const L3DHandle& target,
+    void* instances,
+    unsigned int instanceCount,
+    const L3DInstanceFormat& instanceFormat
+);
+
 /* Lights *********************************************************************/
 
 L3DHandle l3dLoadDirectionalLight(
