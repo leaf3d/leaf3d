@@ -112,7 +112,7 @@ int main()
       asteroidMats[i] = glm::translate(asteroidMats[i], glm::vec3(x, y, z));
 
       // 2. Scale: add scale variation
-      float scale = (rand() % 100) / 100.0f;
+      float scale = (rand() % 100) / 100.0f + 0.2f;
       asteroidMats[i] = glm::scale(asteroidMats[i], glm::vec3(scale));
 
       // 3. Rotation: add random rotation around a (semi)randomly picked rotation axis vector
