@@ -1384,7 +1384,7 @@ void L3DRenderer::setDepthTest(
 )
 {
     enable ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
-    glDepthFunc(_toOpenGL(factor));
+    if (enable) glDepthFunc(_toOpenGL(factor));
 }
 
 void L3DRenderer::setDepthMask(bool enable)
@@ -1404,7 +1404,7 @@ void L3DRenderer::setBlend(
 )
 {
     enable ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
-    glBlendFunc(_toOpenGL(srcFactor), _toOpenGL(dstFactor));
+    if (enable) glBlendFunc(_toOpenGL(srcFactor), _toOpenGL(dstFactor));
 }
 
 void L3DRenderer::setCullFace(
@@ -1413,7 +1413,7 @@ void L3DRenderer::setCullFace(
 )
 {
     enable ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
-    glCullFace(_toOpenGL(cullFace));
+    if (enable) glCullFace(_toOpenGL(cullFace));
 }
 
 void L3DRenderer::drawMeshes(

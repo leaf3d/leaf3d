@@ -38,6 +38,8 @@ void l3dutPrintVec4(const L3DVec4& vec);
 void l3dutPrintMat3(const L3DMat3& mat);
 void l3dutPrintMat4(const L3DMat4& mat);
 
+void l3dutPrintFrameStats(double currentTime, double& lastTime, int& fps);
+
 L3DHandle l3dutLoadTexture2D(
     const char* filename,
     const L3DImageFormat& desiredFormat = L3D_UNKNOWN

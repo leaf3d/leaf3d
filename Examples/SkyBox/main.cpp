@@ -152,6 +152,9 @@ int main()
 
     // ---------------------------- RENDERING ------------------------------ //
 
+    double lastTime = glfwGetTime();
+    int fps = 0;
+
     while(!glfwWindowShouldClose(window))
     {
         // Poll window events.
@@ -177,6 +180,9 @@ int main()
 
         // Swap buffers.
         glfwSwapBuffers(window);
+
+        // Measure speed.
+        l3dutPrintFrameStats(glfwGetTime(), lastTime, fps);
     }
 
     // ---------------------------- TERMINATE ----------------------------- //
