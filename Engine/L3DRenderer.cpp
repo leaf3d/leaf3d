@@ -442,6 +442,9 @@ int L3DRenderer::init()
         return -1;
     }
 
+    // TODO: move to better place.
+    glEnable(GL_PROGRAM_POINT_SIZE);
+
     return L3D_TRUE;
 }
 
