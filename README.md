@@ -2,7 +2,7 @@
 
 A _lightweight_ **3D rendering engine** based on **modern OpenGL**.
 
-![[Overview](https://leaf3d.github.io/assets/images/overview.jpg 'leaf3d')](https://leaf3d.github.io)
+[![Overview](https://rawgit.com/leaf3d/leaf3d.github.io/master/assets/images/overview.jpg)](https://leaf3d.github.io)
 
 ## Build
 
