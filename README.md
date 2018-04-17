@@ -1,4 +1,4 @@
-# ![leaf3d](https://rawgit.com/leaf3d/leaf3d/master/logo.svg 'leaf3d')
+# [![leaf3d](https://rawgit.com/leaf3d/leaf3d/master/logo.svg)](https://leaf3d.github.io)
 
 A _lightweight_ **3D rendering engine** based on **modern OpenGL**.
 
