@@ -34,6 +34,8 @@ $ make
 * Install [git](https://git-scm.com/download/win)
 * Install [Visual Studio Build Tools 2017](https://www.visualstudio.com/thank-you-downloading-visual-studio/?sku=BuildTools&rel=15)
 * Install [CMake](https://cmake.org/files/v3.11/cmake-3.11.0-win64-x64.msi)
+* Install [Assimp SDK](https://github.com/assimp/assimp/releases/download/v3.3.1/assimp-sdk-3.3.1-setup_vs2017.exe)
+* Install [GLFW SDK](https://github.com/glfw/glfw/releases/download/3.2.1/glfw-3.2.1.bin.WIN64.zip)
 
 ```
 # Clone repo
