@@ -1,8 +1,8 @@
 # ![leaf3d](https://rawgit.com/leaf3d/leaf3d/master/logo.svg 'leaf3d')
 
-A _lightweight_ **rendering engine** based on **modern OpenGL**.
+A _lightweight_ **3D rendering engine** based on **modern OpenGL**.
 
-![Overview](http://leaf3d.github.io/website/images/l3d_overview.png 'leaf3d')
+![[Overview](https://leaf3d.github.io/assets/images/overview.jpg 'leaf3d')](https://leaf3d.github.io)
 
 ## Build
 
