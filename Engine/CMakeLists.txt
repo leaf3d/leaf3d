@@ -35,8 +35,7 @@ set(LEAF3D_SOURCES
 add_library(leaf3d SHARED ${LEAF3D_SOURCES} ${GLAD_SOURCES})
 
 target_link_libraries(leaf3d
-    ${LEAF3_REQUIRED_LIBS}
-    -ldl
+    ${LEAF3D_REQUIRED_LIBS}
 )
 
 if (L3D_BUILD_UTILITY)
@@ -50,6 +49,5 @@ if (L3D_BUILD_UTILITY)
     target_link_libraries(leaf3dut
         leaf3d
         ${LEAF3DUT_REQUIRED_LIBS}
-        -ldl
     )
 endif (L3D_BUILD_UTILITY)
