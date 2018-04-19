@@ -43,6 +43,7 @@ if (L3D_BUILD_UTILITY)
     )
 
     add_library(leaf3dut SHARED ${LEAF3DUT_SOURCES})
+    add_dependencies(leaf3dut leaf3d)
 
     target_link_libraries(leaf3dut
         leaf3d
