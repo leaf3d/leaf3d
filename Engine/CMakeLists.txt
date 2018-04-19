@@ -1,6 +1,3 @@
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../External)
-
 set(LEAF3D_SOURCES
     leaf3d/platform.h
     leaf3d/types.h
@@ -36,6 +33,7 @@ add_library(leaf3d SHARED ${LEAF3D_SOURCES} ${GLAD_SOURCES})
 
 target_link_libraries(leaf3d
     ${LEAF3D_REQUIRED_LIBS}
+    ${CMAKE_DL_LIBS}
 )
 
 if (L3D_BUILD_UTILITY)
@@ -49,5 +47,6 @@ if (L3D_BUILD_UTILITY)
     target_link_libraries(leaf3dut
         leaf3d
         ${LEAF3DUT_REQUIRED_LIBS}
+        ${CMAKE_DL_LIBS}
     )
 endif (L3D_BUILD_UTILITY)
