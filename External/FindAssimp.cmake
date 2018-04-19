@@ -11,8 +11,6 @@
 INCLUDE(ExternalProject)
 INCLUDE(FindPackageHandleStandardArgs)
 
-MESSAGE(STATUS "Looking for Assimp")
-
 if(CMAKE_SIZEOF_VOID_P EQUAL 8)
 	set(ASSIMP_ARCHITECTURE "64")
 elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
@@ -28,6 +26,7 @@ SET(ASSIMP_CMAKE_ARGS
   -DASSIMP_NO_EXPORT:BOOL=ON
   -DASSIMP_BUILD_ASSIMP_TOOLS:BOOL=OFF
   -DASSIMP_BUILD_TESTS:BOOL=OFF
+  -DASSIMP_BUILD_ZLIB:BOOL=ON
 )
 
 ExternalProject_Add(ext_Assimp
@@ -45,9 +44,11 @@ SET(ASSIMP_INCLUDE_DIR
 IF (MSVC)
   SET(ASSIMP_LIBRARY ${install_dir}/lib${ASSIMP_ARCHITECTURE}/assimp.lib)
   SET(IRRXML_LIBRARY ${install_dir}/lib${ASSIMP_ARCHITECTURE}/IrrXML.lib)
+  SET(ZLIB_LIBRARY ${install_dir}/lib${ASSIMP_ARCHITECTURE}/zlibstatic.lib)
 ELSE (MSVC)
   SET(ASSIMP_LIBRARY ${install_dir}/lib/libassimp.a)
   SET(IRRXML_LIBRARY ${install_dir}/lib/libIrrXML.a)
+  SET(ZLIB_LIBRARY ${install_dir}/lib/libzlibstatic.a)
 ENDIF (MSVC)
 
 add_library(Assimp STATIC IMPORTED)
@@ -60,10 +61,10 @@ find_package_handle_standard_args(Assimp
   ASSIMP_LIBRARY
 )
 
-find_package(ZLIB REQUIRED)
+# find_package(ZLIB REQUIRED)
 
 # Define ASSIMP_LIBRARIES and ASSIMP_INCLUDE_DIRS
 if (ASSIMP_FOUND)
-	set(ASSIMP_LIBRARIES ${ASSIMP_LIBRARY} ${IRRXML_LIBRARY} ${ZLIB_LIBRARIES})
+	set(ASSIMP_LIBRARIES ${ASSIMP_LIBRARY} ${IRRXML_LIBRARY} ${ZLIB_LIBRARY})
 	set(ASSIMP_INCLUDE_DIRS ${ASSIMP_INCLUDE_DIR})
 endif ()
