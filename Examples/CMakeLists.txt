@@ -1,5 +1,6 @@
 # Set necessary libs.
 set(LEAF3D_EXAMPLES_REQUIRED_LIBS
+    leaf3d
     leaf3dut
     ${LEAF3_EXAMPLES_REQUIRED_LIBS}
     ${LEAF3DUT_REQUIRED_LIBS}
