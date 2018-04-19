@@ -14,35 +14,40 @@ INCLUDE(FindPackageHandleStandardArgs)
 MESSAGE(STATUS "Looking for GLFW")
 
 SET(GLFW_CMAKE_ARGS
-    -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
-    -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
-	  -DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
-    -DGLFW_BUILD_DOCS:BOOL=OFF
-    -DGLFW_BUILD_EXAMPLES:BOOL=OFF
-    -DGLFW_BUILD_TESTS:BOOL=OFF
+  -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
+  -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE}
+	-DCMAKE_TOOLCHAIN_FILE=${CMAKE_TOOLCHAIN_FILE}
+  -DGLFW_BUILD_DOCS:BOOL=OFF
+  -DGLFW_BUILD_EXAMPLES:BOOL=OFF
+  -DGLFW_BUILD_TESTS:BOOL=OFF
 )
 
-ExternalProject_Add(GLFW
-    URL https://github.com/glfw/glfw/archive/3.2.1.zip
-    URL_MD5 cb412cba8daba35d849ddfe78700a210
-    CMAKE_ARGS ${GLFW_CMAKE_ARGS}
+ExternalProject_Add(ext_GLFW
+  URL https://github.com/glfw/glfw/archive/3.2.1.zip
+  URL_MD5 cb412cba8daba35d849ddfe78700a210
+  CMAKE_ARGS ${GLFW_CMAKE_ARGS}
 )
 
-ExternalProject_Get_Property(GLFW install_dir)
+ExternalProject_Get_Property(ext_GLFW install_dir)
 
 SET(GLFW_INCLUDE_DIR
-    ${install_dir}/src/glfw/include
+  ${install_dir}/include
 )
 
-find_library(GLFW_LIBRARY
-             NAMES glfw
-             PATHS ${install_dir}/lib
-)
+IF(MSVC)
+  SET(GLFW_LIBRARY ${install_dir}/lib/glfw3.lib)
+ELSE(MSVC)
+  SET(GLFW_LIBRARY ${install_dir}/lib/libglfw3.a)
+ENDIF(MSVC)
+
+add_library(GLFW STATIC IMPORTED)
+set_property(TARGET GLFW PROPERTY IMPORTED_LOCATION ${GLFW_LIBRARY})
+add_dependencies(GLFW ext_GLFW)
 
 # Handle REQUIRD argument, define *_FOUND variable
 find_package_handle_standard_args(GLFW
-                                  DEFAULT_MSG GLFW_INCLUDE_DIR
-                                  GLFW_LIBRARY
+  DEFAULT_MSG GLFW_INCLUDE_DIR
+  GLFW_LIBRARY
 )
 
 # Define GLFW_LIBRARIES and GLFW_INCLUDE_DIRS
@@ -60,40 +65,46 @@ if (GLFW_FOUND)
 		FIND_PACKAGE(Threads)
 		SET(GLFW_LIBRARIES ${GLFW_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
-		if ( CMAKE_DL_LIBS )
+		if (CMAKE_DL_LIBS)
 			SET(GLFW_LIBRARIES ${GLFW_LIBRARIES} ${CMAKE_DL_LIBS})
-		endif()
+		endif ()
 
 		find_library(RT_LIBRARY rt)
 		mark_as_advanced(RT_LIBRARY)
 		if (RT_LIBRARY)
-			SET( GLFW_LIBRARIES ${GLFW_LIBRARIES} ${RT_LIBRARY} )
-		endif()
+			SET(GLFW_LIBRARIES ${GLFW_LIBRARIES} ${RT_LIBRARY})
+		endif ()
 
-	ENDIF(UNIX AND NOT APPLE)
+	ENDIF (UNIX AND NOT APPLE)
 
   # For OS X, GLFW uses Cocoa as a backend so it must link to Cocoa.
-  IF(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+  IF (APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     FIND_LIBRARY(COCOA_LIBRARY Cocoa)
     FIND_LIBRARY(OPENGL_LIBRARY OpenGL)
     FIND_LIBRARY(IOKIT_LIBRARY IOKit)
     FIND_LIBRARY(COREVIDEO_LIBRARY CoreVideo)
-    SET(GLFW_LIBRARIES ${GLFW_LIBRARIES} ${COCOA_LIBRARY} ${OPENGL_LIBRARY} ${IOKIT_LIBRARY} ${COREVIDEO_LIBRARY})
-  ENDIF(APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    SET(GLFW_LIBRARIES
+      ${GLFW_LIBRARIES}
+      ${COCOA_LIBRARY}
+      ${OPENGL_LIBRARY}
+      ${IOKIT_LIBRARY}
+      ${COREVIDEO_LIBRARY}
+    )
+  ENDIF (APPLE OR ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
 
   # For MinGW library.
-  IF(MINGW)
+  IF (MINGW)
     # MinGW needs an additional library, mwindows
     # It's total link flags should look like -lmingw32 -lGLFW -lmwindows
     # (Actually on second look, I think it only needs one of the m* libraries.)
     SET(MINGW32_LIBRARY mingw32 CACHE STRING "mwindows for MinGW")
     SET(GLFW_LIBRARIES ${MINGW32_LIBRARY} ${GLFW_LIBRARIES})
-  ENDIF(MINGW)
+  ENDIF (MINGW)
 
   # For Unix, GLFW should be linked to X11-related libraries.
-  IF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  IF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
     FIND_PACKAGE(X11 REQUIRED)
     SET(GLFW_LIBRARIES ${GLFW_LIBRARIES} ${X11_X11_LIB} ${X11_Xrandr_LIB} ${X11_Xxf86vm_LIB} ${X11_Xinput_LIB} ${X11_Xinerama_LIB} ${X11_Xcursor_LIB})
-  ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  ENDIF (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 
 ENDIF(GLFW_FOUND)

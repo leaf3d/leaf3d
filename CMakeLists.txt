@@ -55,14 +55,12 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Engine)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/External)
 
-# Look for OpenGL.
+# Look for OpenGL and GLAD.
 find_package(OpenGL REQUIRED)
-
-# Look for GLAD.
 find_package(GLAD REQUIRED)
 include_directories(${GLAD_INCLUDE_DIR})
 
-# Set necessary libs.
+# Set required libs.
 set(LEAF3D_REQUIRED_LIBS
     ${OPENGL_LIBRARY}
 )
@@ -79,14 +77,6 @@ if (L3D_BUILD_UTILITY)
     set(LEAF3DUT_REQUIRED_LIBS
         ${ASSIMP_LIBRARIES}
     )
-
-    # Additional required libs on Linux.
-    if (L3D_LINUX)
-        set(LEAF3DUT_REQUIRED_LIBS
-            ${LEAF3DUT_REQUIRED_LIBS}
-            png
-        )
-    endif (L3D_LINUX)
 endif (L3D_BUILD_UTILITY)
 
 # Engine target.
@@ -110,6 +100,8 @@ endif (L3D_BUILD_EXAMPLES)
 
 # Tests target.
 if (L3D_BUILD_TESTS)
+    message(STATUS "Configuring leaf3d tests")
+
     add_subdirectory(Tests)
     enable_testing()
     add_test(leaf3d Tests/leaf3dTests)
