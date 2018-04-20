@@ -13,7 +13,7 @@ https://cmake.org/
 ### Ubuntu (16.04 or later)
 
 ```
-$ sudo apt install git build-essential cmake
+$ sudo apt install git build-essential cmake xorg-dev
 ```
 
 ### Windows 10

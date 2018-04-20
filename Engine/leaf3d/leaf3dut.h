@@ -29,28 +29,28 @@ using namespace l3d;
 
 /* Init & terminate ***********************************************************/
 
-int l3dutInit(const char* rootPath = "Content/");
+L3D_API int l3dutInit(const char* rootPath = "Content/");
 
-int l3dutTerminate();
+L3D_API int l3dutTerminate();
 
 /* Debug helpers **************************************************************/
 
-void l3dutPrintVec2(const L3DVec2& vec);
-void l3dutPrintVec3(const L3DVec3& vec);
-void l3dutPrintVec4(const L3DVec4& vec);
-void l3dutPrintMat3(const L3DMat3& mat);
-void l3dutPrintMat4(const L3DMat4& mat);
+L3D_API void l3dutPrintVec2(const L3DVec2& vec);
+L3D_API void l3dutPrintVec3(const L3DVec3& vec);
+L3D_API void l3dutPrintVec4(const L3DVec4& vec);
+L3D_API void l3dutPrintMat3(const L3DMat3& mat);
+L3D_API void l3dutPrintMat4(const L3DMat4& mat);
 
-void l3dutPrintFrameStats(double currentTime, double& lastTime, int& fps);
+L3D_API void l3dutPrintFrameStats(double currentTime, double& lastTime, int& fps);
 
 /* Resource loading ***********************************************************/
 
-L3DHandle l3dutLoadTexture2D(
+L3D_API L3DHandle l3dutLoadTexture2D(
     const char* filename,
     const L3DImageFormat& desiredFormat = L3D_UNKNOWN
 );
 
-L3DHandle l3dutLoadTextureCube(
+L3D_API L3DHandle l3dutLoadTextureCube(
     const char* filenameRight,
     const char* filenameLeft,
     const char* filenameTop,
@@ -60,18 +60,18 @@ L3DHandle l3dutLoadTextureCube(
     const L3DImageFormat& desiredFormat = L3D_UNKNOWN
 );
 
-L3DHandle l3dutLoadShader(
+L3D_API L3DHandle l3dutLoadShader(
     const L3DShaderType& type,
     const char* filename
 );
 
-L3DHandle l3dutLoadShaderProgram(
+L3D_API L3DHandle l3dutLoadShaderProgram(
     const char* vertexShaderFilename,
     const char* fragmentShaderFilename,
     const char* geometryShaderFilename = 0
 );
 
-L3DHandle* l3dutLoadMeshes(
+L3D_API L3DHandle* l3dutLoadMeshes(
     const char* filename,
     const L3DHandle& shaderProgram,
     unsigned int* meshCount,

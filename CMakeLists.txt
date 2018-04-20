@@ -9,11 +9,15 @@ set(${PROJECT_NAME}_PATCH_LEVEL 0)
 
 # Enable C++11 support.
 set(CMAKE_CXX_STANDARD 11)
+if (POLICY CMP0058)
+    cmake_policy(SET CMP0058 NEW)
+endif ()
 
 # Detect current OS.
 if (${CMAKE_SYSTEM_NAME} MATCHES "Windows")
     message(STATUS "Configuring for Windows")
     set(L3D_WINDOWS True)
+    SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /ENTRY:mainCRTStartup ")
 elseif (${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
     message(STATUS "Configuring for MacOS")
     set(L3D_MACOS True)
@@ -27,6 +31,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/External/" ${CMAKE_MODULE_PATH})
 
 # Set binaries output folder.
 set(LEAF3D_OUTPUT_PATH_PREFIX "${PROJECT_BINARY_DIR}/Binaries")
+
 set(LEAF3D_OUTPUT_PATH_SUFFIX "")
 if (${CMAKE_CFG_INTDIR} STREQUAL ".")
     set(LEAF3D_OUTPUT_PATH_SUFFIX ${CMAKE_BUILD_TYPE})
@@ -48,60 +53,21 @@ if (L3D_BUILD_EXAMPLES)
     set(L3D_BUILD_UTILITY ON)
 endif (L3D_BUILD_EXAMPLES)
 
-message(STATUS "Configuring leaf3d library")
-
 # Default include directories.
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/Engine)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/External)
-
-# Look for OpenGL and GLAD.
-find_package(OpenGL REQUIRED)
-find_package(GLAD REQUIRED)
-include_directories(${GLAD_INCLUDE_DIR})
-
-# Set required libs.
-set(LEAF3D_REQUIRED_LIBS
-    ${OPENGL_LIBRARY}
-)
-
-# Utility library target.
-if (L3D_BUILD_UTILITY)
-    message(STATUS "Configuring leaf3d utilities")
-
-    # Look for Assimp.
-    find_package(Assimp REQUIRED)
-    include_directories(${ASSIMP_INCLUDE_DIRS})
-
-    # Set utility required libs.
-    set(LEAF3DUT_REQUIRED_LIBS
-        ${ASSIMP_LIBRARIES}
-    )
-endif (L3D_BUILD_UTILITY)
 
 # Engine target.
 add_subdirectory(Engine)
 
 # Samples target.
 if (L3D_BUILD_EXAMPLES)
-    message(STATUS "Configuring leaf3d examples")
-
-    # Look for GLFW.
-    find_package(GLFW REQUIRED)
-    include_directories(${GLFW_INCLUDE_DIRS})
-
-    # Set examples required libs.
-    set(LEAF3_EXAMPLES_REQUIRED_LIBS
-        ${GLFW_LIBRARIES}
-    )
-
     add_subdirectory(Examples)
 endif (L3D_BUILD_EXAMPLES)
 
 # Tests target.
 if (L3D_BUILD_TESTS)
-    message(STATUS "Configuring leaf3d tests")
-
     add_subdirectory(Tests)
     enable_testing()
     add_test(leaf3d Tests/leaf3dTests)

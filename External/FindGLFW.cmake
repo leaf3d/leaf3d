@@ -32,12 +32,19 @@ SET(GLFW_INCLUDE_DIR
   ${install_dir}/include
 )
 
-IF(MSVC)
-  SET(GLFW_LIBRARY ${install_dir}/lib/glfw3.lib)
-ELSE(MSVC)
-  SET(GLFW_LIBRARY ${install_dir}/lib/libglfw3.a)
-ENDIF(MSVC)
+IF (MSVC)
 
+  # Windows
+  SET(GLFW_LIBRARY ${install_dir}/lib/glfw3.lib)
+
+ELSE (MSVC)
+
+  # Linux / MacOS
+  SET(GLFW_LIBRARY ${install_dir}/lib/libglfw3.a)
+  
+ENDIF (MSVC)
+
+# Add lib target based on external project
 add_library(GLFW STATIC IMPORTED)
 set_property(TARGET GLFW PROPERTY IMPORTED_LOCATION ${GLFW_LIBRARY})
 add_dependencies(GLFW ext_GLFW)

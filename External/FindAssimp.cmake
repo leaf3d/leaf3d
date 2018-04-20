@@ -11,12 +11,6 @@
 INCLUDE(ExternalProject)
 INCLUDE(FindPackageHandleStandardArgs)
 
-if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-	set(ASSIMP_ARCHITECTURE "64")
-elseif(CMAKE_SIZEOF_VOID_P EQUAL 4)
-	set(ASSIMP_ARCHITECTURE "32")
-endif(CMAKE_SIZEOF_VOID_P EQUAL 8)
-
 SET(ASSIMP_CMAKE_ARGS
   # -DCMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}
   -DCMAKE_INSTALL_PREFIX:PATH=<INSTALL_DIR>
@@ -27,6 +21,7 @@ SET(ASSIMP_CMAKE_ARGS
   -DASSIMP_BUILD_ASSIMP_TOOLS:BOOL=OFF
   -DASSIMP_BUILD_TESTS:BOOL=OFF
   -DASSIMP_BUILD_ZLIB:BOOL=ON
+	-DASSIMP_INSTALL_PDB:BOOL=OFF
 )
 
 ExternalProject_Add(ext_Assimp
@@ -42,15 +37,34 @@ SET(ASSIMP_INCLUDE_DIR
 )
 
 IF (MSVC)
-  SET(ASSIMP_LIBRARY ${install_dir}/lib${ASSIMP_ARCHITECTURE}/assimp.lib)
-  SET(IRRXML_LIBRARY ${install_dir}/lib${ASSIMP_ARCHITECTURE}/IrrXML.lib)
-  SET(ZLIB_LIBRARY ${install_dir}/lib${ASSIMP_ARCHITECTURE}/zlibstatic.lib)
+
+	# Windows
+	if (MSVC12)
+		set(ASSIMP_MSVC_VERSION "vc120")
+	elseif (MSVC14)
+		set(ASSIMP_MSVC_VERSION "vc140")
+	elseif (MSVC15)
+		set(ASSIMP_MSVC_VERSION "vc150")
+	endif ()
+
+	if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
+		set(ASSIMP_BUILD_SUFFIX "d")
+	endif ()
+
+  SET(ASSIMP_LIBRARY ${install_dir}/lib/assimp-${ASSIMP_MSVC_VERSION}-mt.lib)
+  SET(IRRXML_LIBRARY ${install_dir}/lib/IrrXML.lib)
+  SET(ZLIB_LIBRARY ${install_dir}/lib/zlibstatic${ASSIMP_BUILD_SUFFIX}.lib)
+
 ELSE (MSVC)
+
+	# Linux / MacOS
   SET(ASSIMP_LIBRARY ${install_dir}/lib/libassimp.a)
   SET(IRRXML_LIBRARY ${install_dir}/lib/libIrrXML.a)
   SET(ZLIB_LIBRARY ${install_dir}/lib/libzlibstatic.a)
+
 ENDIF (MSVC)
 
+# Add lib target based on external project
 add_library(Assimp STATIC IMPORTED)
 set_property(TARGET Assimp PROPERTY IMPORTED_LOCATION ${ASSIMP_LIBRARY})
 add_dependencies(Assimp ext_Assimp)

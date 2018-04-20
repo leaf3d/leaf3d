@@ -1,3 +1,19 @@
+if (L3D_BUILD_UTILITY)
+    message(STATUS "Configuring leaf3d (with utilities)")
+else (L3D_BUILD_UTILITY)
+    message(STATUS "Configuring leaf3d")
+endif (L3D_BUILD_UTILITY)
+
+# Look for OpenGL and GLAD.
+find_package(OpenGL REQUIRED)
+find_package(GLAD REQUIRED)
+include_directories(${GLAD_INCLUDE_DIR})
+
+# Set required libs.
+set(LEAF3D_REQUIRED_LIBS
+    ${OPENGL_LIBRARY}
+)
+
 set(LEAF3D_SOURCES
     leaf3d/platform.h
     leaf3d/types.h
@@ -29,25 +45,54 @@ set(LEAF3D_SOURCES
     leaf3d.cpp
 )
 
-add_library(leaf3d SHARED ${LEAF3D_SOURCES} ${GLAD_SOURCES})
+set(LEAF3D_DEPENDENCIES
+    # Empty.
+)
+
+if (L3D_BUILD_UTILITY)
+    # Look for Assimp.
+    find_package(Assimp REQUIRED)
+    include_directories(${ASSIMP_INCLUDE_DIRS})
+
+    # Set utility required libs.
+    set(LEAF3DUT_REQUIRED_LIBS
+        ${ASSIMP_LIBRARIES}
+    )
+
+    set(LEAF3DUT_SOURCES
+        leaf3d/leaf3dut.h
+        leaf3dut.cpp
+    )
+
+    set(LEAF3DUT_DEPENDENCIES
+        Assimp
+    )
+
+    set(LEAF3D_REQUIRED_LIBS
+        ${LEAF3D_REQUIRED_LIBS}
+        ${LEAF3DUT_REQUIRED_LIBS}
+    )
+
+    set(LEAF3D_SOURCES
+        ${LEAF3D_SOURCES}
+        ${LEAF3DUT_SOURCES}
+    )
+
+    set(LEAF3D_DEPENDENCIES
+        ${LEAF3D_DEPENDENCIES}
+        ${LEAF3DUT_DEPENDENCIES}
+    )
+endif (L3D_BUILD_UTILITY)
+
+add_library(leaf3d STATIC ${LEAF3D_SOURCES} ${GLAD_SOURCES})
+add_dependencies(leaf3d ${LEAF3D_DEPENDENCIES})
 
 target_link_libraries(leaf3d
     ${LEAF3D_REQUIRED_LIBS}
     ${CMAKE_DL_LIBS}
 )
 
-if (L3D_BUILD_UTILITY)
-    set(LEAF3DUT_SOURCES
-        leaf3d/leaf3dut.h
-        leaf3dut.cpp
-    )
-
-    add_library(leaf3dut SHARED ${LEAF3DUT_SOURCES})
-    add_dependencies(leaf3dut leaf3d)
-
-    target_link_libraries(leaf3dut
-        leaf3d
-        ${LEAF3DUT_REQUIRED_LIBS}
-        ${CMAKE_DL_LIBS}
-    )
-endif (L3D_BUILD_UTILITY)
+target_include_directories(leaf3d PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  ${GLAD_INCLUDE_DIR}
+)

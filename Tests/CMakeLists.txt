@@ -1,6 +1,4 @@
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../Engine)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../External)
+message(STATUS "Configuring leaf3d tests")
 
 set(LEAF3D_TESTS_SOURCES
     main.cpp
@@ -8,7 +6,6 @@ set(LEAF3D_TESTS_SOURCES
 
 set(LEAF3D_TESTS_LIBRARIES
     leaf3d
-    ${LEAF3DUT_REQUIRED_LIBS}
     ${LEAF3D_REQUIRED_LIBS}
 )
 

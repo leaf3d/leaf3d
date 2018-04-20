@@ -1,10 +1,13 @@
-# Set necessary libs.
+message(STATUS "Configuring leaf3d examples")
+
+# Look for GLFW.
+find_package(GLFW REQUIRED)
+include_directories(${GLFW_INCLUDE_DIRS})
+
+# Set examples required libs.
 set(LEAF3D_EXAMPLES_REQUIRED_LIBS
     leaf3d
-    leaf3dut
-    ${LEAF3_EXAMPLES_REQUIRED_LIBS}
-    ${LEAF3DUT_REQUIRED_LIBS}
-    ${LEAF3D_REQUIRED_LIBS}
+    ${GLFW_LIBRARIES}
 )
 
 # Set editable content files.
@@ -19,6 +22,7 @@ add_custom_target(
     leaf3dExamplesCopyContentFiles ALL
     COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_CURRENT_SOURCE_DIR}/Content ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Content
 )
+add_dependencies(leaf3dExamplesCopyContentFiles leaf3d GLFW)
 
 # Add example projects.
 add_subdirectory(Leaf)

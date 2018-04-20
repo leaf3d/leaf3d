@@ -50,13 +50,13 @@
 
 namespace l3d
 {
-    typedef glm::vec2 L3DVec2;
-    typedef glm::vec3 L3DVec3;
-    typedef glm::vec4 L3DVec4;
-    typedef glm::mat3 L3DMat3;
-    typedef glm::mat4 L3DMat4;
+    typedef L3D_API glm::vec2 L3DVec2;
+    typedef L3D_API glm::vec3 L3DVec3;
+    typedef L3D_API glm::vec4 L3DVec4;
+    typedef L3D_API glm::mat3 L3DMat3;
+    typedef L3D_API glm::mat4 L3DMat4;
 
-    enum L3DVertexAttribute
+    enum L3D_API L3DVertexAttribute
     {
         L3D_VERTEX_POSITION = 0,
         L3D_VERTEX_NORMAL,
@@ -68,7 +68,7 @@ namespace l3d
         L3D_MAX_VERTEX_ATTRIBUTE
     };
 
-    enum L3DInstanceAttribute
+    enum L3D_API L3DInstanceAttribute
     {
         L3D_INSTANCE_POSITION = L3D_MAX_VERTEX_ATTRIBUTE,
         L3D_INSTANCE_UV,
@@ -76,7 +76,7 @@ namespace l3d
         L3D_MAX_INSTANCE_ATTRIBUTE
     };
 
-    enum L3DVertexFormat
+    enum L3D_API L3DVertexFormat
     {
         L3D_INVALID_VERTEX_FORMAT = 0,
         L3D_VERTEX_POS2 = 2,
@@ -95,7 +95,7 @@ namespace l3d
         L3D_MAX_VERTEX_FORMAT
     };
 
-    enum L3DInstanceFormat
+    enum L3D_API L3DInstanceFormat
     {
       L3D_INVALID_INSTANCE_FORMAT = 0,
       L3D_INSTANCE_POS2 = 2,
@@ -107,7 +107,7 @@ namespace l3d
       L3D_MAX_INSTANCE_FORMAT
     };
 
-    enum L3DImageFormat
+    enum L3D_API L3DImageFormat
     {
         L3D_UNKNOWN = 0,
         L3D_RGB = 3,
@@ -115,13 +115,13 @@ namespace l3d
         L3D_DEPTH24_STENCIL8
     };
 
-    enum L3DPixelFormat
+    enum L3D_API L3DPixelFormat
     {
         L3D_UNSIGNED_BYTE,
         L3D_UNSIGNED_INT_24_8
     };
 
-    enum L3DImageMinFilter
+    enum L3D_API L3DImageMinFilter
     {
         L3D_MIN_NEAREST = 0,
         L3D_MIN_LINEAR,
@@ -131,13 +131,13 @@ namespace l3d
         L3D_MIN_LINEAR_MIPMAP_LINEAR
     };
 
-    enum L3DImageMagFilter
+    enum L3D_API L3DImageMagFilter
     {
         L3D_MAG_NEAREST = 0,
         L3D_MAG_LINEAR
     };
 
-    enum L3DImageWrapMethod
+    enum L3D_API L3DImageWrapMethod
     {
         L3D_CLAMP_TO_EDGE = 0,
         L3D_CLAMP_TO_BORDER,
@@ -146,20 +146,20 @@ namespace l3d
         L3D_MIRROR_CLAMP_TO_EDGE,
     };
 
-    enum L3DDrawType
+    enum L3D_API L3DDrawType
     {
         L3D_DRAW_STATIC = 0,
         L3D_DRAW_DYNAMIC
     };
 
-    enum L3DDrawPrimitive
+    enum L3D_API L3DDrawPrimitive
     {
         L3D_DRAW_POINTS = 1,
         L3D_DRAW_LINES = 2,
         L3D_DRAW_TRIANGLES = 3
     };
 
-    enum L3DAttachmentType
+    enum L3D_API L3DAttachmentType
     {
         L3D_DEPTH_STENCIL_ATTACHMENT,
         L3D_COLOR_ATTACHMENT0,
@@ -180,7 +180,7 @@ namespace l3d
         L3D_COLOR_ATTACHMENT15
     };
 
-    enum L3DUniformType
+    enum L3D_API L3DUniformType
     {
         L3D_UNIFORM_INVALID = 0,
         L3D_UNIFORM_FLOAT,
@@ -194,7 +194,7 @@ namespace l3d
         L3D_UNIFORM_MAT4
     };
 
-    union L3DUniformValue
+    union L3D_API L3DUniformValue
     {
         float valueF;
         int valueI;
@@ -207,13 +207,13 @@ namespace l3d
         float* valueMat4;
     };
 
-    enum L3DDepthFactor
+    enum L3D_API L3DDepthFactor
     {
         L3D_LESS = 0,
         L3D_EQUAL
     };
 
-    enum L3DBlendFactor
+    enum L3D_API L3DBlendFactor
     {
         L3D_ZERO = 0,
         L3D_ONE,
@@ -231,14 +231,14 @@ namespace l3d
         L3D_ONE_MINUS_CONSTANT_ALPHA
     };
 
-    enum L3DCullFace
+    enum L3D_API L3DCullFace
     {
       L3D_FRONT_FACE = 0,
       L3D_BACK_FACE,
       L3D_BOTH_FACES
     };
 
-    enum L3DResourceType
+    enum L3D_API L3DResourceType
     {
         L3D_BUFFER = 0,
         L3D_TEXTURE,
@@ -252,14 +252,14 @@ namespace l3d
         L3D_RENDER_QUEUE
     };
 
-    enum L3DBufferType
+    enum L3D_API L3DBufferType
     {
         L3D_BUFFER_VERTEX = 0,
         L3D_BUFFER_INDEX,
         L3D_BUFFER_INSTANCE
     };
 
-    enum L3DTextureType
+    enum L3D_API L3DTextureType
     {
         L3D_TEXTURE_1D = 0,
         L3D_TEXTURE_2D,
@@ -267,14 +267,14 @@ namespace l3d
         L3D_TEXTURE_CUBE_MAP
     };
 
-    enum L3DShaderType
+    enum L3D_API L3DShaderType
     {
         L3D_SHADER_VERTEX = 0,
         L3D_SHADER_FRAGMENT,
         L3D_SHADER_GEOMETRY
     };
 
-    enum L3DRenderCommandType
+    enum L3D_API L3DRenderCommandType
     {
         L3D_INVALID_RENDER_COMMAND = 0,
         L3D_SWITCH_FRAME_BUFFER,
@@ -286,14 +286,14 @@ namespace l3d
         L3D_DRAW_MESHES
     };
 
-    enum L3DLightType
+    enum L3D_API L3DLightType
     {
         L3D_LIGHT_DIRECTIONAL = 0,
         L3D_LIGHT_POINT,
         L3D_LIGHT_SPOT
     };
 
-    struct L3DLightAttenuation
+    struct L3D_API L3DLightAttenuation
     {
         L3DLightAttenuation(
             float kc,
@@ -317,7 +317,7 @@ namespace l3d
     // > handle.data.type   (8bits)
     // > handle.data.flags  (8bits, bitfield)
     // > handle.data.id     (16bits)
-    typedef union
+    typedef L3D_API union
     {
         unsigned int repr;
         struct L3DHandleData
@@ -328,7 +328,7 @@ namespace l3d
         } data;
     } L3DHandle;
 
-    const L3DHandle L3D_INVALID_HANDLE = L3DHandle();
+    L3D_API const L3DHandle L3D_INVALID_HANDLE = L3DHandle();
 }
 
 #endif // L3D_TYPES_H

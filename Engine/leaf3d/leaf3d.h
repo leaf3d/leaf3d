@@ -29,18 +29,18 @@ using namespace l3d;
 
 /* Init & terminate ***********************************************************/
 
-int l3dInit();
+L3D_API int l3dInit();
 
-int l3dTerminate();
+L3D_API int l3dTerminate();
 
 /* Rendering ******************************************************************/
 
-void l3dRenderFrame(
+L3D_API void l3dRenderFrame(
     const L3DHandle& camera,
     const L3DHandle& renderQueue
 );
 
-L3DHandle l3dLoadForwardRenderQueue(
+L3D_API L3DHandle l3dLoadForwardRenderQueue(
     unsigned int width,
     unsigned int height,
     const L3DVec4& clearColor = L3DVec4(1, 1, 1, 1),
@@ -49,7 +49,7 @@ L3DHandle l3dLoadForwardRenderQueue(
 
 /* Textures *******************************************************************/
 
-L3DHandle l3dLoadTexture(
+L3D_API L3DHandle l3dLoadTexture(
     const L3DTextureType& type,
     const L3DImageFormat& format,
     unsigned char* data,
@@ -67,74 +67,74 @@ L3DHandle l3dLoadTexture(
 
 /* Shaders ********************************************************************/
 
-L3DHandle l3dLoadShader(
+L3D_API L3DHandle l3dLoadShader(
     const L3DShaderType& type,
     const char* code
 );
 
-L3DHandle l3dLoadShaderProgram(
+L3D_API L3DHandle l3dLoadShaderProgram(
     const L3DHandle& vertexShader,
     const L3DHandle& fragmentShader,
     const L3DHandle& geometryShader = L3D_INVALID_HANDLE
 );
 
-void l3dSetShaderProgramUniformI(
+L3D_API void l3dSetShaderProgramUniformI(
     const L3DHandle& target,
     const char* name,
     int value,
     int index = -1
 );
 
-void l3dSetShaderProgramUniformUI(
+L3D_API void l3dSetShaderProgramUniformUI(
     const L3DHandle& target,
     const char* name,
     unsigned int value,
     int index = -1
 );
 
-void l3dSetShaderProgramUniformB(
+L3D_API void l3dSetShaderProgramUniformB(
     const L3DHandle& target,
     const char* name,
     bool value,
     int index = -1
 );
 
-void l3dSetShaderProgramUniformF(
+L3D_API void l3dSetShaderProgramUniformF(
     const L3DHandle& target,
     const char* name,
     float value,
     int index = -1
 );
 
-void l3dSetShaderProgramUniformVec2(
+L3D_API void l3dSetShaderProgramUniformVec2(
     const L3DHandle& target,
     const char* name,
     const L3DVec2& value,
     int index = -1
 );
 
-void l3dSetShaderProgramUniformVec3(
+L3D_API void l3dSetShaderProgramUniformVec3(
     const L3DHandle& target,
     const char* name,
     const L3DVec3& value,
     int index = -1
 );
 
-void l3dSetShaderProgramUniformVec4(
+L3D_API void l3dSetShaderProgramUniformVec4(
     const L3DHandle& target,
     const char* name,
     const L3DVec4& value,
     int index = -1
 );
 
-void l3dSetShaderProgramUniformMat3(
+L3D_API void l3dSetShaderProgramUniformMat3(
     const L3DHandle& target,
     const char* name,
     const L3DMat3& value,
     int index = -1
 );
 
-void l3dSetShaderProgramUniformMat4(
+L3D_API void l3dSetShaderProgramUniformMat4(
     const L3DHandle& target,
     const char* name,
     const L3DMat4& value,
@@ -143,7 +143,7 @@ void l3dSetShaderProgramUniformMat4(
 
 /* Framebuffers ***************************************************************/
 
-L3DHandle l3dLoadFrameBuffer(
+L3D_API L3DHandle l3dLoadFrameBuffer(
     const L3DHandle& textureDepthStencilAttachment,
     const L3DHandle& textureColorAttachment0,
     const L3DHandle& textureColorAttachment1 = L3D_INVALID_HANDLE,
@@ -165,7 +165,7 @@ L3DHandle l3dLoadFrameBuffer(
 
 /* Materials ******************************************************************/
 
-L3DHandle l3dLoadMaterial(
+L3D_API L3DHandle l3dLoadMaterial(
     const char* name,
     const L3DHandle& shaderProgram,
     const L3DVec3& diffuse = L3DVec3(1.0f, 1.0f, 1.0f),
@@ -174,7 +174,7 @@ L3DHandle l3dLoadMaterial(
     float shininess = 32.0f
 );
 
-void l3dAddTextureToMaterial(
+L3D_API void l3dAddTextureToMaterial(
     const L3DHandle& target,
     const char* name,
     const L3DHandle& texture
@@ -182,7 +182,7 @@ void l3dAddTextureToMaterial(
 
 /* Cameras ********************************************************************/
 
-L3DHandle l3dLoadCamera(
+L3D_API L3DHandle l3dLoadCamera(
     const char* name = "Default",
     const L3DMat4& view = glm::lookAt(
         glm::vec3(0.0f, 0.0f, 8.0f),
@@ -192,30 +192,30 @@ L3DHandle l3dLoadCamera(
     const L3DMat4& proj = glm::perspective(45.0f, 1.0f, 1.0f, 100.0f)
 );
 
-L3DMat4 l3dGetCameraView(
+L3D_API L3DMat4 l3dGetCameraView(
     const L3DHandle& target
 );
 
-void l3dSetCameraView(
+L3D_API void l3dSetCameraView(
     const L3DHandle& target,
     const L3DMat4& view
 );
 
-L3DMat4 l3dGetCameraProj(
+L3D_API L3DMat4 l3dGetCameraProj(
     const L3DHandle& target
 );
 
-void l3dSetCameraProj(
+L3D_API void l3dSetCameraProj(
     const L3DHandle& target,
     const L3DMat4& proj
 );
 
-void l3dTranslateCamera(
+L3D_API void l3dTranslateCamera(
     const L3DHandle& target,
     const L3DVec3& movement
 );
 
-void l3dRotateCamera(
+L3D_API void l3dRotateCamera(
     const L3DHandle& target,
     float radians,
     const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
@@ -223,7 +223,7 @@ void l3dRotateCamera(
 
 /* Meshes *********************************************************************/
 
-L3DHandle l3dLoadMesh(
+L3D_API L3DHandle l3dLoadMesh(
     float* vertices,
     unsigned int vertexCount,
     unsigned int* indices,
@@ -236,68 +236,68 @@ L3DHandle l3dLoadMesh(
     unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER
 );
 
-L3DHandle l3dLoadQuad(
+L3D_API L3DHandle l3dLoadQuad(
     const L3DHandle& material,
     const L3DVec2& texMulFactor = L3DVec2(1, 1),
     unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER
 );
 
-L3DHandle l3dLoadCube(
+L3D_API L3DHandle l3dLoadCube(
     const L3DHandle& material,
     const L3DVec2& texMulFactor = L3DVec2(1, 1),
     unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER
 );
 
-L3DHandle l3dLoadSkyBox(
+L3D_API L3DHandle l3dLoadSkyBox(
     const L3DHandle& material,
     unsigned int renderLayer = L3D_SKYBOX_MESH_RENDERLAYER
 );
 
-L3DHandle l3dLoadGrid(
+L3D_API L3DHandle l3dLoadGrid(
     unsigned int n,
     const L3DHandle& material,
     const L3DVec2& texMulFactor = L3DVec2(1, 1),
     unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER
 );
 
-L3DMat4 l3dGetMeshTrans(
+L3D_API L3DMat4 l3dGetMeshTrans(
     const L3DHandle& target
 );
 
-unsigned char l3dMeshRenderLayer(const L3DHandle& target);
+L3D_API unsigned char l3dMeshRenderLayer(const L3DHandle& target);
 
-void l3dSetMeshTrans(
+L3D_API void l3dSetMeshTrans(
     const L3DHandle& target,
     const L3DMat4& trans
 );
 
-void l3dTranslateMesh(
+L3D_API void l3dTranslateMesh(
     const L3DHandle& target,
     const L3DVec3& movement
 );
 
-void l3dRotateMesh(
+L3D_API void l3dRotateMesh(
     const L3DHandle& target,
     float radians,
     const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
 );
 
-void l3dScaleMesh(
+L3D_API void l3dScaleMesh(
     const L3DHandle& target,
     const L3DVec3& factor
 );
 
-void l3dSetMeshMaterial(
+L3D_API void l3dSetMeshMaterial(
     const L3DHandle& target,
     const L3DHandle& material
 );
 
-void l3dSetMeshRenderLayer(
+L3D_API void l3dSetMeshRenderLayer(
     const L3DHandle& target,
     unsigned char renderLayer
 );
 
-void l3dSetMeshInstances(
+L3D_API void l3dSetMeshInstances(
     const L3DHandle& target,
     void* instances,
     unsigned int instanceCount,
@@ -306,20 +306,20 @@ void l3dSetMeshInstances(
 
 /* Lights *********************************************************************/
 
-L3DHandle l3dLoadDirectionalLight(
+L3D_API L3DHandle l3dLoadDirectionalLight(
     const L3DVec3& direction,
     const L3DVec4& color = L3DVec4(1, 1, 1, 1),
     unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
 );
 
-L3DHandle l3dLoadPointLight(
+L3D_API L3DHandle l3dLoadPointLight(
     const L3DVec3& position,
     const L3DVec4& color = L3DVec4(1, 1, 1, 1),
     const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
     unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
 );
 
-L3DHandle l3dLoadSpotLight(
+L3D_API L3DHandle l3dLoadSpotLight(
     const L3DVec3& position,
     const L3DVec3& direction = L3DVec3(0, -1, 0),
     const L3DVec4& color = L3DVec4(1, 1, 1, 1),
@@ -327,40 +327,40 @@ L3DHandle l3dLoadSpotLight(
     unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
 );
 
-int l3dLightType(const L3DHandle& target);
+L3D_API int l3dLightType(const L3DHandle& target);
 
-unsigned int l3dLightRenderLayerMask(const L3DHandle& target);
+L3D_API unsigned int l3dLightRenderLayerMask(const L3DHandle& target);
 
-bool l3dIsLightOn(const L3DHandle& target);
+L3D_API bool l3dIsLightOn(const L3DHandle& target);
 
-void l3dSetLightRenderLayerMask(
+L3D_API void l3dSetLightRenderLayerMask(
     const L3DHandle& target,
     unsigned int renderLayerMask
 );
 
-void l3dSetLightDirection(
+L3D_API void l3dSetLightDirection(
     const L3DHandle& target,
     const L3DVec3& direction
 );
 
-void l3dSetLightAttenuation(
+L3D_API void l3dSetLightAttenuation(
     const L3DHandle& target,
     float kc,
     float kl,
     float kq
 );
 
-void l3dSetLightColor(
+L3D_API void l3dSetLightColor(
     const L3DHandle& target,
     const L3DVec4& color
 );
 
-void l3dTranslateLight(
+L3D_API void l3dTranslateLight(
     const L3DHandle& target,
     const L3DVec3& movement
 );
 
-void l3dLightLookAt(
+L3D_API void l3dLightLookAt(
     const L3DHandle& target,
     const L3DVec3& targetPosition
 );

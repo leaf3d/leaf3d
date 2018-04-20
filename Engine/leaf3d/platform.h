@@ -80,12 +80,26 @@
 #   error Unknown endianess.
 #endif
 
+// Build type.
+#if defined (NDEBUG)
+# define L3D_RELEASE
+#else
+# define L3D_DEBUG
+#endif
+
 // Runtime assertion.
-#if defined( _DEBUG )
-#   include <assert.h>
+#if defined (L3D_DEBUG)
+# include <assert.h>
 #	define L3D_ASSERT( exp ) assert( exp );
 #else
 #	define L3D_ASSERT( exp )
+#endif
+
+// API export.
+#if defined (L3D_PLATFORM_WIN)
+# define L3D_API extern "C" __declspec(dllexport)
+#else
+# define L3D_API
 #endif
 
 #endif // L3D_PLATFORM_H
