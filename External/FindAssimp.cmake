@@ -53,7 +53,9 @@ IF (MSVC)
 
   SET(ASSIMP_LIBRARY ${install_dir}/lib/assimp-${ASSIMP_MSVC_VERSION}-mt.lib)
   SET(IRRXML_LIBRARY ${install_dir}/lib/IrrXML.lib)
-  SET(ZLIB_LIBRARY ${install_dir}/lib/zlibstatic${ASSIMP_BUILD_SUFFIX}.lib)
+  # SET(ZLIB_LIBRARY ${install_dir}/lib/zlibstatic${ASSIMP_BUILD_SUFFIX}.lib)
+	# WARNING: this is a hack! Probably an issue with Assimp.
+  SET(ZLIB_LIBRARY ${install_dir}/lib/zlibstaticd.lib)
 
 ELSE (MSVC)
 

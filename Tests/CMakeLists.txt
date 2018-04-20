@@ -6,7 +6,6 @@ set(LEAF3D_TESTS_SOURCES
 
 set(LEAF3D_TESTS_LIBRARIES
     leaf3d
-    ${LEAF3D_REQUIRED_LIBS}
 )
 
 add_subdirectory(core)

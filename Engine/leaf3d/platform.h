@@ -97,7 +97,7 @@
 
 // API export.
 #if defined (L3D_PLATFORM_WIN)
-# define L3D_API extern "C" __declspec(dllexport)
+# define L3D_API
 #else
 # define L3D_API
 #endif
