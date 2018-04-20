@@ -1,5 +1,7 @@
 #version 330 core
 
+out vec4 fragColor;
+
 /* STRUCTS ********************************************************************/
 
 struct Material {
@@ -14,5 +16,5 @@ uniform Material u_material;
 
 void main()
 {
-    gl_FragColor = vec4(u_material.diffuse, 1);
+    fragColor = vec4(u_material.diffuse, 1);
 }

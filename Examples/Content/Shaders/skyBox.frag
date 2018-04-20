@@ -1,5 +1,7 @@
 #version 330 core
 
+out vec4 fragColor;
+
 /* INPUTS *********************************************************************/
 
 // Data from vertex shader.
@@ -18,5 +20,5 @@ uniform samplerCube u_cubemap;
 void main()
 {
     // Final fragment color.
-    gl_FragColor = texture(u_cubemap, fs_in.textureDir);
+    fragColor = texture(u_cubemap, fs_in.textureDir);
 }

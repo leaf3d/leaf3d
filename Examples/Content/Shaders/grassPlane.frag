@@ -1,5 +1,7 @@
 #version 330 core
 
+out vec4 fragColor;
+
 /* STRUCTS ********************************************************************/
 
 struct Material {
@@ -48,5 +50,5 @@ void main()
     vec4 dirt = texture(u_dirtMap, fs_in.texcoord0);
 
     // Calculate final color.
-    gl_FragColor = vec4(mix(diffuse, dirt, grassToDirt).rgb, alphaOpacity);
+    fragColor = vec4(mix(diffuse, dirt, grassToDirt).rgb, alphaOpacity);
 }

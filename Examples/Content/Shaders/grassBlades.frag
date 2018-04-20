@@ -1,5 +1,7 @@
 #version 330 core
 
+out vec4 fragColor;
+
 /* STRUCTS ********************************************************************/
 
 struct Material {
@@ -60,5 +62,5 @@ void main()
     float alphaOpacity = clamp((u_grassDistanceLOD3 - surfaceToCameraDistance) / (u_grassDistanceLOD3 - u_grassDistanceLOD1), 0, 1);
 
     // Final fragment color.
-    gl_FragColor = vec4(diffuse.rgb * diffuseColor, alphaOpacity);
+    fragColor = vec4(diffuse.rgb * diffuseColor, alphaOpacity);
 }

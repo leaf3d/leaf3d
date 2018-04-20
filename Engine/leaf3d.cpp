@@ -52,12 +52,13 @@ static const char* _defaultScreenVertexShader = GLSL(
 
 static const char* _defaultScreenFragmentShader = GLSL(
     in vec2 o_texcoord0;
+    out vec4 fragColor;
 
     uniform sampler2D u_diffuseMap;
 
     void main()
     {
-        gl_FragColor = vec4(texture(u_diffuseMap, o_texcoord0).rgb, 1);
+        fragColor = vec4(texture(u_diffuseMap, o_texcoord0).rgb, 1);
     }
 );
 

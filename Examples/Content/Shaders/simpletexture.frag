@@ -1,5 +1,7 @@
 #version 330 core
 
+out vec4 fragColor;
+
 /* INPUTS *********************************************************************/
 
 // Data from vertex shader.
@@ -32,5 +34,5 @@ void main()
     if (diffuse.a < 0.1f)
         discard;
 
-    gl_FragColor = diffuse;
+    fragColor = diffuse;
 }

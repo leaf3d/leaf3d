@@ -2,6 +2,8 @@
 
 #define NR_MAX_LIGHTS 16
 
+out vec4 fragColor;
+
 /* STRUCTS ********************************************************************/
 
 struct Material {
@@ -192,5 +194,5 @@ void main()
     vec4 lightColor = ambientColor + diffuseColor + specularColor;
 
     // Final fragment color.
-    gl_FragColor = vec4(lightColor.rgb, lightColor.a * fogFactor);
+    fragColor = vec4(lightColor.rgb, lightColor.a * fogFactor);
 }
