@@ -118,17 +118,17 @@ void l3dutPrintMat4(const L3DMat4& mat)
     printf("\n");
 }
 
-void l3dutPrintFrameStats(double currentTime, double& lastTime, int& fps)
+int l3dutPrintFrameStats(double frameTime)
 {
-    double dt = (currentTime - lastTime);
-    ++fps;
+    int fps = -1;
 
-    if (dt >= 1.0)
+    if (frameTime > 0.0)
     {
-        printf("Avg frame time [ms]: %.2f (FPS: %d)\n", dt * 1000.0 / fps, fps);
-        fps = 0;
-        lastTime += dt;
+        fps = 1.0f / frameTime;
+        printf("Frame time [ms]: %.2f (FPS: %d)\n", frameTime * 1000.0, fps);
     }
+
+    return fps;
 }
 
 L3DHandle l3dutLoadTexture2D(

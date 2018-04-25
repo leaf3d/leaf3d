@@ -41,7 +41,7 @@ L3D_API void l3dutPrintVec4(const L3DVec4& vec);
 L3D_API void l3dutPrintMat3(const L3DMat3& mat);
 L3D_API void l3dutPrintMat4(const L3DMat4& mat);
 
-L3D_API void l3dutPrintFrameStats(double currentTime, double& lastTime, int& fps);
+L3D_API int l3dutPrintFrameStats(double frameTime);
 
 /* Resource loading ***********************************************************/
 

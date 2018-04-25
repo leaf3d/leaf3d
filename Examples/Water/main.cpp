@@ -139,11 +139,12 @@ int main()
     // ---------------------------- RENDERING ------------------------------ //
 
     double lastTime = glfwGetTime();
-    int fps = 0;
 
     while(!glfwWindowShouldClose(window))
     {
-        double time = glfwGetTime();
+        double now = glfwGetTime();
+        double dt = now - lastTime;
+        lastTime = now;
 
         // Poll window events.
         glfwPollEvents();
@@ -152,21 +153,16 @@ int main()
         l3dRenderFrame(camera, renderQueue);
 
         // Apply a rotation to the camera.
-        l3dRotateCamera(camera, (float)sin(time) * 0.002f);
-
-        // Apply movement to lights.
-        L3DVec3 dy1(L3DVec3(1, 0, 1) * (float)sin(time) * 0.08f);
-        l3dTranslateLight(light1, dy1);
-        l3dTranslateMesh(light1Bulb, dy1);
+        l3dRotateCamera(camera, 0.5f * dt);
 
         // Animate water waves.
-        l3dSetShaderProgramUniformF(waterShaderProgram, "u_time", (float)time);
+        l3dSetShaderProgramUniformF(waterShaderProgram, "u_time", (float)now);
 
         // Swap buffers.
         glfwSwapBuffers(window);
 
-        // Measure speed.
-        l3dutPrintFrameStats(glfwGetTime(), lastTime, fps);
+        // Print speed.
+        l3dutPrintFrameStats(dt);
     }
 
     // ---------------------------- TERMINATE ----------------------------- //

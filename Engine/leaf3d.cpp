@@ -1267,6 +1267,20 @@ void l3dTranslateLight(
         light->translate(movement);
 }
 
+void l3dRotateLight(
+    const L3DHandle& target,
+    float radians,
+    const L3DVec3& direction
+)
+{
+    L3D_ASSERT(_renderer != L3D_NULLPTR);
+
+    L3DLight* light = _renderer->getLight(target);
+
+    if (light)
+        light->rotate(radians, direction);
+}
+
 void l3dLightLookAt(
     const L3DHandle& target,
     const L3DVec3& targetPosition

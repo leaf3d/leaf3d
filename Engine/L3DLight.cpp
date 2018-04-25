@@ -55,6 +55,15 @@ void L3DLight::translate(const L3DVec3& movement)
     this->position += movement;
 }
 
+void L3DLight::rotate(
+    float radians,
+    const L3DVec3& direction
+)
+{
+    this->position = glm::rotate(this->position, radians, direction);
+    this->direction = glm::rotate(this->direction, radians, direction);
+}
+
 void L3DLight::lookAt(const L3DVec3& targetPosition)
 {
     this->direction = glm::normalize(this->position - targetPosition);

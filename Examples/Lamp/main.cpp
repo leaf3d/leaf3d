@@ -158,10 +158,13 @@ int main()
     // ---------------------------- RENDERING ------------------------------ //
 
     double lastTime = glfwGetTime();
-    int fps = 0;
 
     while(!glfwWindowShouldClose(window))
     {
+        double now = glfwGetTime();
+        double dt = now - lastTime;
+        lastTime = now;
+
         // Poll window events.
         glfwPollEvents();
 
@@ -169,25 +172,25 @@ int main()
         l3dRenderFrame(camera, renderQueue);
 
         // Apply a rotation to the camera.
-        float sinOfTime = sin(glfwGetTime());
-        l3dRotateCamera(camera, (0.5f + sinOfTime * 0.5f) * 0.01f);
+        l3dRotateCamera(camera, 0.5f * dt);
 
         // Apply movement to lights.
-        L3DVec3 dy2(L3DVec3(0, 1, 1) * sinOfTime * 0.04f);
+        float sinOfTime = sin(now) * dt;
+        L3DVec3 dy2(L3DVec3(0, 1, 1) * sinOfTime * 4.0f);
         l3dTranslateLight(light2, dy2);
         l3dTranslateMesh(light2Bulb, dy2);;
-        L3DVec3 dy3(L3DVec3(1, 0.5f, 0) * sinOfTime * 0.05f);
+        L3DVec3 dy3(L3DVec3(1, 0.5f, 0) * sinOfTime * 6.0f);
         l3dTranslateLight(light3, dy3);
         l3dTranslateMesh(light3Bulb, dy3);
-        L3DVec3 dy4(L3DVec3(-1, 0, 1) * sinOfTime * 0.06f);
+        L3DVec3 dy4(L3DVec3(-1, 0, 0.5f) * sinOfTime * 8.0f);
         l3dTranslateLight(light4, dy4);
         l3dTranslateMesh(light4Bulb, dy4);
 
         // Swap buffers.
         glfwSwapBuffers(window);
 
-        // Measure speed.
-        l3dutPrintFrameStats(glfwGetTime(), lastTime, fps);
+        // Print speed.
+        l3dutPrintFrameStats(dt);
     }
 
     // ---------------------------- TERMINATE ----------------------------- //

@@ -360,6 +360,12 @@ L3D_API void l3dTranslateLight(
     const L3DVec3& movement
 );
 
+L3D_API void l3dRotateLight(
+    const L3DHandle& target,
+    float radians,
+    const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
+);
+
 L3D_API void l3dLightLookAt(
     const L3DHandle& target,
     const L3DVec3& targetPosition

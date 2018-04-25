@@ -147,10 +147,16 @@ int main()
     // ---------------------------- RENDERING ------------------------------ //
 
     double lastTime = glfwGetTime();
-    int fps = 0;
 
     while(!glfwWindowShouldClose(window))
     {
+        double now = glfwGetTime();
+        double dt = now - lastTime;
+        lastTime = now;
+
+        // Measure speed.
+        l3dutPrintFrameStats(dt);
+
         // Poll window events.
         glfwPollEvents();
 
@@ -158,14 +164,13 @@ int main()
         l3dRenderFrame(camera, renderQueue);
 
         // Apply a rotation to the camera.
-        float sinOfTime = sin(glfwGetTime());
-        l3dRotateCamera(camera, (0.5f + sinOfTime * 0.5f) * 0.01f, L3DVec3(0.0f, 1.0f, 0.0f));
+        l3dRotateCamera(camera, 0.5f * dt);
 
         // Swap buffers.
         glfwSwapBuffers(window);
 
-        // Measure speed.
-        l3dutPrintFrameStats(glfwGetTime(), lastTime, fps);
+        // Print speed.
+        l3dutPrintFrameStats(dt);
     }
 
     // ---------------------------- TERMINATE ----------------------------- //

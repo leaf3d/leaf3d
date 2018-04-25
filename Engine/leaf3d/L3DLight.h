@@ -57,6 +57,10 @@ namespace l3d
         void setRenderLayerMask(unsigned int renderLayerMask);
 
         void translate(const L3DVec3& movement);
+        void rotate(
+            float radians,
+            const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
+        );
         void lookAt(const L3DVec3& targetPosition);
 
         static L3DLight* createDirectionalLight(
