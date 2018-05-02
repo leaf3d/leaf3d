@@ -35,6 +35,7 @@ $ git clone git@github.com:leaf3d/leaf3d.git
 # Build project
 $ cd leaf3d
 $ mkdir Build
+$ cd Build
 $ cmake ..
 $ cmake --build .
 ```
