@@ -13,7 +13,7 @@ https://cmake.org/
 ### Ubuntu (16.04 or later)
 
 ```
-$ sudo apt install git build-essential cmake xorg-dev
+$ sudo apt install git build-essential cmake xorg-dev libgl1-mesa-dev
 ```
 
 ### Windows 10
