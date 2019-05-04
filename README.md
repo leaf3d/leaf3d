@@ -16,6 +16,12 @@ https://cmake.org/
 $ sudo apt install git build-essential cmake xorg-dev libgl1-mesa-dev
 ```
 
+### MacOSX
+
+```bash
+$ brew install cmake
+```
+
 ### Windows 10
 
 You need to manually install these tools:

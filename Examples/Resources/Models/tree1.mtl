@@ -1,24 +1,27 @@
-# Blender MTL File: 'frankie-blendswap.blend'
+# Blender MTL File
 # Material Count: 2
 
-newmtl env-mat
+newmtl bark
 Ns 96.078431
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
-Ks 0.500000 0.500000 0.500000
+Ks 0.000000 0.000000 0.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
-illum 0
-map_Kd Textures/Frankie/env_diffuse.png
+illum 1
+map_Kd bark_diffuse.png
+map_Bump bark_norm.png
 
-newmtl frankie-mat
+newmtl leaf_mapple
 Ns 96.078431
 Ka 1.000000 1.000000 1.000000
 Kd 0.640000 0.640000 0.640000
 Ks 0.500000 0.500000 0.500000
 Ke 0.000000 0.000000 0.000000
 Ni 1.000000
-d 1.000000
-illum 0
-map_Kd Textures/Frankie/frankie_diffuse.png
+d 0.000000
+illum 2
+map_Kd leaf_mapple_diffuse.png
+map_Bump -bm -0.034483 leaf_mapple_norm.png
+map_d leaf_mapple_alpha.png

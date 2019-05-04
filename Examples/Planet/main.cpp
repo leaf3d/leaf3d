@@ -69,22 +69,22 @@ int main()
     // ----------------------------- RESOURCES ----------------------------- //
 
     // Load a basic shader program.
-    L3DHandle shaderProgram = l3dutLoadShaderProgram("Shaders/basic.vert", "Shaders/simpletexture.frag");
+    L3DHandle shaderProgram = l3dutLoadShaderProgram("basic.vert", "simpletexture.frag");
 
     // Load a shader program for instancing.
-    L3DHandle instancingShaderProgram = l3dutLoadShaderProgram("Shaders/instancing.vert", "Shaders/simpletexture.frag");
+    L3DHandle instancingShaderProgram = l3dutLoadShaderProgram("instancing.vert", "simpletexture.frag");
 
     // Load a shader program for sky box.
-    L3DHandle skyBoxShaderProgram = l3dutLoadShaderProgram("Shaders/skyBox.vert", "Shaders/skyBox.frag");
+    L3DHandle skyBoxShaderProgram = l3dutLoadShaderProgram("skyBox.vert", "skyBox.frag");
 
     // Load a sky box.
     L3DHandle skyBoxCubeMap = l3dutLoadTextureCube(
-        "Textures/SkyBox3/right.jpg",
-        "Textures/SkyBox3/left.jpg",
-        "Textures/SkyBox3/top.jpg",
-        "Textures/SkyBox3/bottom.jpg",
-        "Textures/SkyBox3/back.jpg",
-        "Textures/SkyBox3/front.jpg"
+        "skybox3_right.jpg",
+        "skybox3_left.jpg",
+        "skybox3_top.jpg",
+        "skybox3_bottom.jpg",
+        "skybox3_back.jpg",
+        "skybox3_front.jpg"
     );
     L3DHandle skyBoxMaterial = l3dLoadMaterial("skyBoxMaterial", skyBoxShaderProgram);
     l3dAddTextureToMaterial(skyBoxMaterial, "cubeMap", skyBoxCubeMap);
@@ -92,7 +92,7 @@ int main()
 
     // Load a planet.
     unsigned int meshCount = 0;
-    L3DHandle* planet = l3dutLoadMeshes("Models/planet.obj", shaderProgram, &meshCount);
+    L3DHandle* planet = l3dutLoadMeshes("planet.obj", shaderProgram, &meshCount);
     l3dTranslateMesh(planet[0], L3DVec3(0.0f, -20.0f, 0.0f));
     l3dScaleMesh(planet[0], L3DVec3(20.0f, 20.0f, 20.0f));
 
@@ -120,7 +120,7 @@ int main()
       asteroidMats[i] = glm::rotate(asteroidMats[i], rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
     }
 
-    L3DHandle* asteroid = l3dutLoadMeshes("Models/rock.obj", instancingShaderProgram, &meshCount);
+    L3DHandle* asteroid = l3dutLoadMeshes("rock.obj", instancingShaderProgram, &meshCount);
 
     // Add instancing to mesh.
     l3dSetMeshInstances(

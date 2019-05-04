@@ -64,15 +64,15 @@ int main()
     // ----------------------------- RESOURCES ----------------------------- //
 
     // Load a shader program for light bulb.
-    L3DHandle basicShaderProgram = l3dutLoadShaderProgram("Shaders/basic.vert", "Shaders/basic.frag");
+    L3DHandle basicShaderProgram = l3dutLoadShaderProgram("basic.vert", "basic.frag");
 
     // Load a shader program with support for lighting (Blinn-Phong).
-    L3DHandle blinnPhongShaderProgram = l3dutLoadShaderProgram("Shaders/basic.vert", "Shaders/blinnphong.frag");
+    L3DHandle blinnPhongShaderProgram = l3dutLoadShaderProgram("basic.vert", "blinnphong.frag");
 
     // Load a floor.
-    L3DHandle floorTexture = l3dutLoadTexture2D("Textures/Floor/floor.png");
-    L3DHandle floorSpecTexture = l3dutLoadTexture2D("Textures/Floor/floor_spec.png");
-    L3DHandle floorNormTexture = l3dutLoadTexture2D("Textures/Floor/floor_norm.png");
+    L3DHandle floorTexture = l3dutLoadTexture2D("floor.png");
+    L3DHandle floorSpecTexture = l3dutLoadTexture2D("floor_spec.png");
+    L3DHandle floorNormTexture = l3dutLoadTexture2D("floor_norm.png");
     L3DHandle floorMaterial = l3dLoadMaterial("floorMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(floorMaterial, "diffuseMap", floorTexture);
     l3dAddTextureToMaterial(floorMaterial, "specularMap", floorSpecTexture);
@@ -83,7 +83,7 @@ int main()
 
     // Load a lamp.
     unsigned int meshCount = 0;
-    L3DHandle* lamp = l3dutLoadMeshes("Models/lamp.obj", blinnPhongShaderProgram, &meshCount);
+    L3DHandle* lamp = l3dutLoadMeshes("lamp.obj", blinnPhongShaderProgram, &meshCount);
     for (int i=0; i<meshCount; ++i)
     {
         l3dTranslateMesh(lamp[i], L3DVec3(-8, 0, 0));
@@ -91,9 +91,9 @@ int main()
     }
 
     // Load a cube.
-    L3DHandle crateTexture = l3dutLoadTexture2D("Textures/Crate/crate.jpg");
-    L3DHandle crateSpecTexture = l3dutLoadTexture2D("Textures/Crate/crate_spec.jpg");
-    L3DHandle crateNormTexture = l3dutLoadTexture2D("Textures/Crate/crate_norm.jpg");
+    L3DHandle crateTexture = l3dutLoadTexture2D("crate.jpg");
+    L3DHandle crateSpecTexture = l3dutLoadTexture2D("crate_spec.jpg");
+    L3DHandle crateNormTexture = l3dutLoadTexture2D("crate_norm.jpg");
     L3DHandle crateMaterial = l3dLoadMaterial("crateMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(crateMaterial, "diffuseMap", crateTexture);
     l3dAddTextureToMaterial(crateMaterial, "specularMap", crateSpecTexture);

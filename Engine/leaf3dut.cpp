@@ -37,19 +37,26 @@
 
 using namespace l3d;
 
-static std::string _rootPath = "";
+#ifdef __APPLE__
+static std::string _defaultRootPath = "";
+#else
+static std::string _defaultRootPath = "Resources/";
+#endif
 
+static std::string _rootPath = _defaultRootPath;
 
 int l3dutInit(const char* rootPath)
 {
-    _rootPath = rootPath;
+    if (rootPath) {
+        _rootPath = rootPath;
+    }
 
     return L3D_TRUE;
 }
 
 int l3dutTerminate()
 {
-    _rootPath = "";
+    _rootPath = _defaultRootPath;
 
     return L3D_TRUE;
 }

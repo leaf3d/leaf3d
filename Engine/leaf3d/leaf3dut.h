@@ -29,7 +29,7 @@ using namespace l3d;
 
 /* Init & terminate ***********************************************************/
 
-L3D_API int l3dutInit(const char* rootPath = "Content/");
+L3D_API int l3dutInit(const char* rootPath = 0);
 
 L3D_API int l3dutTerminate();
 

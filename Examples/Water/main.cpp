@@ -69,10 +69,10 @@ int main()
     // ----------------------------- RESOURCES ----------------------------- //
 
     // Load a shader program for realistic water rendering.
-    L3DHandle waterShaderProgram = l3dutLoadShaderProgram("Shaders/water.vert", "Shaders/water.frag");
+    L3DHandle waterShaderProgram = l3dutLoadShaderProgram("water.vert", "water.frag");
 
     // Load water's textures.
-    L3DHandle normalMap = l3dutLoadTexture2D("Textures/Water/water_norm.png");
+    L3DHandle normalMap = l3dutLoadTexture2D("water_norm.png");
 
     // Load a material.
     L3DHandle waterMaterial = l3dLoadMaterial("waterPlaneMaterial", waterShaderProgram, L3DVec3(0,0,0));
@@ -105,7 +105,7 @@ int main()
     }
 
     // Load a shader program for light bulb.
-    L3DHandle basicShaderProgram = l3dutLoadShaderProgram("Shaders/basic.vert", "Shaders/basic.frag");
+    L3DHandle basicShaderProgram = l3dutLoadShaderProgram("basic.vert", "basic.frag");
 
     // Load a spotlight.
     L3DVec3 light1Pos = L3DVec3(-2.0f, 15.0f, 0);

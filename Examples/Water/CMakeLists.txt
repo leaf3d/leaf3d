@@ -1,9 +1,14 @@
-add_executable(Water WIN32 MACOSX_BUNDLE
+add_executable(Water
     main.cpp
-    ${LEAF3D_EXAMPLES_EDITABLE_CONTENT_FILES}
+    ${LEAF3D_EXAMPLES_RESOURCE_FILES}
 )
-add_dependencies(Water leaf3dExamplesCopyContentFiles)
 
 target_link_libraries(Water
     ${LEAF3D_EXAMPLES_REQUIRED_LIBS}
+)
+
+set_target_properties(Water PROPERTIES
+    WIN32 TRUE
+    MACOSX_BUNDLE TRUE
+    RESOURCE "${LEAF3D_EXAMPLES_RESOURCE_FILES}"
 )

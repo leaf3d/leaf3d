@@ -64,10 +64,10 @@ int main()
     // ----------------------------- RESOURCES ----------------------------- //
 
     // Load a shader program.
-    L3DHandle shaderProgram = l3dutLoadShaderProgram("Shaders/basic.vert", "Shaders/simpletexture.frag");
+    L3DHandle shaderProgram = l3dutLoadShaderProgram("basic.vert", "simpletexture.frag");
 
     // Load a texture.
-    L3DHandle texture = l3dutLoadTexture2D("Textures/logo.png");
+    L3DHandle texture = l3dutLoadTexture2D("logo.png");
 
     // Load a material.
     L3DHandle material = l3dLoadMaterial("logo", shaderProgram);

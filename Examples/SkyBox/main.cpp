@@ -64,31 +64,31 @@ int main()
     // ----------------------------- RESOURCES ----------------------------- //
 
     // Load a shader program for light bulb.
-    L3DHandle basicShaderProgram = l3dutLoadShaderProgram("Shaders/basic.vert", "Shaders/basic.frag");
+    L3DHandle basicShaderProgram = l3dutLoadShaderProgram("basic.vert", "basic.frag");
 
     // Load a shader program with support for lighting (Blinn-Phong).
-    L3DHandle blinnPhongShaderProgram = l3dutLoadShaderProgram("Shaders/basic.vert", "Shaders/blinnphong.frag");
+    L3DHandle blinnPhongShaderProgram = l3dutLoadShaderProgram("basic.vert", "blinnphong.frag");
 
     // Load a shader program for sky box.
-    L3DHandle skyBoxShaderProgram = l3dutLoadShaderProgram("Shaders/skyBox.vert", "Shaders/skyBox.frag");
+    L3DHandle skyBoxShaderProgram = l3dutLoadShaderProgram("skyBox.vert", "skyBox.frag");
 
     // Load a sky box.
     L3DHandle skyBoxCubeMap = l3dutLoadTextureCube(
-        "Textures/SkyBox1/right.jpg",
-        "Textures/SkyBox1/left.jpg",
-        "Textures/SkyBox1/top.jpg",
-        "Textures/SkyBox1/bottom.jpg",
-        "Textures/SkyBox1/back.jpg",
-        "Textures/SkyBox1/front.jpg"
+        "skybox1_right.jpg",
+        "skybox1_left.jpg",
+        "skybox1_top.jpg",
+        "skybox1_bottom.jpg",
+        "skybox1_back.jpg",
+        "skybox1_front.jpg"
     );
     L3DHandle skyBoxMaterial = l3dLoadMaterial("skyBoxMaterial", skyBoxShaderProgram);
     l3dAddTextureToMaterial(skyBoxMaterial, "cubeMap", skyBoxCubeMap);
     L3DHandle skyBox = l3dLoadSkyBox(skyBoxMaterial);
 
     // Load a cube.
-    L3DHandle crateTexture = l3dutLoadTexture2D("Textures/Crate/crate.jpg");
-    L3DHandle crateSpecTexture = l3dutLoadTexture2D("Textures/Crate/crate_spec.jpg");
-    L3DHandle crateNormTexture = l3dutLoadTexture2D("Textures/Crate/crate_norm.jpg");
+    L3DHandle crateTexture = l3dutLoadTexture2D("crate.jpg");
+    L3DHandle crateSpecTexture = l3dutLoadTexture2D("crate_spec.jpg");
+    L3DHandle crateNormTexture = l3dutLoadTexture2D("crate_norm.jpg");
     L3DHandle crateMaterial = l3dLoadMaterial("crateMaterial", blinnPhongShaderProgram);
     l3dAddTextureToMaterial(crateMaterial, "diffuseMap", crateTexture);
     l3dAddTextureToMaterial(crateMaterial, "specularMap", crateSpecTexture);
