@@ -30,7 +30,8 @@
 *.app
 
 # Build files
-Build*
+Build/*
+build/*
 
 # QtCreator, Cmake
 *.user

@@ -1,14 +1,48 @@
-add_executable(Lamp
+set(L3D_EXAMPLE_SOURCES
     main.cpp
-    ${LEAF3D_EXAMPLES_RESOURCE_FILES}
+)
+
+set(L3D_EXAMPLE_RESOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/basic.vert"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/basic.frag"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/blinnphong.frag"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/floor.png"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/floor_spec.png"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/floor_norm.png"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/lamp.obj"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/lamp.mtl"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/lamp.png"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/lamp_spec.png"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/crate.jpg"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/crate_spec.jpg"
+    "${CMAKE_CURRENT_SOURCE_DIR}/../Resources/crate_norm.jpg"
+)
+
+set(L3D_EXAMPLE_RESOURCES_DESTINATION
+    $<TARGET_FILE_DIR:Lamp>/Resources
+)
+
+if (L3D_MACOS)
+    set(L3D_EXAMPLE_SOURCES
+        ${L3D_EXAMPLE_SOURCES}
+        MACOSX_BUNDLE
+    )
+elseif (L3D_WIN)
+    set(L3D_EXAMPLE_SOURCES
+        ${L3D_EXAMPLE_SOURCES}
+        WIN32
+    )
+endif ()
+
+add_executable(Lamp
+    ${L3D_EXAMPLE_SOURCES}
 )
 
 target_link_libraries(Lamp
     ${LEAF3D_EXAMPLES_REQUIRED_LIBS}
 )
 
-set_target_properties(Lamp PROPERTIES
-    WIN32 TRUE
-    MACOSX_BUNDLE TRUE
-    RESOURCE "${LEAF3D_EXAMPLES_RESOURCE_FILES}"
+add_custom_command(TARGET Lamp POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory ${L3D_EXAMPLE_RESOURCES_DESTINATION}
+    COMMAND ${CMAKE_COMMAND} -E copy ${L3D_EXAMPLE_RESOURCES} ${L3D_EXAMPLE_RESOURCES_DESTINATION}
 )
