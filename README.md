@@ -12,7 +12,7 @@ https://cmake.org/
 
 ### Ubuntu (16.04 or later)
 
-```
+```bash
 $ sudo apt install git build-essential cmake xorg-dev libgl1-mesa-dev
 ```
 
@@ -34,7 +34,7 @@ Now open a **Developer Command Prompt for VS 2017** and you are ready to build t
 
 ## Building
 
-```
+```bash
 # Clone repo
 $ git clone git@github.com:leaf3d/leaf3d.git
 
