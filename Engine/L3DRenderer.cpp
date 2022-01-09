@@ -447,45 +447,45 @@ int L3DRenderer::init()
 
 int L3DRenderer::terminate()
 {
-    for (L3DBufferPool::reverse_iterator it = m_buffers.rbegin(); it != m_buffers.rend(); ++it)
+    for (L3DCameraPool::reverse_iterator it = m_cameras.rbegin(); it != m_cameras.rend(); ++it)
         delete it->second;
-    m_buffers.clear();
+    m_cameras.clear();
 
-    for (L3DTexturePool::reverse_iterator it = m_textures.rbegin(); it != m_textures.rend(); ++it)
+    for (L3DRenderQueuePool::reverse_iterator it = m_renderQueues.rbegin(); it != m_renderQueues.rend(); ++it)
         delete it->second;
-    m_textures.clear();
-
-    for (L3DShaderPool::reverse_iterator it = m_shaders.rbegin(); it != m_shaders.rend(); ++it)
-        delete it->second;
-    m_shaders.clear();
-
-    for (L3DShaderProgramPool::reverse_iterator it = m_shaderPrograms.rbegin(); it != m_shaderPrograms.rend(); ++it)
-        delete it->second;
-    m_shaderPrograms.clear();
+    m_renderQueues.clear();
 
     for (L3DFrameBufferPool::reverse_iterator it = m_frameBuffers.rbegin(); it != m_frameBuffers.rend(); ++it)
         delete it->second;
     m_frameBuffers.clear();
 
+    for (L3DMeshPool::reverse_iterator it = m_meshes.rbegin(); it != m_meshes.rend(); ++it)
+        delete it->second;
+    m_meshes.clear();
+
     for (L3DMaterialPool::reverse_iterator it = m_materials.rbegin(); it != m_materials.rend(); ++it)
         delete it->second;
     m_materials.clear();
 
-    for (L3DCameraPool::reverse_iterator it = m_cameras.rbegin(); it != m_cameras.rend(); ++it)
+    for (L3DShaderProgramPool::reverse_iterator it = m_shaderPrograms.rbegin(); it != m_shaderPrograms.rend(); ++it)
         delete it->second;
-    m_cameras.clear();
+    m_shaderPrograms.clear();
+
+    for (L3DShaderPool::reverse_iterator it = m_shaders.rbegin(); it != m_shaders.rend(); ++it)
+        delete it->second;
+    m_shaders.clear();
+
+    for (L3DTexturePool::reverse_iterator it = m_textures.rbegin(); it != m_textures.rend(); ++it)
+        delete it->second;
+    m_textures.clear();
 
     for (L3DLightPool::reverse_iterator it = m_lights.rbegin(); it != m_lights.rend(); ++it)
         delete it->second;
     m_lights.clear();
 
-    for (L3DMeshPool::reverse_iterator it = m_meshes.rbegin(); it != m_meshes.rend(); ++it)
+    for (L3DBufferPool::reverse_iterator it = m_buffers.rbegin(); it != m_buffers.rend(); ++it)
         delete it->second;
-    m_meshes.clear();
-
-    for (L3DRenderQueuePool::reverse_iterator it = m_renderQueues.rbegin(); it != m_renderQueues.rend(); ++it)
-        delete it->second;
-    m_renderQueues.clear();
+    m_buffers.clear();
 
     return L3D_TRUE;
 }
@@ -627,6 +627,8 @@ void L3DRenderer::addBuffer(L3DBuffer* buffer)
         buffer->setId((unsigned short int)id);
 
         m_buffers[id] = buffer;
+
+        printf("Add buffer: %d\n", id);
     }
 }
 
@@ -715,6 +717,8 @@ void L3DRenderer::addTexture(L3DTexture* texture)
         texture->setId((unsigned short int)id);
 
         m_textures[id] = texture;
+
+        printf("Add texture: %d\n", id);
     }
 }
 
@@ -742,6 +746,8 @@ void L3DRenderer::addShader(L3DShader* shader)
         shader->setId((unsigned short int)id);
 
         m_shaders[id] = shader;
+
+        printf("Add shader: %d\n", id);
     }
 }
 
@@ -774,6 +780,8 @@ void L3DRenderer::addShaderProgram(L3DShaderProgram* shaderProgram)
         shaderProgram->setId((unsigned short int)id);
 
         m_shaderPrograms[id] = shaderProgram;
+
+        printf("Add shader program: %d\n", id);
     }
 }
 
@@ -831,6 +839,8 @@ void L3DRenderer::addFrameBuffer(L3DFrameBuffer* frameBuffer)
         frameBuffer->setId((unsigned short int)id);
 
         m_frameBuffers[id] = frameBuffer;
+
+        printf("Add frame buffer: %d\n", id);
     }
 }
 
@@ -845,6 +855,8 @@ void L3DRenderer::addMaterial(L3DMaterial* material)
         material->setId((unsigned short int)id);
 
         m_materials[id] = material;
+
+        printf("Add material: %d\n", id);
     }
 }
 
@@ -859,6 +871,8 @@ void L3DRenderer::addCamera(L3DCamera* camera)
         camera->setId((unsigned short int)id);
 
         m_cameras[id] = camera;
+
+        printf("Add camera: %d\n", id);
     }
 }
 
@@ -873,6 +887,8 @@ void L3DRenderer::addLight(L3DLight* light)
         light->setId((unsigned short int)id);
 
         m_lights[id] = light;
+
+        printf("Add light: %d\n", id);
     }
 }
 
@@ -1051,6 +1067,8 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
         mesh->setId((unsigned short int)id);
 
         m_meshes[id] = mesh;
+
+        printf("Add mesh: %d\n", id);
     }
 }
 
@@ -1065,6 +1083,8 @@ void L3DRenderer::addRenderQueue(L3DRenderQueue* renderQueue)
         renderQueue->setId((unsigned short int)id);
 
         m_renderQueues[id] = renderQueue;
+
+        printf("Add render queue: %d\n", id);
     }
 }
 
@@ -1118,6 +1138,8 @@ void L3DRenderer::removeBuffer(L3DBuffer* buffer)
         m_buffers[id] = L3D_NULLPTR;
         glDeleteBuffers(1, &id);
         buffer->setId(0);
+
+        printf("Remove buffer: %d\n", id);
     }
 }
 
@@ -1129,6 +1151,8 @@ void L3DRenderer::removeTexture(L3DTexture* texture)
         m_textures[id] = L3D_NULLPTR;
         glDeleteTextures(1, &id);
         texture->setId(0);
+
+        printf("Remove texture: %d\n", id);
     }
 }
 
@@ -1140,6 +1164,8 @@ void L3DRenderer::removeShader(L3DShader* shader)
         m_shaders[id] = L3D_NULLPTR;
         glDeleteShader(id);
         shader->setId(0);
+
+        printf("Remove shader: %d\n", id);
     }
 }
 
@@ -1151,6 +1177,8 @@ void L3DRenderer::removeShaderProgram(L3DShaderProgram* shaderProgram)
         m_shaderPrograms[id] = L3D_NULLPTR;
         glDeleteProgram(id);
         shaderProgram->setId(0);
+
+        printf("Remove shader program: %d\n", id);
     }
 }
 
@@ -1163,6 +1191,8 @@ void L3DRenderer::removeFrameBuffer(L3DFrameBuffer* frameBuffer)
         glDeleteFramebuffers(1, &id);
         // TODO: clean frame buffer attachments.
         frameBuffer->setId(0);
+
+        printf("Remove frame buffer: %d\n", id);
     }
 }
 
@@ -1174,6 +1204,8 @@ void L3DRenderer::removeMaterial(L3DMaterial* material)
         m_materials[id] = L3D_NULLPTR;
         // TODO: clean material resources.
         material->setId(0);
+
+        printf("Remove material: %d\n", id);
     }
 }
 
@@ -1185,6 +1217,8 @@ void L3DRenderer::removeCamera(L3DCamera* camera)
         m_cameras[id] = L3D_NULLPTR;
         // TODO: clean camera resources.
         camera->setId(0);
+
+        printf("Remove camera: %d\n", id);
     }
 }
 
@@ -1196,6 +1230,8 @@ void L3DRenderer::removeLight(L3DLight* light)
         m_lights[id] = L3D_NULLPTR;
         // TODO: clean light resources.
         light->setId(0);
+
+        printf("Remove light: %d\n", id);
     }
 }
 
@@ -1207,6 +1243,8 @@ void L3DRenderer::removeMesh(L3DMesh* mesh)
         m_meshes[id] = L3D_NULLPTR;
         glDeleteVertexArrays(1, &id);
         mesh->setId(0);
+
+        printf("Remove mesh: %d\n", id);
     }
 }
 
@@ -1218,6 +1256,8 @@ void L3DRenderer::removeRenderQueue(L3DRenderQueue* renderQueue)
         m_renderQueues[id] = L3D_NULLPTR;
         // TODO: clean render queue resources.
         renderQueue->setId(0);
+
+        printf("Remove render queue: %d\n", id);
     }
 }
 
