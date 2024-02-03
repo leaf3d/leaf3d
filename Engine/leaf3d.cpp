@@ -35,34 +35,30 @@
 
 using namespace l3d;
 
-static L3DRenderer* _renderer = L3D_NULLPTR;
+static L3DRenderer *_renderer = L3D_NULLPTR;
 
-static const char* _defaultScreenVertexShader = GLSL(
+static const char *_defaultScreenVertexShader = GLSL(
     in vec2 i_position;
     in vec2 i_texcoord0;
 
-    out vec2    o_texcoord0;
+    out vec2 o_texcoord0;
 
-    void main()
-    {
+    void main() {
         gl_Position = vec4(i_position.x, i_position.y, 0.0f, 1.0f);
         o_texcoord0 = i_texcoord0;
-    }
-);
+    });
 
-static const char* _defaultScreenFragmentShader = GLSL(
+static const char *_defaultScreenFragmentShader = GLSL(
     in vec2 o_texcoord0;
     out vec4 fragColor;
 
     uniform sampler2D u_diffuseMap;
 
-    void main()
-    {
+    void main() {
         fragColor = vec4(texture(u_diffuseMap, o_texcoord0).rgb, 1);
-    }
-);
+    });
 
-static const std::string _getUniformName(const char* name, int index)
+static const std::string _getUniformName(const char *name, int index)
 {
     std::string _name(name);
 
@@ -89,108 +85,95 @@ int l3dInit()
 
 int l3dTerminate()
 {
-    if (_renderer)
-    {
-        delete _renderer;
-        _renderer = L3D_NULLPTR;
-    }
+    delete _renderer;
+
+    _renderer = L3D_NULLPTR;
 
     return L3D_TRUE;
 }
 
 void l3dRenderFrame(
-    const L3DHandle& camera,
-    const L3DHandle& renderQueue
-)
+    const L3DHandle &camera,
+    const L3DHandle &renderQueue)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
     _renderer->renderFrame(
         _renderer->getCamera(camera),
-        _renderer->getRenderQueue(renderQueue)
-    );
+        _renderer->getRenderQueue(renderQueue));
 }
 
 L3DHandle l3dLoadForwardRenderQueue(
     unsigned int width,
     unsigned int height,
-    const L3DVec4& clearColor,
-    const L3DHandle& screenFragmentShader
-)
+    const L3DVec4 &clearColor,
+    const L3DHandle &screenFragmentShader)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DRenderQueue* renderQueue = new L3DRenderQueue(
+    L3DRenderQueue *renderQueue = new L3DRenderQueue(
         _renderer,
-        "ForwardRendering"
-    );
+        "ForwardRendering");
 
     // A. Init framebuffer.
-    L3DTexture* frameBufferColorTexture = new L3DTexture(_renderer, L3D_TEXTURE_2D, L3D_RGB, 0, width, height, 0);
+    L3DTexture *frameBufferColorTexture = new L3DTexture(_renderer, L3D_TEXTURE_2D, L3D_RGB, 0, width, height, 0);
 
-    L3DFrameBuffer* backendBuffer = new L3DFrameBuffer(
+    L3DFrameBuffer *backendBuffer = new L3DFrameBuffer(
         _renderer,
         new L3DTexture(_renderer, L3D_TEXTURE_2D, L3D_DEPTH24_STENCIL8, 0, width, height, 0, false, L3D_UNSIGNED_INT_24_8),
-        frameBufferColorTexture
-    );
+        frameBufferColorTexture);
 
     // B. Init fullscreen quad.
-    L3DShader* fsQuadVertexShader = new L3DShader(
+    L3DShader *fsQuadVertexShader = new L3DShader(
         _renderer,
         L3D_SHADER_VERTEX,
-        _defaultScreenVertexShader
-    );
+        _defaultScreenVertexShader);
 
-    L3DShader* fsQuadFragmentShader = _renderer->getShader(screenFragmentShader);
+    L3DShader *fsQuadFragmentShader = _renderer->getShader(screenFragmentShader);
 
     if (!fsQuadFragmentShader)
     {
         fsQuadFragmentShader = new L3DShader(
             _renderer,
             L3D_SHADER_FRAGMENT,
-            _defaultScreenFragmentShader
-        );
+            _defaultScreenFragmentShader);
     }
 
-    L3DShaderProgram* fsQuadShaderProgram = new L3DShaderProgram(
+    L3DShaderProgram *fsQuadShaderProgram = new L3DShaderProgram(
         _renderer,
         fsQuadVertexShader,
-        fsQuadFragmentShader
-    );
+        fsQuadFragmentShader);
 
-    L3DMaterial* fsQuadMaterial = new L3DMaterial(
+    L3DMaterial *fsQuadMaterial = new L3DMaterial(
         _renderer,
         "Fullscreen Quad",
         fsQuadShaderProgram,
         L3DColorRegistry(),
         L3DParameterRegistry(),
-        L3DTextureRegistry()
-    );
+        L3DTextureRegistry());
 
     // Assign diffuse texture of framebuffer
     // to diffuse texture of fullscreen quad material.
     fsQuadMaterial->textures["diffuseMap"] = frameBufferColorTexture;
 
     GLfloat vertices[] = {
-    //   Position      Texcoords
-        -1.0f,  1.0f,  0.0f, 1.0f,  // Top-left
-         1.0f,  1.0f,  1.0f, 1.0f,  // Top-right
-         1.0f, -1.0f,  1.0f, 0.0f,  // Bottom-right
-        -1.0f, -1.0f,  0.0f, 0.0f   // Bottom-left
+        //   Position      Texcoords
+        -1.0f, 1.0f, 0.0f, 1.0f, // Top-left
+        1.0f, 1.0f, 1.0f, 1.0f,  // Top-right
+        1.0f, -1.0f, 1.0f, 0.0f, // Bottom-right
+        -1.0f, -1.0f, 0.0f, 0.0f // Bottom-left
     };
 
     GLuint indices[] = {
         0, 1, 2,
-        2, 3, 0
-    };
+        2, 3, 0};
 
-    L3DMesh* fsQuad = new L3DMesh(
+    L3DMesh *fsQuad = new L3DMesh(
         _renderer,
         vertices, 4,
         indices, 6,
         fsQuadMaterial,
-        L3D_VERTEX_POS2_UV2
-    );
+        L3D_VERTEX_POS2_UV2);
 
     // Draw fullscreen quad on last layer.
     fsQuad->setRenderLayer(L3D_POSTPROCESSING_RENDERLAYER);
@@ -230,24 +213,23 @@ L3DHandle l3dLoadForwardRenderQueue(
 }
 
 L3DHandle l3dLoadTexture(
-    const L3DTextureType& type,
-    const L3DImageFormat& format,
-    unsigned char* data,
+    const L3DTextureType &type,
+    const L3DImageFormat &format,
+    unsigned char *data,
     unsigned int width,
     unsigned int height,
     unsigned int depth,
     bool mipmap,
-    const L3DPixelFormat& pixelFormat,
-    const L3DImageMinFilter& minFilter,
-    const L3DImageMagFilter& magFilter,
-    const L3DImageWrapMethod& wrapS,
-    const L3DImageWrapMethod& wrapT,
-    const L3DImageWrapMethod& wrapR
-)
+    const L3DPixelFormat &pixelFormat,
+    const L3DImageMinFilter &minFilter,
+    const L3DImageMagFilter &magFilter,
+    const L3DImageWrapMethod &wrapS,
+    const L3DImageWrapMethod &wrapT,
+    const L3DImageWrapMethod &wrapR)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DTexture* texture = new L3DTexture(
+    L3DTexture *texture = new L3DTexture(
         _renderer,
         type,
         format,
@@ -261,8 +243,7 @@ L3DHandle l3dLoadTexture(
         magFilter,
         wrapS,
         wrapT,
-        wrapR
-    );
+        wrapR);
 
     if (texture)
         return texture->handle();
@@ -271,17 +252,15 @@ L3DHandle l3dLoadTexture(
 }
 
 L3DHandle l3dLoadShader(
-    const L3DShaderType& type,
-    const char* code
-)
+    const L3DShaderType &type,
+    const char *code)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShader* shader = new L3DShader(
+    L3DShader *shader = new L3DShader(
         _renderer,
         type,
-        code
-    );
+        code);
 
     if (shader)
         return shader->handle();
@@ -290,19 +269,17 @@ L3DHandle l3dLoadShader(
 }
 
 L3DHandle l3dLoadShaderProgram(
-    const L3DHandle& vertexShader,
-    const L3DHandle& fragmentShader,
-    const L3DHandle& geometryShader
-)
+    const L3DHandle &vertexShader,
+    const L3DHandle &fragmentShader,
+    const L3DHandle &geometryShader)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram* shaderProgram = new L3DShaderProgram(
+    L3DShaderProgram *shaderProgram = new L3DShaderProgram(
         _renderer,
         _renderer->getShader(vertexShader),
         _renderer->getShader(fragmentShader),
-        _renderer->getShader(geometryShader)
-    );
+        _renderer->getShader(geometryShader));
 
     if (shaderProgram)
         return shaderProgram->handle();
@@ -311,150 +288,140 @@ L3DHandle l3dLoadShaderProgram(
 }
 
 void l3dSetShaderProgramUniformF(
-    const L3DHandle& target,
-    const char* name,
+    const L3DHandle &target,
+    const char *name,
     float value,
-    int index
-)
+    int index)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformI(
-    const L3DHandle& target,
-    const char* name,
+    const L3DHandle &target,
+    const char *name,
     int value,
-    int index
-)
+    int index)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformUI(
-    const L3DHandle& target,
-    const char* name,
+    const L3DHandle &target,
+    const char *name,
     unsigned int value,
-    int index
-)
+    int index)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformB(
-    const L3DHandle& target,
-    const char* name,
+    const L3DHandle &target,
+    const char *name,
     bool value,
-    int index
-)
+    int index)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformVec2(
-    const L3DHandle& target,
-    const char* name,
-    const L3DVec2& value,
-    int index
-)
+    const L3DHandle &target,
+    const char *name,
+    const L3DVec2 &value,
+    int index)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformVec3(
-    const L3DHandle& target,
-    const char* name,
-    const L3DVec3& value,
-    int index
-)
+    const L3DHandle &target,
+    const char *name,
+    const L3DVec3 &value,
+    int index)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformVec4(
-    const L3DHandle& target,
-    const char* name,
-    const L3DVec4& value,
-    int index
-)
+    const L3DHandle &target,
+    const char *name,
+    const L3DVec4 &value,
+    int index)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformMat3(
-    const L3DHandle& target,
-    const char* name,
-    const L3DMat3& value,
-    int index
-)
+    const L3DHandle &target,
+    const char *name,
+    const L3DMat3 &value,
+    int index)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformMat4(
-    const L3DHandle& target,
-    const char* name,
-    const L3DMat4& value,
-    int index
-)
+    const L3DHandle &target,
+    const char *name,
+    const L3DMat4 &value,
+    int index)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram* shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
 
 L3DHandle l3dLoadFrameBuffer(
-    const L3DHandle& textureDepthStencilAttachment,
-    const L3DHandle& textureColorAttachment0,
-    const L3DHandle& textureColorAttachment1,
-    const L3DHandle& textureColorAttachment2,
-    const L3DHandle& textureColorAttachment3,
-    const L3DHandle& textureColorAttachment4,
-    const L3DHandle& textureColorAttachment5,
-    const L3DHandle& textureColorAttachment6,
-    const L3DHandle& textureColorAttachment7,
-    const L3DHandle& textureColorAttachment8,
-    const L3DHandle& textureColorAttachment9,
-    const L3DHandle& textureColorAttachment10,
-    const L3DHandle& textureColorAttachment11,
-    const L3DHandle& textureColorAttachment12,
-    const L3DHandle& textureColorAttachment13,
-    const L3DHandle& textureColorAttachment14,
-    const L3DHandle& textureColorAttachment15
-)
+    const L3DHandle &textureDepthStencilAttachment,
+    const L3DHandle &textureColorAttachment0,
+    const L3DHandle &textureColorAttachment1,
+    const L3DHandle &textureColorAttachment2,
+    const L3DHandle &textureColorAttachment3,
+    const L3DHandle &textureColorAttachment4,
+    const L3DHandle &textureColorAttachment5,
+    const L3DHandle &textureColorAttachment6,
+    const L3DHandle &textureColorAttachment7,
+    const L3DHandle &textureColorAttachment8,
+    const L3DHandle &textureColorAttachment9,
+    const L3DHandle &textureColorAttachment10,
+    const L3DHandle &textureColorAttachment11,
+    const L3DHandle &textureColorAttachment12,
+    const L3DHandle &textureColorAttachment13,
+    const L3DHandle &textureColorAttachment14,
+    const L3DHandle &textureColorAttachment15)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
@@ -545,10 +512,9 @@ L3DHandle l3dLoadFrameBuffer(
         textures[L3D_COLOR_ATTACHMENT15] = _renderer->getTexture(textureColorAttachment15);
     }
 
-    L3DFrameBuffer* frameBuffer = new L3DFrameBuffer(
+    L3DFrameBuffer *frameBuffer = new L3DFrameBuffer(
         _renderer,
-        textures
-    );
+        textures);
 
     if (frameBuffer)
         return frameBuffer->handle();
@@ -557,25 +523,23 @@ L3DHandle l3dLoadFrameBuffer(
 }
 
 L3DHandle l3dLoadMaterial(
-    const char* name,
-    const L3DHandle& shaderProgram,
-    const L3DVec3& diffuse,
-    const L3DVec3& ambient,
-    const L3DVec3& specular,
-    float shininess
-)
+    const char *name,
+    const L3DHandle &shaderProgram,
+    const L3DVec3 &diffuse,
+    const L3DVec3 &ambient,
+    const L3DVec3 &specular,
+    float shininess)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMaterial* material = L3DMaterial::createBlinnPhongMaterial(
+    L3DMaterial *material = L3DMaterial::createBlinnPhongMaterial(
         _renderer,
         name,
         _renderer->getShaderProgram(shaderProgram),
         diffuse,
         ambient,
         specular,
-        shininess
-    );
+        shininess);
 
     if (material)
         return material->handle();
@@ -584,14 +548,13 @@ L3DHandle l3dLoadMaterial(
 }
 
 void l3dAddTextureToMaterial(
-    const L3DHandle& target,
-    const char* name,
-    const L3DHandle& texture
-)
+    const L3DHandle &target,
+    const char *name,
+    const L3DHandle &texture)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMaterial* material = _renderer->getMaterial(target);
+    L3DMaterial *material = _renderer->getMaterial(target);
     if (material)
         material->textures[name] = _renderer->getTexture(texture);
 
@@ -599,19 +562,17 @@ void l3dAddTextureToMaterial(
 }
 
 L3DHandle l3dLoadCamera(
-    const char* name,
-    const L3DMat4& view,
-    const L3DMat4& projection
-)
+    const char *name,
+    const L3DMat4 &view,
+    const L3DMat4 &projection)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DCamera* camera = new L3DCamera(
+    L3DCamera *camera = new L3DCamera(
         _renderer,
         name,
         view,
-        projection
-    );
+        projection);
 
     if (camera)
         return camera->handle();
@@ -620,12 +581,11 @@ L3DHandle l3dLoadCamera(
 }
 
 L3DMat4 l3dGetCameraView(
-    const L3DHandle& target
-)
+    const L3DHandle &target)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DCamera* camera = _renderer->getCamera(target);
+    L3DCamera *camera = _renderer->getCamera(target);
 
     if (camera)
         return camera->view;
@@ -634,25 +594,23 @@ L3DMat4 l3dGetCameraView(
 }
 
 void l3dSetCameraView(
-    const L3DHandle& target,
-    const L3DMat4& view
-)
+    const L3DHandle &target,
+    const L3DMat4 &view)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DCamera* camera = _renderer->getCamera(target);
+    L3DCamera *camera = _renderer->getCamera(target);
 
     if (camera)
         camera->view = view;
 }
 
 L3DMat4 l3dGetCameraProj(
-    const L3DHandle& target
-)
+    const L3DHandle &target)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DCamera* camera = _renderer->getCamera(target);
+    L3DCamera *camera = _renderer->getCamera(target);
 
     if (camera)
         return camera->proj;
@@ -661,61 +619,57 @@ L3DMat4 l3dGetCameraProj(
 }
 
 void l3dSetCameraProj(
-    const L3DHandle& target,
-    const L3DMat4& proj
-)
+    const L3DHandle &target,
+    const L3DMat4 &proj)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DCamera* camera = _renderer->getCamera(target);
+    L3DCamera *camera = _renderer->getCamera(target);
 
     if (camera)
         camera->proj = proj;
 }
 
 void l3dTranslateCamera(
-    const L3DHandle& target,
-    const L3DVec3& movement
-)
+    const L3DHandle &target,
+    const L3DVec3 &movement)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DCamera* camera = _renderer->getCamera(target);
+    L3DCamera *camera = _renderer->getCamera(target);
 
     if (camera)
         camera->translate(movement);
 }
 
 void l3dRotateCamera(
-    const L3DHandle& target,
+    const L3DHandle &target,
     float radians,
-    const L3DVec3& direction
-)
+    const L3DVec3 &direction)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DCamera* camera = _renderer->getCamera(target);
+    L3DCamera *camera = _renderer->getCamera(target);
 
     if (camera)
         camera->rotate(radians, direction);
 }
 
 L3DHandle l3dLoadMesh(
-    float* vertices,
+    float *vertices,
     unsigned int vertexCount,
-    unsigned int* indices,
+    unsigned int *indices,
     unsigned int indexCount,
-    const L3DHandle& material,
-    const L3DVertexFormat& vertexFormat,
-    const L3DMat4& transMatrix,
-    const L3DDrawType& drawType,
-    const L3DDrawPrimitive& drawPrimitive,
-    unsigned int renderLayer
-)
+    const L3DHandle &material,
+    const L3DVertexFormat &vertexFormat,
+    const L3DMat4 &transMatrix,
+    const L3DDrawType &drawType,
+    const L3DDrawPrimitive &drawPrimitive,
+    unsigned int renderLayer)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMesh* mesh = new L3DMesh(
+    L3DMesh *mesh = new L3DMesh(
         _renderer,
         vertices,
         vertexCount,
@@ -726,8 +680,7 @@ L3DHandle l3dLoadMesh(
         transMatrix,
         drawType,
         drawPrimitive,
-        renderLayer
-    );
+        renderLayer);
 
     if (mesh)
         return mesh->handle();
@@ -736,23 +689,21 @@ L3DHandle l3dLoadMesh(
 }
 
 L3DHandle l3dLoadQuad(
-    const L3DHandle& material,
-    const L3DVec2& texMulFactor,
-    unsigned int renderLayer
-)
+    const L3DHandle &material,
+    const L3DVec2 &texMulFactor,
+    unsigned int renderLayer)
 {
     GLfloat vertices[] = {
-    //   Position             Normal               Tangent              Texcoords
-        -0.5f,  0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f          , 0.0f,           // Top-left
-         0.5f,  0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,           // Top-right
-         0.5f, -0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y, // Bottom-right
-        -0.5f, -0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f          , texMulFactor.y  // Bottom-left
+        //   Position             Normal               Tangent              Texcoords
+        -0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,                     // Top-left
+        0.5f, 0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, texMulFactor.x, 0.0f,            // Top-right
+        0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, texMulFactor.x, texMulFactor.y, // Bottom-right
+        -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, texMulFactor.y           // Bottom-left
     };
 
     GLuint indices[] = {
         0, 1, 2,
-        2, 3, 0
-    };
+        2, 3, 0};
 
     return l3dLoadMesh(
         vertices, 4,
@@ -760,67 +711,89 @@ L3DHandle l3dLoadQuad(
         material,
         L3D_VERTEX_POS3_NOR3_TAN3_UV2,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
-        renderLayer
-    );
+        renderLayer);
 }
 
 L3DHandle l3dLoadCube(
-    const L3DHandle& material,
-    const L3DVec2& texMulFactor,
-    unsigned int renderLayer
-)
+    const L3DHandle &material,
+    const L3DVec2 &texMulFactor,
+    unsigned int renderLayer)
 {
     GLfloat vertices[] = {
-    //   Position             Normal               Tangent              Texcoords
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,                      // Front Top-left
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,            // Front Top-right
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Front Bottom-right
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f,  1.0f,  1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y,            // Front Bottom-left
+        //   Position             Normal               Tangent              Texcoords
+        -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,                     // Front Top-left
+        0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, texMulFactor.x, 0.0f,            // Front Top-right
+        0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, texMulFactor.x, texMulFactor.y, // Front Bottom-right
+        -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, texMulFactor.y,          // Front Bottom-left
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,            // Back Top-left
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,                      // Back Top-right
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y,            // Back Bottom-right
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f, -1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Back Bottom-left
+        -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, -1.0f, 0.0f, 0.0f, texMulFactor.x, 0.0f,            // Back Top-left
+        0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,                       // Back Top-right
+        0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, texMulFactor.y,            // Back Bottom-right
+        -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, -1.0f, 0.0f, 0.0f, texMulFactor.x, texMulFactor.y, // Back Bottom-left
 
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f, 0.0f,                      // Left Top-left
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  texMulFactor.x, 0.0f,            // Left Top-right
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  texMulFactor.x, texMulFactor.y,  // Left Bottom-left
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f, texMulFactor.y,            // Left Bottom-right
+        -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,                     // Left Top-left
+        -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, texMulFactor.x, 0.0f,            // Left Top-right
+        -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, texMulFactor.x, texMulFactor.y, // Left Bottom-left
+        -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, texMulFactor.y,          // Left Bottom-right
 
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,                      // Right Top-left
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f, -1.0f,  texMulFactor.x, 0.0f,            // Right Top-right
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f, -1.0f,  texMulFactor.x, texMulFactor.y,  // Right Bottom-left
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f, -1.0f,  0.0f, texMulFactor.y,            // Right Bottom-right
+        0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,                       // Right Top-left
+        0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, texMulFactor.x, 0.0f,            // Right Top-right
+        0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, texMulFactor.x, texMulFactor.y, // Right Bottom-left
+        0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, -1.0f, 0.0f, texMulFactor.y,            // Right Bottom-right
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,                      // Top Top-left
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,            // Top Top-right
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Top Bottom-left
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y,            // Top Bottom-right
+        -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,                   // Top Top-left
+        0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, texMulFactor.x, 0.0f,          // Top Top-right
+        0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, texMulFactor.x, texMulFactor.y, // Top Bottom-left
+        -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, texMulFactor.y,          // Top Bottom-right
 
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,                      // Bottom Top-left
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, 0.0f,            // Bottom Top-right
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  texMulFactor.x, texMulFactor.y,  // Bottom Bottom-left
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f, texMulFactor.y,            // Bottom Bottom-right
+        -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,                     // Bottom Top-left
+        0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, texMulFactor.x, 0.0f,            // Bottom Top-right
+        0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, texMulFactor.x, texMulFactor.y, // Bottom Bottom-left
+        -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, texMulFactor.y,          // Bottom Bottom-right
     };
 
     GLuint indices[] = {
-        0, 1, 2,
-        2, 3, 0,
+        0,
+        1,
+        2,
+        2,
+        3,
+        0,
 
-        4, 5, 6,
-        6, 7, 4,
+        4,
+        5,
+        6,
+        6,
+        7,
+        4,
 
-        8, 9, 10,
-        10, 11, 8,
+        8,
+        9,
+        10,
+        10,
+        11,
+        8,
 
-        12, 13, 14,
-        14, 15, 12,
+        12,
+        13,
+        14,
+        14,
+        15,
+        12,
 
-        16, 17, 18,
-        18, 19, 16,
+        16,
+        17,
+        18,
+        18,
+        19,
+        16,
 
-        20, 21, 22,
-        22, 23, 20,
+        20,
+        21,
+        22,
+        22,
+        23,
+        20,
     };
 
     return l3dLoadMesh(
@@ -829,67 +802,89 @@ L3DHandle l3dLoadCube(
         material,
         L3D_VERTEX_POS3_NOR3_TAN3_UV2,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
-        renderLayer
-    );
+        renderLayer);
 }
 
 L3DHandle l3dLoadSkyBox(
-    const L3DHandle& material,
-    unsigned int renderLayer
-)
+    const L3DHandle &material,
+    unsigned int renderLayer)
 {
     GLfloat vertices[] = {
-    //   Position
-         1.0f,  1.0f,  1.0f,    // Right Top-left
-         1.0f,  1.0f, -1.0f,    // Right Top-right
-         1.0f, -1.0f, -1.0f,    // Right Bottom-left
-         1.0f, -1.0f,  1.0f,    // Right Bottom-right
+        //   Position
+        1.0f, 1.0f, 1.0f,   // Right Top-left
+        1.0f, 1.0f, -1.0f,  // Right Top-right
+        1.0f, -1.0f, -1.0f, // Right Bottom-left
+        1.0f, -1.0f, 1.0f,  // Right Bottom-right
 
-        -1.0f,  1.0f, -1.0f,    // Left Top-left
-        -1.0f,  1.0f,  1.0f,    // Left Top-right
-        -1.0f, -1.0f,  1.0f,    // Left Bottom-left
-        -1.0f, -1.0f, -1.0f,    // Left Bottom-right
+        -1.0f, 1.0f, -1.0f,  // Left Top-left
+        -1.0f, 1.0f, 1.0f,   // Left Top-right
+        -1.0f, -1.0f, 1.0f,  // Left Bottom-left
+        -1.0f, -1.0f, -1.0f, // Left Bottom-right
 
-        -1.0f,  1.0f, -1.0f,    // Top Top-left
-         1.0f,  1.0f, -1.0f,    // Top Top-right
-         1.0f,  1.0f,  1.0f,    // Top Bottom-left
-        -1.0f,  1.0f,  1.0f,    // Top Bottom-right
+        -1.0f, 1.0f, -1.0f, // Top Top-left
+        1.0f, 1.0f, -1.0f,  // Top Top-right
+        1.0f, 1.0f, 1.0f,   // Top Bottom-left
+        -1.0f, 1.0f, 1.0f,  // Top Bottom-right
 
-        -1.0f, -1.0f,  1.0f,    // Bottom Top-left
-         1.0f, -1.0f,  1.0f,    // Bottom Top-right
-         1.0f, -1.0f, -1.0f,    // Bottom Bottom-left
-        -1.0f, -1.0f, -1.0f,    // Bottom Bottom-right
+        -1.0f, -1.0f, 1.0f,  // Bottom Top-left
+        1.0f, -1.0f, 1.0f,   // Bottom Top-right
+        1.0f, -1.0f, -1.0f,  // Bottom Bottom-left
+        -1.0f, -1.0f, -1.0f, // Bottom Bottom-right
 
-        -1.0f,  1.0f, -1.0f,    // Back Top-left
-         1.0f,  1.0f, -1.0f,    // Back Top-right
-         1.0f, -1.0f, -1.0f,    // Back Bottom-right
-        -1.0f, -1.0f, -1.0f,    // Back Bottom-left
+        -1.0f, 1.0f, -1.0f,  // Back Top-left
+        1.0f, 1.0f, -1.0f,   // Back Top-right
+        1.0f, -1.0f, -1.0f,  // Back Bottom-right
+        -1.0f, -1.0f, -1.0f, // Back Bottom-left
 
-        -1.0f,  1.0f,  1.0f,    // Front Top-left
-         1.0f,  1.0f,  1.0f,    // Front Top-right
-         1.0f, -1.0f,  1.0f,    // Front Bottom-right
-        -1.0f, -1.0f,  1.0f,    // Front Bottom-left
+        -1.0f, 1.0f, 1.0f,  // Front Top-left
+        1.0f, 1.0f, 1.0f,   // Front Top-right
+        1.0f, -1.0f, 1.0f,  // Front Bottom-right
+        -1.0f, -1.0f, 1.0f, // Front Bottom-left
 
     };
 
     GLuint indices[] = {
-        0, 1, 2,
-        2, 3, 0,
+        0,
+        1,
+        2,
+        2,
+        3,
+        0,
 
-        4, 5, 6,
-        6, 7, 4,
+        4,
+        5,
+        6,
+        6,
+        7,
+        4,
 
-        8, 9, 10,
-        10, 11, 8,
+        8,
+        9,
+        10,
+        10,
+        11,
+        8,
 
-        12, 13, 14,
-        14, 15, 12,
+        12,
+        13,
+        14,
+        14,
+        15,
+        12,
 
-        16, 17, 18,
-        18, 19, 16,
+        16,
+        17,
+        18,
+        18,
+        19,
+        16,
 
-        20, 21, 22,
-        22, 23, 20,
+        20,
+        21,
+        22,
+        22,
+        23,
+        20,
     };
 
     return l3dLoadMesh(
@@ -898,48 +893,48 @@ L3DHandle l3dLoadSkyBox(
         material,
         L3D_VERTEX_POS3,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
-        renderLayer
-    );
+        renderLayer);
 }
 
 L3DHandle l3dLoadGrid(
     unsigned int n,
-    const L3DHandle& material,
-    const L3DVec2& texMulFactor,
-    unsigned int renderLayer
-)
+    const L3DHandle &material,
+    const L3DVec2 &texMulFactor,
+    unsigned int renderLayer)
 {
     unsigned int numVertices = (n + 1) * (n + 1);
     unsigned int numIndices = 6 * n * n;
 
-    GLfloat* vertices = (GLfloat*)malloc(numVertices * 11 * sizeof(GLfloat));
-    GLuint* indices = (GLuint*)malloc(numIndices * sizeof(GLuint));
+    GLfloat *vertices = (GLfloat *)malloc(numVertices * 11 * sizeof(GLfloat));
+    GLuint *indices = (GLuint *)malloc(numIndices * sizeof(GLuint));
 
     GLfloat k = 1.0f / n;
 
     // Generate vertices.
     unsigned int v = 0;
-    for (unsigned int y = 0; y <= n; ++y) {
+    for (unsigned int y = 0; y <= n; ++y)
+    {
         GLfloat ky = k * y;
 
-        for (unsigned int x = 0; x <= n; ++x) {
+        for (unsigned int x = 0; x <= n; ++x)
+        {
             GLfloat kx = k * x;
 
             // Position.
-            vertices[v+0]  = kx - 0.5f;
-            vertices[v+1]  = ky - 0.5f;
-            vertices[v+2]  = 0.0f;
+            vertices[v + 0] = kx - 0.5f;
+            vertices[v + 1] = ky - 0.5f;
+            vertices[v + 2] = 0.0f;
             // Normal.
-            vertices[v+3]  = 0.0f;
-            vertices[v+4]  = 0.0f;
-            vertices[v+5]  = 1.0f;
+            vertices[v + 3] = 0.0f;
+            vertices[v + 4] = 0.0f;
+            vertices[v + 5] = 1.0f;
             // Tangent.
-            vertices[v+6]  = 1.0f;
-            vertices[v+7]  = 0.0f;
-            vertices[v+8]  = 0.0f;
+            vertices[v + 6] = 1.0f;
+            vertices[v + 7] = 0.0f;
+            vertices[v + 8] = 0.0f;
             // Texcoords.
-            vertices[v+9]  = texMulFactor.x * x;
-            vertices[v+10] = texMulFactor.y * y;
+            vertices[v + 9] = texMulFactor.x * x;
+            vertices[v + 10] = texMulFactor.y * y;
 
             v += 11;
         }
@@ -947,10 +942,12 @@ L3DHandle l3dLoadGrid(
 
     // Generate indices.
     unsigned int q = 0;
-    for (unsigned int y = 0; y < n; ++y) {
-        for (unsigned int x = 0; x < n; ++x) {
+    for (unsigned int y = 0; y < n; ++y)
+    {
+        for (unsigned int x = 0; x < n; ++x)
+        {
             // First triangle.
-            indices[q    ] = x + y * n + y;
+            indices[q] = x + y * n + y;
             indices[q + 1] = x + y * n + y + 1;
             indices[q + 2] = x + (y + 1) * n + y + 1;
             // Second triangle.
@@ -968,17 +965,15 @@ L3DHandle l3dLoadGrid(
         material,
         L3D_VERTEX_POS3_NOR3_TAN3_UV2,
         L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
-        renderLayer
-    );
+        renderLayer);
 }
 
 L3DMat4 l3dGetMeshTrans(
-    const L3DHandle& target
-)
+    const L3DHandle &target)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMesh* mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = _renderer->getMesh(target);
 
     if (mesh)
         return mesh->transMatrix;
@@ -986,11 +981,11 @@ L3DMat4 l3dGetMeshTrans(
     return L3DMat4();
 }
 
-unsigned char l3dMeshRenderLayer(const L3DHandle& target)
+unsigned char l3dMeshRenderLayer(const L3DHandle &target)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMesh* mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = _renderer->getMesh(target);
 
     if (mesh)
         return mesh->renderLayer();
@@ -999,114 +994,105 @@ unsigned char l3dMeshRenderLayer(const L3DHandle& target)
 }
 
 void l3dSetMeshTrans(
-    const L3DHandle& target,
-    const L3DMat4& trans
-)
+    const L3DHandle &target,
+    const L3DMat4 &trans)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMesh* mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = _renderer->getMesh(target);
 
     if (mesh)
         mesh->transMatrix = trans;
 }
 
 void l3dTranslateMesh(
-    const L3DHandle& target,
-    const L3DVec3& movement
-)
+    const L3DHandle &target,
+    const L3DVec3 &movement)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMesh* mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = _renderer->getMesh(target);
 
     if (mesh)
         mesh->translate(movement);
 }
 
 void l3dRotateMesh(
-    const L3DHandle& target,
+    const L3DHandle &target,
     float radians,
-    const L3DVec3& direction
-)
+    const L3DVec3 &direction)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMesh* mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = _renderer->getMesh(target);
 
     if (mesh)
         mesh->rotate(radians, direction);
 }
 
 void l3dScaleMesh(
-    const L3DHandle& target,
-    const L3DVec3& factor
-)
+    const L3DHandle &target,
+    const L3DVec3 &factor)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMesh* mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = _renderer->getMesh(target);
 
     if (mesh)
         mesh->scale(factor);
 }
 
 void l3dSetMeshMaterial(
-    const L3DHandle& target,
-    const L3DHandle& material
-)
+    const L3DHandle &target,
+    const L3DHandle &material)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMesh* mesh = _renderer->getMesh(target);
-    L3DMaterial* mat = _renderer->getMaterial(material);
+    L3DMesh *mesh = _renderer->getMesh(target);
+    L3DMaterial *mat = _renderer->getMaterial(material);
 
     if (mesh)
         mesh->setMaterial(mat);
 }
 
 void l3dSetMeshRenderLayer(
-    const L3DHandle& target,
-    unsigned char renderLayer
-)
+    const L3DHandle &target,
+    unsigned char renderLayer)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMesh* mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = _renderer->getMesh(target);
 
     if (mesh)
         mesh->setRenderLayer(renderLayer);
 }
 
 void l3dSetMeshInstances(
-  const L3DHandle& target,
-  void* instances,
-  unsigned int instanceCount,
-  const L3DInstanceFormat& instanceFormat
-)
+    const L3DHandle &target,
+    void *instances,
+    unsigned int instanceCount,
+    const L3DInstanceFormat &instanceFormat)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DMesh* mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = _renderer->getMesh(target);
 
     if (mesh && instances && instanceCount && instanceFormat)
-      mesh->setInstances(instances, instanceCount, instanceFormat);
+        mesh->setInstances(instances, instanceCount, instanceFormat);
 }
 
 L3DHandle l3dLoadDirectionalLight(
-    const L3DVec3& direction,
-    const L3DVec4& color,
-    unsigned int renderLayerMask
-)
+    const L3DVec3 &direction,
+    const L3DVec4 &color,
+    unsigned int renderLayerMask)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = L3DLight::createDirectionalLight(
+    L3DLight *light = L3DLight::createDirectionalLight(
         _renderer,
         direction,
         color,
-        renderLayerMask
-    );
+        renderLayerMask);
 
     if (light)
         return light->handle();
@@ -1115,21 +1101,19 @@ L3DHandle l3dLoadDirectionalLight(
 }
 
 L3DHandle l3dLoadPointLight(
-    const L3DVec3& position,
-    const L3DVec4& color,
-    const L3DLightAttenuation& attenuation,
-    unsigned int renderLayerMask
-)
+    const L3DVec3 &position,
+    const L3DVec4 &color,
+    const L3DLightAttenuation &attenuation,
+    unsigned int renderLayerMask)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = L3DLight::createPointLight(
+    L3DLight *light = L3DLight::createPointLight(
         _renderer,
         position,
         color,
         attenuation,
-        renderLayerMask
-    );
+        renderLayerMask);
 
     if (light)
         return light->handle();
@@ -1138,23 +1122,21 @@ L3DHandle l3dLoadPointLight(
 }
 
 L3DHandle l3dLoadSpotLight(
-    const L3DVec3& position,
-    const L3DVec3& direction,
-    const L3DVec4& color,
-    const L3DLightAttenuation& attenuation,
-    unsigned int renderLayerMask
-)
+    const L3DVec3 &position,
+    const L3DVec3 &direction,
+    const L3DVec4 &color,
+    const L3DLightAttenuation &attenuation,
+    unsigned int renderLayerMask)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = L3DLight::createSpotLight(
+    L3DLight *light = L3DLight::createSpotLight(
         _renderer,
         position,
         direction,
         color,
         attenuation,
-        renderLayerMask
-    );
+        renderLayerMask);
 
     if (light)
         return light->handle();
@@ -1162,11 +1144,11 @@ L3DHandle l3dLoadSpotLight(
     return L3D_INVALID_HANDLE;
 }
 
-int l3dLightType(const L3DHandle& target)
+int l3dLightType(const L3DHandle &target)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = _renderer->getLight(target);
+    L3DLight *light = _renderer->getLight(target);
 
     if (light)
         return light->type;
@@ -1174,11 +1156,11 @@ int l3dLightType(const L3DHandle& target)
     return -1;
 }
 
-unsigned int l3dLightRenderLayerMask(const L3DHandle& target)
+unsigned int l3dLightRenderLayerMask(const L3DHandle &target)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = _renderer->getLight(target);
+    L3DLight *light = _renderer->getLight(target);
 
     if (light)
         return light->renderLayerMask();
@@ -1187,12 +1169,11 @@ unsigned int l3dLightRenderLayerMask(const L3DHandle& target)
 }
 
 bool l3dIsLightOn(
-    const L3DHandle& target
-)
+    const L3DHandle &target)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = _renderer->getLight(target);
+    L3DLight *light = _renderer->getLight(target);
 
     if (light)
         return light->isOn();
@@ -1201,94 +1182,87 @@ bool l3dIsLightOn(
 }
 
 void l3dSetLightRenderLayerMask(
-    const L3DHandle& target,
-    unsigned int renderLayerMask
-)
+    const L3DHandle &target,
+    unsigned int renderLayerMask)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = _renderer->getLight(target);
+    L3DLight *light = _renderer->getLight(target);
 
     if (light)
         return light->setRenderLayerMask(renderLayerMask);
 }
 
 void l3dSetLightDirection(
-    const L3DHandle& target,
-    const L3DVec3& direction
-)
+    const L3DHandle &target,
+    const L3DVec3 &direction)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = _renderer->getLight(target);
+    L3DLight *light = _renderer->getLight(target);
 
     if (light)
         light->direction = direction;
 }
 
 void l3dSetLightAttenuation(
-    const L3DHandle& target,
+    const L3DHandle &target,
     float kc,
     float kl,
-    float kq
-)
+    float kq)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = _renderer->getLight(target);
+    L3DLight *light = _renderer->getLight(target);
 
     if (light)
         light->attenuation = L3DLightAttenuation(kc, kl, kq);
 }
 
 void l3dSetLightColor(
-    const L3DHandle& target,
-    const L3DVec4& color
-)
+    const L3DHandle &target,
+    const L3DVec4 &color)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = _renderer->getLight(target);
+    L3DLight *light = _renderer->getLight(target);
 
     if (light)
         light->color = color;
 }
 
 void l3dTranslateLight(
-    const L3DHandle& target,
-    const L3DVec3& movement
-)
+    const L3DHandle &target,
+    const L3DVec3 &movement)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = _renderer->getLight(target);
+    L3DLight *light = _renderer->getLight(target);
 
     if (light)
         light->translate(movement);
 }
 
 void l3dRotateLight(
-    const L3DHandle& target,
+    const L3DHandle &target,
     float radians,
-    const L3DVec3& direction
-)
+    const L3DVec3 &direction)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = _renderer->getLight(target);
+    L3DLight *light = _renderer->getLight(target);
 
     if (light)
         light->rotate(radians, direction);
 }
 
 void l3dLightLookAt(
-    const L3DHandle& target,
-    const L3DVec3& targetPosition
-)
+    const L3DHandle &target,
+    const L3DVec3 &targetPosition)
 {
     L3D_ASSERT(_renderer != L3D_NULLPTR);
 
-    L3DLight* light = _renderer->getLight(target);
+    L3DLight *light = _renderer->getLight(target);
 
     if (light)
         light->lookAt(targetPosition);
