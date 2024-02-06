@@ -38,12 +38,12 @@ using namespace l3d;
 
 typedef std::list<L3DMesh *> L3DRenderBucket;
 
-struct _l3dMeshSortFunctor
+struct l3dMeshSortFunctor
 {
     bool operator()(L3DMesh *i, L3DMesh *j) { return i->sortKey() < j->sortKey(); }
 };
 
-static GLenum _toOpenGL(const L3DBufferType &orig)
+static GLenum toOpenGL(const L3DBufferType &orig)
 {
     switch (orig)
     {
@@ -59,7 +59,7 @@ static GLenum _toOpenGL(const L3DBufferType &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DDrawType &orig)
+static GLenum toOpenGL(const L3DDrawType &orig)
 {
     switch (orig)
     {
@@ -74,7 +74,7 @@ static GLenum _toOpenGL(const L3DDrawType &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DTextureType &orig)
+static GLenum toOpenGL(const L3DTextureType &orig)
 {
     switch (orig)
     {
@@ -93,7 +93,7 @@ static GLenum _toOpenGL(const L3DTextureType &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DImageFormat &orig)
+static GLenum toOpenGL(const L3DImageFormat &orig)
 {
     switch (orig)
     {
@@ -110,7 +110,7 @@ static GLenum _toOpenGL(const L3DImageFormat &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DPixelFormat &orig)
+static GLenum toOpenGL(const L3DPixelFormat &orig)
 {
     switch (orig)
     {
@@ -125,7 +125,7 @@ static GLenum _toOpenGL(const L3DPixelFormat &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DAttachmentType &orig)
+static GLenum toOpenGL(const L3DAttachmentType &orig)
 {
     switch (orig)
     {
@@ -202,7 +202,7 @@ static GLenum _toOpenGL(const L3DAttachmentType &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DImageWrapMethod &orig)
+static GLenum toOpenGL(const L3DImageWrapMethod &orig)
 {
     switch (orig)
     {
@@ -223,7 +223,7 @@ static GLenum _toOpenGL(const L3DImageWrapMethod &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DImageMinFilter &orig)
+static GLenum toOpenGL(const L3DImageMinFilter &orig)
 {
     switch (orig)
     {
@@ -246,7 +246,7 @@ static GLenum _toOpenGL(const L3DImageMinFilter &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DImageMagFilter &orig)
+static GLenum toOpenGL(const L3DImageMagFilter &orig)
 {
     switch (orig)
     {
@@ -261,7 +261,7 @@ static GLenum _toOpenGL(const L3DImageMagFilter &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DDrawPrimitive &orig)
+static GLenum toOpenGL(const L3DDrawPrimitive &orig)
 {
     switch (orig)
     {
@@ -278,7 +278,7 @@ static GLenum _toOpenGL(const L3DDrawPrimitive &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DDepthFactor &orig)
+static GLenum toOpenGL(const L3DDepthFactor &orig)
 {
     switch (orig)
     {
@@ -293,7 +293,7 @@ static GLenum _toOpenGL(const L3DDepthFactor &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DBlendFactor &orig)
+static GLenum toOpenGL(const L3DBlendFactor &orig)
 {
     switch (orig)
     {
@@ -332,7 +332,7 @@ static GLenum _toOpenGL(const L3DBlendFactor &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DCullFace &orig)
+static GLenum toOpenGL(const L3DCullFace &orig)
 {
     switch (orig)
     {
@@ -349,7 +349,7 @@ static GLenum _toOpenGL(const L3DCullFace &orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DShaderType &orig)
+static GLenum toOpenGL(const L3DShaderType &orig)
 {
     switch (orig)
     {
@@ -617,8 +617,8 @@ void L3DRenderer::addBuffer(L3DBuffer *buffer)
 
         if (buffer->count())
         {
-            GLenum gl_type = _toOpenGL(buffer->type());
-            GLenum gl_draw_type = _toOpenGL(buffer->drawType());
+            GLenum gl_type = toOpenGL(buffer->type());
+            GLenum gl_draw_type = toOpenGL(buffer->drawType());
 
             glBindBuffer(gl_type, id);
             glBufferData(gl_type, buffer->size(), buffer->data(), gl_draw_type);
@@ -640,15 +640,15 @@ void L3DRenderer::addTexture(L3DTexture *texture)
         GLuint id = 0;
         glGenTextures(1, &id);
 
-        GLenum gl_format = _toOpenGL(texture->format());
+        GLenum gl_format = toOpenGL(texture->format());
         GLenum gl_internal_format = gl_format;
-        GLenum gl_type = _toOpenGL(texture->type());
-        GLenum gl_pixel_format = _toOpenGL(texture->pixelFormat());
-        GLenum gl_wrap_s = _toOpenGL(texture->wrapS());
-        GLenum gl_wrap_t = _toOpenGL(texture->wrapT());
-        GLenum gl_wrap_r = _toOpenGL(texture->wrapR());
-        GLenum gl_min_filter = _toOpenGL(texture->minFilter());
-        GLenum gl_mag_filter = _toOpenGL(texture->magFilter());
+        GLenum gl_type = toOpenGL(texture->type());
+        GLenum gl_pixel_format = toOpenGL(texture->pixelFormat());
+        GLenum gl_wrap_s = toOpenGL(texture->wrapS());
+        GLenum gl_wrap_t = toOpenGL(texture->wrapT());
+        GLenum gl_wrap_r = toOpenGL(texture->wrapR());
+        GLenum gl_min_filter = toOpenGL(texture->minFilter());
+        GLenum gl_mag_filter = toOpenGL(texture->magFilter());
         bool use_mipmaps = texture->useMipmap();
 
         if (gl_format == GL_DEPTH24_STENCIL8)
@@ -727,7 +727,7 @@ void L3DRenderer::addShader(L3DShader *shader)
 {
     if (shader && m_shaders.find(shader->id()) == m_shaders.end())
     {
-        GLuint gl_type = _toOpenGL(shader->type());
+        GLuint gl_type = toOpenGL(shader->type());
 
         const char *code = shader->code();
 
@@ -798,7 +798,7 @@ void L3DRenderer::addFrameBuffer(L3DFrameBuffer *frameBuffer)
         L3DTextureAttachments textures = frameBuffer->textureAttachments();
         for (L3DTextureAttachments::iterator tex_it = textures.begin(); tex_it != textures.end(); ++tex_it)
         {
-            GLenum gl_attachment_type = _toOpenGL(tex_it->first);
+            GLenum gl_attachment_type = toOpenGL(tex_it->first);
             L3DTexture *texture = tex_it->second;
 
             if (texture)
@@ -806,7 +806,7 @@ void L3DRenderer::addFrameBuffer(L3DFrameBuffer *frameBuffer)
                 this->addTexture(texture);
 
                 GLuint id = texture->id();
-                GLenum gl_type = _toOpenGL(texture->type());
+                GLenum gl_type = toOpenGL(texture->type());
 
                 switch (texture->type())
                 {
@@ -1383,7 +1383,7 @@ void L3DRenderer::switchFrameBuffer(L3DFrameBuffer *frameBuffer)
             L3DTexture *texture = tex_it->second;
             if (texture && texture->useMipmap())
             {
-                GLenum gl_type = _toOpenGL(texture->type());
+                GLenum gl_type = toOpenGL(texture->type());
                 glBindTexture(gl_type, texture->id());
                 glGenerateMipmap(gl_type);
                 glBindTexture(gl_type, 0);
@@ -1426,7 +1426,7 @@ void L3DRenderer::setDepthTest(
 {
     enable ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
     if (enable)
-        glDepthFunc(_toOpenGL(factor));
+        glDepthFunc(toOpenGL(factor));
 }
 
 void L3DRenderer::setDepthMask(bool enable)
@@ -1446,7 +1446,7 @@ void L3DRenderer::setBlend(
 {
     enable ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
     if (enable)
-        glBlendFunc(_toOpenGL(srcFactor), _toOpenGL(dstFactor));
+        glBlendFunc(toOpenGL(srcFactor), toOpenGL(dstFactor));
 }
 
 void L3DRenderer::setCullFace(
@@ -1455,7 +1455,7 @@ void L3DRenderer::setCullFace(
 {
     enable ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
     if (enable)
-        glCullFace(_toOpenGL(cullFace));
+        glCullFace(toOpenGL(cullFace));
 }
 
 void L3DRenderer::drawMeshes(
@@ -1484,7 +1484,7 @@ void L3DRenderer::drawMeshes(
     // Sort the generated render bucket.
     // TODO: no need to do it every frame! Make things smart allowing meshes to
     //       notify when the bucket should be sorted again...
-    renderBucket.sort(_l3dMeshSortFunctor());
+    renderBucket.sort(l3dMeshSortFunctor());
 
     // Iterate over render bucket and render each collected mesh.
     // Meshes in bucket are ordered now by material to reduce context changes.
@@ -1493,7 +1493,7 @@ void L3DRenderer::drawMeshes(
         L3DMesh *mesh = *it;
         L3DMaterial *material = mesh->material();
         L3DShaderProgram *shaderProgram = material->shaderProgram();
-        GLenum gl_draw_primitive = _toOpenGL(mesh->drawPrimitive());
+        GLenum gl_draw_primitive = toOpenGL(mesh->drawPrimitive());
         unsigned int index_count = mesh->indexCount();
         unsigned int instance_count = mesh->instanceCount();
 
@@ -1539,7 +1539,7 @@ void L3DRenderer::drawMeshes(
 
                 if (texture)
                 {
-                    GLenum gl_type = _toOpenGL(texture->type());
+                    GLenum gl_type = toOpenGL(texture->type());
                     GLint gl_sampler = glGetUniformLocation(shaderProgram->id(), (samplerName + tex_it->first).c_str());
 
                     // Activate texture unit and bind sampler.
