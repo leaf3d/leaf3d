@@ -19,37 +19,35 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
-#ifndef L3D_L3DRENDERQUEUE_H
-#define L3D_L3DRENDERQUEUE_H
+#ifndef L3D_L3DCLEARBUFFERSCOMMAND_H
+#define L3D_L3DCLEARBUFFERSCOMMAND_H
 #pragma once
 
-#include <queue>
 #include "leaf3d/L3DRenderCommand.h"
-#include "leaf3d/L3DResource.h"
+#include "leaf3d/types.h"
 
 namespace l3d
 {
-    class L3DRenderQueue : public L3DResource
+    class L3DClearBuffersCommand : public L3DRenderCommand
     {
     protected:
-        const char *m_name;
-        L3DRenderCommandList m_commands;
+        bool m_colorBuffer;
+        bool m_depthBuffer;
+        bool m_stencilBuffer;
+        L3DVec4 m_clearColor;
 
     public:
-        L3DRenderQueue(
-            L3DRenderer *renderer,
-            const char *name);
-        ~L3DRenderQueue();
-
-        const char *name() const { return m_name; }
-        unsigned int commandCount() const { return m_commands.size(); }
-        const L3DRenderCommandList &commands() const { return m_commands; }
-
-        void appendCommand(L3DRenderCommand *command);
-        void appendCommands(const L3DRenderCommandList &commands);
+        L3DClearBuffersCommand(
+            bool colorBuffer = true,
+            bool depthBuffer = true,
+            bool stencilBuffer = true,
+            const L3DVec4 &clearColor = L3DVec4(1, 1, 1, 1)) : m_colorBuffer(colorBuffer),
+                                                               m_depthBuffer(depthBuffer),
+                                                               m_stencilBuffer(stencilBuffer),
+                                                               m_clearColor(clearColor) {}
 
         void execute(L3DRenderer *renderer, L3DCamera *camera);
     };
 }
 
-#endif // L3D_L3DRENDERQUEUE_H
+#endif // L3D_L3DCLEARBUFFERSCOMMAND_H

@@ -71,6 +71,6 @@ L3D_API L3DHandle *l3dutLoadMeshes(
     const char *filename,
     const L3DHandle &shaderProgram,
     unsigned int *meshCount,
-    unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
+    unsigned char renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
 
 #endif // L3D_LEAF3DUT_H

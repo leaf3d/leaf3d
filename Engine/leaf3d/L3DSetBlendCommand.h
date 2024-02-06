@@ -19,37 +19,32 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
-#ifndef L3D_L3DRENDERQUEUE_H
-#define L3D_L3DRENDERQUEUE_H
+#ifndef L3D_L3DSETBLENDCOMMAND_H
+#define L3D_L3DSETBLENDCOMMAND_H
 #pragma once
 
-#include <queue>
 #include "leaf3d/L3DRenderCommand.h"
-#include "leaf3d/L3DResource.h"
+#include "leaf3d/types.h"
 
 namespace l3d
 {
-    class L3DRenderQueue : public L3DResource
+    class L3DSetBlendCommand : public L3DRenderCommand
     {
     protected:
-        const char *m_name;
-        L3DRenderCommandList m_commands;
+        bool m_enable;
+        L3DBlendFactor m_srcFactor;
+        L3DBlendFactor m_dstFactor;
 
     public:
-        L3DRenderQueue(
-            L3DRenderer *renderer,
-            const char *name);
-        ~L3DRenderQueue();
-
-        const char *name() const { return m_name; }
-        unsigned int commandCount() const { return m_commands.size(); }
-        const L3DRenderCommandList &commands() const { return m_commands; }
-
-        void appendCommand(L3DRenderCommand *command);
-        void appendCommands(const L3DRenderCommandList &commands);
+        L3DSetBlendCommand(
+            bool enable = true,
+            const L3DBlendFactor &srcFactor = L3D_SRC_ALPHA,
+            const L3DBlendFactor &dstFactor = L3D_ONE_MINUS_SRC_ALPHA) : m_enable(enable),
+                                                                         m_srcFactor(srcFactor),
+                                                                         m_dstFactor(dstFactor) {}
 
         void execute(L3DRenderer *renderer, L3DCamera *camera);
     };
 }
 
-#endif // L3D_L3DRENDERQUEUE_H
+#endif // L3D_L3DSETBLENDCOMMAND_H

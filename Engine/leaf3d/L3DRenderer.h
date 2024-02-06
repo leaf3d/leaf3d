@@ -24,6 +24,7 @@
 #pragma once
 
 #include <map>
+#include <list>
 #include "leaf3d/types.h"
 
 namespace l3d
@@ -50,6 +51,8 @@ namespace l3d
     typedef std::map<unsigned int, L3DLight *> L3DLightPool;
     typedef std::map<unsigned int, L3DMesh *> L3DMeshPool;
     typedef std::map<unsigned int, L3DRenderQueue *> L3DRenderQueuePool;
+    typedef std::list<L3DMesh *> L3DMeshList;
+    typedef std::map<unsigned int, L3DMeshList> L3DRenderBucket;
 
     class L3DRenderer
     {
@@ -64,6 +67,7 @@ namespace l3d
         L3DLightPool m_lights;
         L3DMeshPool m_meshes;
         L3DRenderQueuePool m_renderQueues;
+        L3DRenderBucket m_renderBucket;
 
     public:
         L3DRenderer();
@@ -129,7 +133,6 @@ namespace l3d
         unsigned int meshCount() const { return m_meshes.size(); }
         unsigned int renderQueueCount() const { return m_renderQueues.size(); }
 
-    protected:
         // Render actions.
         void switchFrameBuffer(L3DFrameBuffer *frameBuffer = 0);
         void clearBuffers(
@@ -151,7 +154,8 @@ namespace l3d
             const L3DCullFace &cullFace = L3D_BACK_FACE);
         void drawMeshes(
             L3DCamera *camera,
-            unsigned int renderLayer = 0);
+            unsigned char renderLayer = 0);
+        void recomputeRenderBucket();
     };
 }
 

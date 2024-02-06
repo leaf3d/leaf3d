@@ -275,18 +275,6 @@ namespace l3d
         L3D_SHADER_GEOMETRY
     };
 
-    enum L3D_API L3DRenderCommandType
-    {
-        L3D_INVALID_RENDER_COMMAND = 0,
-        L3D_SWITCH_FRAME_BUFFER,
-        L3D_CLEAR_BUFFERS,
-        L3D_SET_DEPTH_TEST,
-        L3D_SET_DEPTH_MASK,
-        L3D_SET_STENCIL_TEST,
-        L3D_SET_BLEND,
-        L3D_DRAW_MESHES
-    };
-
     enum L3D_API L3DLightType
     {
         L3D_LIGHT_DIRECTIONAL = 0,

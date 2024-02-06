@@ -19,37 +19,12 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
-#ifndef L3D_L3DRENDERQUEUE_H
-#define L3D_L3DRENDERQUEUE_H
-#pragma once
+#include <leaf3d/L3DRenderer.h>
+#include <leaf3d/L3DSetBlendCommand.h>
 
-#include <queue>
-#include "leaf3d/L3DRenderCommand.h"
-#include "leaf3d/L3DResource.h"
+using namespace l3d;
 
-namespace l3d
+void L3DSetBlendCommand::execute(L3DRenderer *renderer, L3DCamera *camera)
 {
-    class L3DRenderQueue : public L3DResource
-    {
-    protected:
-        const char *m_name;
-        L3DRenderCommandList m_commands;
-
-    public:
-        L3DRenderQueue(
-            L3DRenderer *renderer,
-            const char *name);
-        ~L3DRenderQueue();
-
-        const char *name() const { return m_name; }
-        unsigned int commandCount() const { return m_commands.size(); }
-        const L3DRenderCommandList &commands() const { return m_commands; }
-
-        void appendCommand(L3DRenderCommand *command);
-        void appendCommands(const L3DRenderCommandList &commands);
-
-        void execute(L3DRenderer *renderer, L3DCamera *camera);
-    };
+    renderer->setBlend(m_enable, m_srcFactor, m_dstFactor);
 }
-
-#endif // L3D_L3DRENDERQUEUE_H

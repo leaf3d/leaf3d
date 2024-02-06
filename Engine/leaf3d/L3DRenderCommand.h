@@ -19,37 +19,24 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
-#ifndef L3D_L3DRENDERQUEUE_H
-#define L3D_L3DRENDERQUEUE_H
+#ifndef L3D_L3DRENDERCOMMAND_H
+#define L3D_L3DRENDERCOMMAND_H
 #pragma once
 
 #include <queue>
-#include "leaf3d/L3DRenderCommand.h"
-#include "leaf3d/L3DResource.h"
 
 namespace l3d
 {
-    class L3DRenderQueue : public L3DResource
+    class L3DRenderer;
+    class L3DCamera;
+
+    class L3DRenderCommand
     {
-    protected:
-        const char *m_name;
-        L3DRenderCommandList m_commands;
-
     public:
-        L3DRenderQueue(
-            L3DRenderer *renderer,
-            const char *name);
-        ~L3DRenderQueue();
-
-        const char *name() const { return m_name; }
-        unsigned int commandCount() const { return m_commands.size(); }
-        const L3DRenderCommandList &commands() const { return m_commands; }
-
-        void appendCommand(L3DRenderCommand *command);
-        void appendCommands(const L3DRenderCommandList &commands);
-
-        void execute(L3DRenderer *renderer, L3DCamera *camera);
+        virtual void execute(L3DRenderer *renderer, L3DCamera *camera) = 0;
     };
+
+    typedef std::vector<L3DRenderCommand *> L3DRenderCommandList;
 }
 
-#endif // L3D_L3DRENDERQUEUE_H
+#endif // L3D_L3DRENDERCOMMAND_H

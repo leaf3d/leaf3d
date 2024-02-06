@@ -245,7 +245,7 @@ L3DHandle *l3dutLoadMeshes(
     const char *filename,
     const L3DHandle &shaderProgram,
     unsigned int *meshCount,
-    unsigned int renderLayer)
+    unsigned char renderLayer)
 {
     if (!filename)
     {

@@ -27,6 +27,15 @@ set(LEAF3D_SOURCES
     leaf3d/L3DCamera.h
     leaf3d/L3DLight.h
     leaf3d/L3DMesh.h
+    leaf3d/L3DRenderCommand.h
+    leaf3d/L3DClearBuffersCommand.h
+    leaf3d/L3DDrawMeshesCommand.h
+    leaf3d/L3DSetBlendCommand.h
+    leaf3d/L3DSetCullFaceCommand.h
+    leaf3d/L3DSetDepthMaskCommand.h
+    leaf3d/L3DSetDepthTestCommand.h
+    leaf3d/L3DSetStencilTestCommand.h
+    leaf3d/L3DSwitchFrameBufferCommand.h
     leaf3d/L3DRenderQueue.h
     leaf3d/L3DRenderer.h
     leaf3d/leaf3d.h
@@ -40,6 +49,14 @@ set(LEAF3D_SOURCES
     L3DCamera.cpp
     L3DLight.cpp
     L3DMesh.cpp
+    L3DClearBuffersCommand.cpp
+    L3DDrawMeshesCommand.cpp
+    L3DSetBlendCommand.cpp
+    L3DSetCullFaceCommand.cpp
+    L3DSetDepthMaskCommand.cpp
+    L3DSetDepthTestCommand.cpp
+    L3DSetStencilTestCommand.cpp
+    L3DSwitchFrameBufferCommand.cpp
     L3DRenderQueue.cpp
     L3DRenderer.cpp
     leaf3d.cpp

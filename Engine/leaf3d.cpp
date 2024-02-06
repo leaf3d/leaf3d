@@ -32,6 +32,13 @@
 #include <leaf3d/L3DLight.h>
 #include <leaf3d/L3DMesh.h>
 #include <leaf3d/L3DRenderQueue.h>
+#include <leaf3d/L3DSwitchFrameBufferCommand.h>
+#include <leaf3d/L3DClearBuffersCommand.h>
+#include <leaf3d/L3DSetBlendCommand.h>
+#include <leaf3d/L3DSetCullFaceCommand.h>
+#include <leaf3d/L3DSetDepthTestCommand.h>
+#include <leaf3d/L3DSetDepthMaskCommand.h>
+#include <leaf3d/L3DDrawMeshesCommand.h>
 
 using namespace l3d;
 
@@ -48,7 +55,7 @@ static const char *s_defaultScreenVertexShader = GLSL(
         o_texcoord0 = i_texcoord0;
     });
 
-static const char *_defaultScreenFragmentShader = GLSL(
+static const char *s_defaultScreenFragmentShader = GLSL(
     in vec2 o_texcoord0;
     out vec4 fragColor;
 
@@ -58,7 +65,7 @@ static const char *_defaultScreenFragmentShader = GLSL(
         fragColor = vec4(texture(u_diffuseMap, o_texcoord0).rgb, 1);
     });
 
-static const std::string _getUniformName(const char *name, int index)
+static const std::string getUniformName(const char *name, int index)
 {
     std::string _name(name);
 
@@ -136,7 +143,7 @@ L3DHandle l3dLoadForwardRenderQueue(
         fsQuadFragmentShader = new L3DShader(
             s_renderer,
             L3D_SHADER_FRAGMENT,
-            _defaultScreenFragmentShader);
+            s_defaultScreenFragmentShader);
     }
 
     L3DShaderProgram *fsQuadShaderProgram = new L3DShaderProgram(
@@ -179,32 +186,46 @@ L3DHandle l3dLoadForwardRenderQueue(
     fsQuad->setRenderLayer(L3D_POSTPROCESSING_RENDERLAYER);
 
     // 1. Clear frame buffer.
-    renderQueue->addSwitchFrameBufferCommand(backendBuffer);
-    renderQueue->addClearBuffersCommand(true, true, true, clearColor);
-    renderQueue->addSetBlendCommand(false);
-    renderQueue->addSetCullFaceCommand(true, L3D_BACK_FACE);
+    renderQueue->appendCommand(
+        new L3DSwitchFrameBufferCommand(backendBuffer));
+    renderQueue->appendCommand(
+        new L3DClearBuffersCommand(true, true, true, clearColor));
+    renderQueue->appendCommand(
+        new L3DSetBlendCommand(false));
 
     // 2. Render meshes not writing on depth buffer of frame buffer.
-    renderQueue->addSetDepthTestCommand(false);
-    renderQueue->addSetDepthMaskCommand(false);
-    renderQueue->addDrawMeshesCommand(L3D_SKYBOX_MESH_RENDERLAYER);
+    renderQueue->appendCommand(
+        new L3DSetDepthTestCommand(false));
+    renderQueue->appendCommand(
+        new L3DSetDepthMaskCommand(false));
+    renderQueue->appendCommand(
+        new L3DDrawMeshesCommand(L3D_SKYBOX_MESH_RENDERLAYER));
 
     // 3. Render opaque models on frame buffer.
-    renderQueue->addSetDepthTestCommand(true, L3D_LESS);
-    renderQueue->addSetDepthMaskCommand(true);
-    renderQueue->addDrawMeshesCommand(L3D_OPAQUE_MESH_RENDERLAYER);
+    renderQueue->appendCommand(
+        new L3DSetDepthTestCommand(true, L3D_LESS));
+    renderQueue->appendCommand(
+        new L3DSetDepthMaskCommand(true));
+    renderQueue->appendCommand(
+        new L3DDrawMeshesCommand(L3D_OPAQUE_MESH_RENDERLAYER));
 
     // 4. Render meshes with alpha-blend.
-    renderQueue->addSetCullFaceCommand(false);
-    renderQueue->addSetBlendCommand(true);
-    renderQueue->addDrawMeshesCommand(L3D_ALPHA_BLEND_MESH_RENDERLAYER);
+    renderQueue->appendCommand(
+        new L3DSetBlendCommand(true));
+    renderQueue->appendCommand(
+        new L3DDrawMeshesCommand(L3D_ALPHA_BLEND_MESH_RENDERLAYER));
 
     // 5. Render fullscreen quad to screen, sampling from framebuffer.
-    renderQueue->addSwitchFrameBufferCommand(0);
-    renderQueue->addClearBuffersCommand(true, false, false, clearColor);
-    renderQueue->addSetDepthTestCommand(false);
-    renderQueue->addSetBlendCommand(false);
-    renderQueue->addDrawMeshesCommand(L3D_POSTPROCESSING_RENDERLAYER);
+    renderQueue->appendCommand(
+        new L3DSwitchFrameBufferCommand(0));
+    renderQueue->appendCommand(
+        new L3DClearBuffersCommand(true, false, false, clearColor));
+    renderQueue->appendCommand(
+        new L3DSetDepthTestCommand(false));
+    renderQueue->appendCommand(
+        new L3DSetBlendCommand(false));
+    renderQueue->appendCommand(
+        new L3DDrawMeshesCommand(L3D_POSTPROCESSING_RENDERLAYER));
 
     if (renderQueue)
         return renderQueue->handle();
@@ -297,7 +318,7 @@ void l3dSetShaderProgramUniformF(
 
     L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
+        shaderProgram->setUniform(getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformI(
@@ -310,7 +331,7 @@ void l3dSetShaderProgramUniformI(
 
     L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
+        shaderProgram->setUniform(getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformUI(
@@ -323,7 +344,7 @@ void l3dSetShaderProgramUniformUI(
 
     L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
+        shaderProgram->setUniform(getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformB(
@@ -336,7 +357,7 @@ void l3dSetShaderProgramUniformB(
 
     L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
+        shaderProgram->setUniform(getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformVec2(
@@ -349,7 +370,7 @@ void l3dSetShaderProgramUniformVec2(
 
     L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
+        shaderProgram->setUniform(getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformVec3(
@@ -362,7 +383,7 @@ void l3dSetShaderProgramUniformVec3(
 
     L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
+        shaderProgram->setUniform(getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformVec4(
@@ -375,7 +396,7 @@ void l3dSetShaderProgramUniformVec4(
 
     L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
+        shaderProgram->setUniform(getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformMat3(
@@ -388,7 +409,7 @@ void l3dSetShaderProgramUniformMat3(
 
     L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
+        shaderProgram->setUniform(getUniformName(name, index).c_str(), value);
 }
 
 void l3dSetShaderProgramUniformMat4(
@@ -401,7 +422,7 @@ void l3dSetShaderProgramUniformMat4(
 
     L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
-        shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
+        shaderProgram->setUniform(getUniformName(name, index).c_str(), value);
 }
 
 L3DHandle l3dLoadFrameBuffer(
@@ -665,7 +686,7 @@ L3DHandle l3dLoadMesh(
     const L3DMat4 &transMatrix,
     const L3DDrawType &drawType,
     const L3DDrawPrimitive &drawPrimitive,
-    unsigned int renderLayer)
+    unsigned char renderLayer)
 {
     L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
@@ -691,7 +712,7 @@ L3DHandle l3dLoadMesh(
 L3DHandle l3dLoadQuad(
     const L3DHandle &material,
     const L3DVec2 &texMulFactor,
-    unsigned int renderLayer)
+    unsigned char renderLayer)
 {
     GLfloat vertices[] = {
         //   Position             Normal               Tangent              Texcoords
@@ -717,7 +738,7 @@ L3DHandle l3dLoadQuad(
 L3DHandle l3dLoadCube(
     const L3DHandle &material,
     const L3DVec2 &texMulFactor,
-    unsigned int renderLayer)
+    unsigned char renderLayer)
 {
     GLfloat vertices[] = {
         //   Position             Normal               Tangent              Texcoords
@@ -807,7 +828,7 @@ L3DHandle l3dLoadCube(
 
 L3DHandle l3dLoadSkyBox(
     const L3DHandle &material,
-    unsigned int renderLayer)
+    unsigned char renderLayer)
 {
     GLfloat vertices[] = {
         //   Position
@@ -900,7 +921,7 @@ L3DHandle l3dLoadGrid(
     unsigned int n,
     const L3DHandle &material,
     const L3DVec2 &texMulFactor,
-    unsigned int renderLayer)
+    unsigned char renderLayer)
 {
     unsigned int numVertices = (n + 1) * (n + 1);
     unsigned int numIndices = 6 * n * n;

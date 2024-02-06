@@ -263,5 +263,5 @@ void L3DMesh::updateSortKey()
 {
     m_sortKey = (m_renderLayer << 24) | ((m_material ? m_material->id() : 0) << 8);
 
-    // TODO Update L3DRenderer's render bucket...
+    this->renderer()->recomputeRenderBucket();
 }

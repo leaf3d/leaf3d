@@ -19,37 +19,27 @@
  * program. If not, see <http://www.opensource.org/licenses/bsd-license.php>
  */
 
-#ifndef L3D_L3DRENDERQUEUE_H
-#define L3D_L3DRENDERQUEUE_H
+#ifndef L3D_L3DSWITCHFRAMEBUFFERCOMMAND_H
+#define L3D_L3DSWITCHFRAMEBUFFERCOMMAND_H
 #pragma once
 
-#include <queue>
 #include "leaf3d/L3DRenderCommand.h"
-#include "leaf3d/L3DResource.h"
 
 namespace l3d
 {
-    class L3DRenderQueue : public L3DResource
+    class L3DFrameBuffer;
+
+    class L3DSwitchFrameBufferCommand : public L3DRenderCommand
     {
     protected:
-        const char *m_name;
-        L3DRenderCommandList m_commands;
+        L3DFrameBuffer *m_frameBuffer;
 
     public:
-        L3DRenderQueue(
-            L3DRenderer *renderer,
-            const char *name);
-        ~L3DRenderQueue();
-
-        const char *name() const { return m_name; }
-        unsigned int commandCount() const { return m_commands.size(); }
-        const L3DRenderCommandList &commands() const { return m_commands; }
-
-        void appendCommand(L3DRenderCommand *command);
-        void appendCommands(const L3DRenderCommandList &commands);
+        L3DSwitchFrameBufferCommand(
+            L3DFrameBuffer *frameBuffer = 0) : m_frameBuffer(frameBuffer) {}
 
         void execute(L3DRenderer *renderer, L3DCamera *camera);
     };
 }
 
-#endif // L3D_L3DRENDERQUEUE_H
+#endif // L3D_L3DSWITCHFRAMEBUFFERCOMMAND_H

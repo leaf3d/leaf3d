@@ -208,27 +208,27 @@ L3D_API L3DHandle l3dLoadMesh(
     const L3DMat4 &transMatrix = L3DMat4(),
     const L3DDrawType &drawType = L3D_DRAW_STATIC,
     const L3DDrawPrimitive &drawPrimitive = L3D_DRAW_TRIANGLES,
-    unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
+    unsigned char renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
 
 L3D_API L3DHandle l3dLoadQuad(
     const L3DHandle &material,
     const L3DVec2 &texMulFactor = L3DVec2(1, 1),
-    unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
+    unsigned char renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
 
 L3D_API L3DHandle l3dLoadCube(
     const L3DHandle &material,
     const L3DVec2 &texMulFactor = L3DVec2(1, 1),
-    unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
+    unsigned char renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
 
 L3D_API L3DHandle l3dLoadSkyBox(
     const L3DHandle &material,
-    unsigned int renderLayer = L3D_SKYBOX_MESH_RENDERLAYER);
+    unsigned char renderLayer = L3D_SKYBOX_MESH_RENDERLAYER);
 
 L3D_API L3DHandle l3dLoadGrid(
     unsigned int n,
     const L3DHandle &material,
     const L3DVec2 &texMulFactor = L3DVec2(1, 1),
-    unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
+    unsigned char renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
 
 L3D_API L3DMat4 l3dGetMeshTrans(
     const L3DHandle &target);

@@ -40,69 +40,19 @@ L3DRenderQueue::~L3DRenderQueue()
     m_commands.clear();
 }
 
+void L3DRenderQueue::appendCommand(L3DRenderCommand *command)
+{
+    m_commands.push_back(command);
+}
+
 void L3DRenderQueue::appendCommands(const L3DRenderCommandList &commands)
 {
     m_commands.reserve(commands.size());
     m_commands.insert(m_commands.end(), commands.begin(), commands.end());
 }
 
-void L3DRenderQueue::addSwitchFrameBufferCommand(L3DFrameBuffer *frameBuffer)
+void L3DRenderQueue::execute(L3DRenderer *renderer, L3DCamera *camera)
 {
-    m_commands.push_back(
-        new L3DSwitchFrameBufferCommand(frameBuffer));
-}
-
-void L3DRenderQueue::addClearBuffersCommand(
-    bool colorBuffer,
-    bool depthBuffer,
-    bool stencilBuffer,
-    const L3DVec4 &clearColor)
-{
-    m_commands.push_back(
-        new L3DClearBuffersCommand(colorBuffer, depthBuffer, stencilBuffer, clearColor));
-}
-
-void L3DRenderQueue::addSetDepthTestCommand(
-    bool enable,
-    const L3DDepthFactor &factor)
-{
-    m_commands.push_back(
-        new L3DSetDepthTestCommand(enable, factor));
-}
-
-void L3DRenderQueue::addSetDepthMaskCommand(
-    bool enable)
-{
-    m_commands.push_back(
-        new L3DSetDepthMaskCommand(enable));
-}
-
-void L3DRenderQueue::addSetStencilTestCommand(
-    bool enable)
-{
-    m_commands.push_back(
-        new L3DSetStencilTestCommand(enable));
-}
-
-void L3DRenderQueue::addSetBlendCommand(
-    bool enable,
-    const L3DBlendFactor &srcFactor,
-    const L3DBlendFactor &dstFactor)
-{
-    m_commands.push_back(
-        new L3DSetBlendCommand(enable, srcFactor, dstFactor));
-}
-
-void L3DRenderQueue::addSetCullFaceCommand(
-    bool enable,
-    const L3DCullFace &cullFace)
-{
-    m_commands.push_back(
-        new L3DSetCullFaceCommand(enable, cullFace));
-}
-
-void L3DRenderQueue::addDrawMeshesCommand(unsigned char renderLayer)
-{
-    m_commands.push_back(
-        new L3DDrawMeshesCommand(renderLayer));
+    for (L3DRenderCommandList::const_iterator it = m_commands.begin(); it != m_commands.end(); ++it)
+        (*it)->execute(renderer, camera);
 }
