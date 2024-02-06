@@ -35,9 +35,9 @@
 
 using namespace l3d;
 
-static L3DRenderer *_renderer = L3D_NULLPTR;
+static L3DRenderer *s_renderer = L3D_NULLPTR;
 
-static const char *_defaultScreenVertexShader = GLSL(
+static const char *s_defaultScreenVertexShader = GLSL(
     in vec2 i_position;
     in vec2 i_texcoord0;
 
@@ -74,10 +74,10 @@ static const std::string _getUniformName(const char *name, int index)
 
 int l3dInit()
 {
-    if (_renderer == L3D_NULLPTR)
+    if (s_renderer == L3D_NULLPTR)
     {
-        _renderer = new L3DRenderer();
-        return _renderer->init();
+        s_renderer = new L3DRenderer();
+        return s_renderer->init();
     }
 
     return L3D_TRUE;
@@ -85,9 +85,9 @@ int l3dInit()
 
 int l3dTerminate()
 {
-    delete _renderer;
+    delete s_renderer;
 
-    _renderer = L3D_NULLPTR;
+    s_renderer = L3D_NULLPTR;
 
     return L3D_TRUE;
 }
@@ -96,11 +96,11 @@ void l3dRenderFrame(
     const L3DHandle &camera,
     const L3DHandle &renderQueue)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    _renderer->renderFrame(
-        _renderer->getCamera(camera),
-        _renderer->getRenderQueue(renderQueue));
+    s_renderer->renderFrame(
+        s_renderer->getCamera(camera),
+        s_renderer->getRenderQueue(renderQueue));
 }
 
 L3DHandle l3dLoadForwardRenderQueue(
@@ -109,43 +109,43 @@ L3DHandle l3dLoadForwardRenderQueue(
     const L3DVec4 &clearColor,
     const L3DHandle &screenFragmentShader)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
     L3DRenderQueue *renderQueue = new L3DRenderQueue(
-        _renderer,
+        s_renderer,
         "ForwardRendering");
 
     // A. Init framebuffer.
-    L3DTexture *frameBufferColorTexture = new L3DTexture(_renderer, L3D_TEXTURE_2D, L3D_RGB, 0, width, height, 0);
+    L3DTexture *frameBufferColorTexture = new L3DTexture(s_renderer, L3D_TEXTURE_2D, L3D_RGB, 0, width, height, 0);
 
     L3DFrameBuffer *backendBuffer = new L3DFrameBuffer(
-        _renderer,
-        new L3DTexture(_renderer, L3D_TEXTURE_2D, L3D_DEPTH24_STENCIL8, 0, width, height, 0, false, L3D_UNSIGNED_INT_24_8),
+        s_renderer,
+        new L3DTexture(s_renderer, L3D_TEXTURE_2D, L3D_DEPTH24_STENCIL8, 0, width, height, 0, false, L3D_UNSIGNED_INT_24_8),
         frameBufferColorTexture);
 
     // B. Init fullscreen quad.
     L3DShader *fsQuadVertexShader = new L3DShader(
-        _renderer,
+        s_renderer,
         L3D_SHADER_VERTEX,
-        _defaultScreenVertexShader);
+        s_defaultScreenVertexShader);
 
-    L3DShader *fsQuadFragmentShader = _renderer->getShader(screenFragmentShader);
+    L3DShader *fsQuadFragmentShader = s_renderer->getShader(screenFragmentShader);
 
     if (!fsQuadFragmentShader)
     {
         fsQuadFragmentShader = new L3DShader(
-            _renderer,
+            s_renderer,
             L3D_SHADER_FRAGMENT,
             _defaultScreenFragmentShader);
     }
 
     L3DShaderProgram *fsQuadShaderProgram = new L3DShaderProgram(
-        _renderer,
+        s_renderer,
         fsQuadVertexShader,
         fsQuadFragmentShader);
 
     L3DMaterial *fsQuadMaterial = new L3DMaterial(
-        _renderer,
+        s_renderer,
         "Fullscreen Quad",
         fsQuadShaderProgram,
         L3DColorRegistry(),
@@ -169,7 +169,7 @@ L3DHandle l3dLoadForwardRenderQueue(
         2, 3, 0};
 
     L3DMesh *fsQuad = new L3DMesh(
-        _renderer,
+        s_renderer,
         vertices, 4,
         indices, 6,
         fsQuadMaterial,
@@ -227,10 +227,10 @@ L3DHandle l3dLoadTexture(
     const L3DImageWrapMethod &wrapT,
     const L3DImageWrapMethod &wrapR)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
     L3DTexture *texture = new L3DTexture(
-        _renderer,
+        s_renderer,
         type,
         format,
         data,
@@ -255,10 +255,10 @@ L3DHandle l3dLoadShader(
     const L3DShaderType &type,
     const char *code)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
     L3DShader *shader = new L3DShader(
-        _renderer,
+        s_renderer,
         type,
         code);
 
@@ -273,13 +273,13 @@ L3DHandle l3dLoadShaderProgram(
     const L3DHandle &fragmentShader,
     const L3DHandle &geometryShader)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
     L3DShaderProgram *shaderProgram = new L3DShaderProgram(
-        _renderer,
-        _renderer->getShader(vertexShader),
-        _renderer->getShader(fragmentShader),
-        _renderer->getShader(geometryShader));
+        s_renderer,
+        s_renderer->getShader(vertexShader),
+        s_renderer->getShader(fragmentShader),
+        s_renderer->getShader(geometryShader));
 
     if (shaderProgram)
         return shaderProgram->handle();
@@ -293,9 +293,9 @@ void l3dSetShaderProgramUniformF(
     float value,
     int index)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
@@ -306,9 +306,9 @@ void l3dSetShaderProgramUniformI(
     int value,
     int index)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
@@ -319,9 +319,9 @@ void l3dSetShaderProgramUniformUI(
     unsigned int value,
     int index)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
@@ -332,9 +332,9 @@ void l3dSetShaderProgramUniformB(
     bool value,
     int index)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
@@ -345,9 +345,9 @@ void l3dSetShaderProgramUniformVec2(
     const L3DVec2 &value,
     int index)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
@@ -358,9 +358,9 @@ void l3dSetShaderProgramUniformVec3(
     const L3DVec3 &value,
     int index)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
@@ -371,9 +371,9 @@ void l3dSetShaderProgramUniformVec4(
     const L3DVec4 &value,
     int index)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
@@ -384,9 +384,9 @@ void l3dSetShaderProgramUniformMat3(
     const L3DMat3 &value,
     int index)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
@@ -397,9 +397,9 @@ void l3dSetShaderProgramUniformMat4(
     const L3DMat4 &value,
     int index)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DShaderProgram *shaderProgram = _renderer->getShaderProgram(target);
+    L3DShaderProgram *shaderProgram = s_renderer->getShaderProgram(target);
     if (shaderProgram)
         shaderProgram->setUniform(_getUniformName(name, index).c_str(), value);
 }
@@ -423,97 +423,97 @@ L3DHandle l3dLoadFrameBuffer(
     const L3DHandle &textureColorAttachment14,
     const L3DHandle &textureColorAttachment15)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
     L3DTextureAttachments textures;
 
     if (textureDepthStencilAttachment.data.id)
     {
-        textures[L3D_DEPTH_STENCIL_ATTACHMENT] = _renderer->getTexture(textureDepthStencilAttachment);
+        textures[L3D_DEPTH_STENCIL_ATTACHMENT] = s_renderer->getTexture(textureDepthStencilAttachment);
     }
 
     if (textureColorAttachment0.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT0] = _renderer->getTexture(textureColorAttachment0);
+        textures[L3D_COLOR_ATTACHMENT0] = s_renderer->getTexture(textureColorAttachment0);
     }
 
     if (textureColorAttachment1.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT1] = _renderer->getTexture(textureColorAttachment1);
+        textures[L3D_COLOR_ATTACHMENT1] = s_renderer->getTexture(textureColorAttachment1);
     }
 
     if (textureColorAttachment2.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT2] = _renderer->getTexture(textureColorAttachment2);
+        textures[L3D_COLOR_ATTACHMENT2] = s_renderer->getTexture(textureColorAttachment2);
     }
 
     if (textureColorAttachment3.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT3] = _renderer->getTexture(textureColorAttachment3);
+        textures[L3D_COLOR_ATTACHMENT3] = s_renderer->getTexture(textureColorAttachment3);
     }
 
     if (textureColorAttachment4.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT4] = _renderer->getTexture(textureColorAttachment4);
+        textures[L3D_COLOR_ATTACHMENT4] = s_renderer->getTexture(textureColorAttachment4);
     }
 
     if (textureColorAttachment5.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT5] = _renderer->getTexture(textureColorAttachment5);
+        textures[L3D_COLOR_ATTACHMENT5] = s_renderer->getTexture(textureColorAttachment5);
     }
 
     if (textureColorAttachment6.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT6] = _renderer->getTexture(textureColorAttachment6);
+        textures[L3D_COLOR_ATTACHMENT6] = s_renderer->getTexture(textureColorAttachment6);
     }
 
     if (textureColorAttachment7.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT7] = _renderer->getTexture(textureColorAttachment7);
+        textures[L3D_COLOR_ATTACHMENT7] = s_renderer->getTexture(textureColorAttachment7);
     }
 
     if (textureColorAttachment8.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT8] = _renderer->getTexture(textureColorAttachment8);
+        textures[L3D_COLOR_ATTACHMENT8] = s_renderer->getTexture(textureColorAttachment8);
     }
 
     if (textureColorAttachment9.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT9] = _renderer->getTexture(textureColorAttachment9);
+        textures[L3D_COLOR_ATTACHMENT9] = s_renderer->getTexture(textureColorAttachment9);
     }
 
     if (textureColorAttachment10.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT10] = _renderer->getTexture(textureColorAttachment10);
+        textures[L3D_COLOR_ATTACHMENT10] = s_renderer->getTexture(textureColorAttachment10);
     }
 
     if (textureColorAttachment11.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT11] = _renderer->getTexture(textureColorAttachment11);
+        textures[L3D_COLOR_ATTACHMENT11] = s_renderer->getTexture(textureColorAttachment11);
     }
 
     if (textureColorAttachment12.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT12] = _renderer->getTexture(textureColorAttachment12);
+        textures[L3D_COLOR_ATTACHMENT12] = s_renderer->getTexture(textureColorAttachment12);
     }
 
     if (textureColorAttachment13.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT13] = _renderer->getTexture(textureColorAttachment13);
+        textures[L3D_COLOR_ATTACHMENT13] = s_renderer->getTexture(textureColorAttachment13);
     }
 
     if (textureColorAttachment14.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT14] = _renderer->getTexture(textureColorAttachment14);
+        textures[L3D_COLOR_ATTACHMENT14] = s_renderer->getTexture(textureColorAttachment14);
     }
 
     if (textureColorAttachment15.data.id)
     {
-        textures[L3D_COLOR_ATTACHMENT15] = _renderer->getTexture(textureColorAttachment15);
+        textures[L3D_COLOR_ATTACHMENT15] = s_renderer->getTexture(textureColorAttachment15);
     }
 
     L3DFrameBuffer *frameBuffer = new L3DFrameBuffer(
-        _renderer,
+        s_renderer,
         textures);
 
     if (frameBuffer)
@@ -530,12 +530,12 @@ L3DHandle l3dLoadMaterial(
     const L3DVec3 &specular,
     float shininess)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
     L3DMaterial *material = L3DMaterial::createBlinnPhongMaterial(
-        _renderer,
+        s_renderer,
         name,
-        _renderer->getShaderProgram(shaderProgram),
+        s_renderer->getShaderProgram(shaderProgram),
         diffuse,
         ambient,
         specular,
@@ -552,11 +552,11 @@ void l3dAddTextureToMaterial(
     const char *name,
     const L3DHandle &texture)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DMaterial *material = _renderer->getMaterial(target);
+    L3DMaterial *material = s_renderer->getMaterial(target);
     if (material)
-        material->textures[name] = _renderer->getTexture(texture);
+        material->textures[name] = s_renderer->getTexture(texture);
 
     return;
 }
@@ -566,10 +566,10 @@ L3DHandle l3dLoadCamera(
     const L3DMat4 &view,
     const L3DMat4 &projection)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
     L3DCamera *camera = new L3DCamera(
-        _renderer,
+        s_renderer,
         name,
         view,
         projection);
@@ -583,9 +583,9 @@ L3DHandle l3dLoadCamera(
 L3DMat4 l3dGetCameraView(
     const L3DHandle &target)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DCamera *camera = _renderer->getCamera(target);
+    L3DCamera *camera = s_renderer->getCamera(target);
 
     if (camera)
         return camera->view;
@@ -597,9 +597,9 @@ void l3dSetCameraView(
     const L3DHandle &target,
     const L3DMat4 &view)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DCamera *camera = _renderer->getCamera(target);
+    L3DCamera *camera = s_renderer->getCamera(target);
 
     if (camera)
         camera->view = view;
@@ -608,9 +608,9 @@ void l3dSetCameraView(
 L3DMat4 l3dGetCameraProj(
     const L3DHandle &target)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DCamera *camera = _renderer->getCamera(target);
+    L3DCamera *camera = s_renderer->getCamera(target);
 
     if (camera)
         return camera->proj;
@@ -622,9 +622,9 @@ void l3dSetCameraProj(
     const L3DHandle &target,
     const L3DMat4 &proj)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DCamera *camera = _renderer->getCamera(target);
+    L3DCamera *camera = s_renderer->getCamera(target);
 
     if (camera)
         camera->proj = proj;
@@ -634,9 +634,9 @@ void l3dTranslateCamera(
     const L3DHandle &target,
     const L3DVec3 &movement)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DCamera *camera = _renderer->getCamera(target);
+    L3DCamera *camera = s_renderer->getCamera(target);
 
     if (camera)
         camera->translate(movement);
@@ -647,9 +647,9 @@ void l3dRotateCamera(
     float radians,
     const L3DVec3 &direction)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DCamera *camera = _renderer->getCamera(target);
+    L3DCamera *camera = s_renderer->getCamera(target);
 
     if (camera)
         camera->rotate(radians, direction);
@@ -667,15 +667,15 @@ L3DHandle l3dLoadMesh(
     const L3DDrawPrimitive &drawPrimitive,
     unsigned int renderLayer)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
     L3DMesh *mesh = new L3DMesh(
-        _renderer,
+        s_renderer,
         vertices,
         vertexCount,
         indices,
         indexCount,
-        _renderer->getMaterial(material),
+        s_renderer->getMaterial(material),
         vertexFormat,
         transMatrix,
         drawType,
@@ -971,9 +971,9 @@ L3DHandle l3dLoadGrid(
 L3DMat4 l3dGetMeshTrans(
     const L3DHandle &target)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DMesh *mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = s_renderer->getMesh(target);
 
     if (mesh)
         return mesh->transMatrix;
@@ -983,9 +983,9 @@ L3DMat4 l3dGetMeshTrans(
 
 unsigned char l3dMeshRenderLayer(const L3DHandle &target)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DMesh *mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = s_renderer->getMesh(target);
 
     if (mesh)
         return mesh->renderLayer();
@@ -997,9 +997,9 @@ void l3dSetMeshTrans(
     const L3DHandle &target,
     const L3DMat4 &trans)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DMesh *mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = s_renderer->getMesh(target);
 
     if (mesh)
         mesh->transMatrix = trans;
@@ -1009,9 +1009,9 @@ void l3dTranslateMesh(
     const L3DHandle &target,
     const L3DVec3 &movement)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DMesh *mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = s_renderer->getMesh(target);
 
     if (mesh)
         mesh->translate(movement);
@@ -1022,9 +1022,9 @@ void l3dRotateMesh(
     float radians,
     const L3DVec3 &direction)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DMesh *mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = s_renderer->getMesh(target);
 
     if (mesh)
         mesh->rotate(radians, direction);
@@ -1034,9 +1034,9 @@ void l3dScaleMesh(
     const L3DHandle &target,
     const L3DVec3 &factor)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DMesh *mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = s_renderer->getMesh(target);
 
     if (mesh)
         mesh->scale(factor);
@@ -1046,10 +1046,10 @@ void l3dSetMeshMaterial(
     const L3DHandle &target,
     const L3DHandle &material)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DMesh *mesh = _renderer->getMesh(target);
-    L3DMaterial *mat = _renderer->getMaterial(material);
+    L3DMesh *mesh = s_renderer->getMesh(target);
+    L3DMaterial *mat = s_renderer->getMaterial(material);
 
     if (mesh)
         mesh->setMaterial(mat);
@@ -1059,9 +1059,9 @@ void l3dSetMeshRenderLayer(
     const L3DHandle &target,
     unsigned char renderLayer)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DMesh *mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = s_renderer->getMesh(target);
 
     if (mesh)
         mesh->setRenderLayer(renderLayer);
@@ -1073,9 +1073,9 @@ void l3dSetMeshInstances(
     unsigned int instanceCount,
     const L3DInstanceFormat &instanceFormat)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DMesh *mesh = _renderer->getMesh(target);
+    L3DMesh *mesh = s_renderer->getMesh(target);
 
     if (mesh && instances && instanceCount && instanceFormat)
         mesh->setInstances(instances, instanceCount, instanceFormat);
@@ -1086,10 +1086,10 @@ L3DHandle l3dLoadDirectionalLight(
     const L3DVec4 &color,
     unsigned int renderLayerMask)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
     L3DLight *light = L3DLight::createDirectionalLight(
-        _renderer,
+        s_renderer,
         direction,
         color,
         renderLayerMask);
@@ -1106,10 +1106,10 @@ L3DHandle l3dLoadPointLight(
     const L3DLightAttenuation &attenuation,
     unsigned int renderLayerMask)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
     L3DLight *light = L3DLight::createPointLight(
-        _renderer,
+        s_renderer,
         position,
         color,
         attenuation,
@@ -1128,10 +1128,10 @@ L3DHandle l3dLoadSpotLight(
     const L3DLightAttenuation &attenuation,
     unsigned int renderLayerMask)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
     L3DLight *light = L3DLight::createSpotLight(
-        _renderer,
+        s_renderer,
         position,
         direction,
         color,
@@ -1146,9 +1146,9 @@ L3DHandle l3dLoadSpotLight(
 
 int l3dLightType(const L3DHandle &target)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DLight *light = _renderer->getLight(target);
+    L3DLight *light = s_renderer->getLight(target);
 
     if (light)
         return light->type;
@@ -1158,9 +1158,9 @@ int l3dLightType(const L3DHandle &target)
 
 unsigned int l3dLightRenderLayerMask(const L3DHandle &target)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DLight *light = _renderer->getLight(target);
+    L3DLight *light = s_renderer->getLight(target);
 
     if (light)
         return light->renderLayerMask();
@@ -1171,9 +1171,9 @@ unsigned int l3dLightRenderLayerMask(const L3DHandle &target)
 bool l3dIsLightOn(
     const L3DHandle &target)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DLight *light = _renderer->getLight(target);
+    L3DLight *light = s_renderer->getLight(target);
 
     if (light)
         return light->isOn();
@@ -1185,9 +1185,9 @@ void l3dSetLightRenderLayerMask(
     const L3DHandle &target,
     unsigned int renderLayerMask)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DLight *light = _renderer->getLight(target);
+    L3DLight *light = s_renderer->getLight(target);
 
     if (light)
         return light->setRenderLayerMask(renderLayerMask);
@@ -1197,9 +1197,9 @@ void l3dSetLightDirection(
     const L3DHandle &target,
     const L3DVec3 &direction)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DLight *light = _renderer->getLight(target);
+    L3DLight *light = s_renderer->getLight(target);
 
     if (light)
         light->direction = direction;
@@ -1211,9 +1211,9 @@ void l3dSetLightAttenuation(
     float kl,
     float kq)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DLight *light = _renderer->getLight(target);
+    L3DLight *light = s_renderer->getLight(target);
 
     if (light)
         light->attenuation = L3DLightAttenuation(kc, kl, kq);
@@ -1223,9 +1223,9 @@ void l3dSetLightColor(
     const L3DHandle &target,
     const L3DVec4 &color)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DLight *light = _renderer->getLight(target);
+    L3DLight *light = s_renderer->getLight(target);
 
     if (light)
         light->color = color;
@@ -1235,9 +1235,9 @@ void l3dTranslateLight(
     const L3DHandle &target,
     const L3DVec3 &movement)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DLight *light = _renderer->getLight(target);
+    L3DLight *light = s_renderer->getLight(target);
 
     if (light)
         light->translate(movement);
@@ -1248,9 +1248,9 @@ void l3dRotateLight(
     float radians,
     const L3DVec3 &direction)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DLight *light = _renderer->getLight(target);
+    L3DLight *light = s_renderer->getLight(target);
 
     if (light)
         light->rotate(radians, direction);
@@ -1260,9 +1260,9 @@ void l3dLightLookAt(
     const L3DHandle &target,
     const L3DVec3 &targetPosition)
 {
-    L3D_ASSERT(_renderer != L3D_NULLPTR);
+    L3D_ASSERT(s_renderer != L3D_NULLPTR);
 
-    L3DLight *light = _renderer->getLight(target);
+    L3DLight *light = s_renderer->getLight(target);
 
     if (light)
         light->lookAt(targetPosition);

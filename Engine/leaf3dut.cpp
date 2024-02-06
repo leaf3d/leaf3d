@@ -38,18 +38,18 @@
 using namespace l3d;
 
 #ifdef __APPLE__
-static std::string _defaultRootPath = "";
+static std::string s_defaultRootPath = "";
 #else
-static std::string _defaultRootPath = "Resources/";
+static std::string s_defaultRootPath = "Resources/";
 #endif
 
-static std::string _rootPath = _defaultRootPath;
+static std::string s_rootPath = s_defaultRootPath;
 
 int l3dutInit(const char *rootPath)
 {
     if (rootPath)
     {
-        _rootPath = rootPath;
+        s_rootPath = rootPath;
     }
 
     return L3D_TRUE;
@@ -57,7 +57,7 @@ int l3dutInit(const char *rootPath)
 
 int l3dutTerminate()
 {
-    _rootPath = _defaultRootPath;
+    s_rootPath = s_defaultRootPath;
 
     return L3D_TRUE;
 }
@@ -147,7 +147,7 @@ L3DHandle l3dutLoadTexture2D(
         return L3D_INVALID_HANDLE;
 
     int width, height, comp = 0;
-    unsigned char *img = stbi_load((_rootPath + filename).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *img = stbi_load((s_rootPath + filename).c_str(), &width, &height, &comp, desiredFormat);
     L3DHandle texture = l3dLoadTexture(L3D_TEXTURE_2D, comp == 4 ? L3D_RGBA : L3D_RGB, img, width, height, 0);
     stbi_image_free(img);
 
@@ -167,17 +167,17 @@ L3DHandle l3dutLoadTextureCube(
         return L3D_INVALID_HANDLE;
 
     int width, height, comp, size = 0;
-    unsigned char *imgRight = stbi_load((_rootPath + filenameRight).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *imgRight = stbi_load((s_rootPath + filenameRight).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char *imgLeft = stbi_load((_rootPath + filenameLeft).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *imgLeft = stbi_load((s_rootPath + filenameLeft).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char *imgTop = stbi_load((_rootPath + filenameTop).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *imgTop = stbi_load((s_rootPath + filenameTop).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char *imgBottom = stbi_load((_rootPath + filenameBottom).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *imgBottom = stbi_load((s_rootPath + filenameBottom).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char *imgBack = stbi_load((_rootPath + filenameBack).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *imgBack = stbi_load((s_rootPath + filenameBack).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char *imgFront = stbi_load((_rootPath + filenameFront).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *imgFront = stbi_load((s_rootPath + filenameFront).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
 
     unsigned char *img = (unsigned char *)malloc(size);
@@ -210,7 +210,7 @@ L3DHandle l3dutLoadShader(const L3DShaderType &type, const char *filename)
 
     std::ifstream file;
 
-    file.open((_rootPath + filename).c_str());
+    file.open((s_rootPath + filename).c_str());
 
     if (!file)
         return L3D_INVALID_HANDLE;
@@ -259,7 +259,7 @@ L3DHandle *l3dutLoadMeshes(
 
     Assimp::Importer importer;
 
-    const aiScene *scene = importer.ReadFile(_rootPath + filename, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    const aiScene *scene = importer.ReadFile(s_rootPath + filename, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
     if (!scene)
     {
