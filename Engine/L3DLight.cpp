@@ -25,22 +25,22 @@
 using namespace l3d;
 
 L3DLight::L3DLight(
-    L3DRenderer* renderer,
-    const L3DLightType& type,
-    const L3DVec3& position,
-    const L3DVec3& direction,
-    const L3DVec4& color,
-    const L3DLightAttenuation& attenuation,
-    unsigned int renderLayerMask
-) : L3DResource(L3D_LIGHT, renderer),
-    type(type),
-    position(position),
-    direction(direction),
-    color(color),
-    attenuation(attenuation),
-    m_renderLayerMask(renderLayerMask)
+    L3DRenderer *renderer,
+    const L3DLightType &type,
+    const L3DVec3 &position,
+    const L3DVec3 &direction,
+    const L3DVec4 &color,
+    const L3DLightAttenuation &attenuation,
+    unsigned int renderLayerMask) : L3DResource(L3D_LIGHT, renderer),
+                                    type(type),
+                                    position(position),
+                                    direction(direction),
+                                    color(color),
+                                    attenuation(attenuation),
+                                    m_renderLayerMask(renderLayerMask)
 {
-    if (renderer) renderer->addLight(this);
+    if (renderer)
+        renderer->addLight(this);
 }
 
 void L3DLight::setRenderLayerMask(unsigned int renderLayerMask)
@@ -50,31 +50,29 @@ void L3DLight::setRenderLayerMask(unsigned int renderLayerMask)
     // TODO: can we optimize rendering from here?
 }
 
-void L3DLight::translate(const L3DVec3& movement)
+void L3DLight::translate(const L3DVec3 &movement)
 {
     this->position += movement;
 }
 
 void L3DLight::rotate(
     float radians,
-    const L3DVec3& direction
-)
+    const L3DVec3 &direction)
 {
     this->position = glm::rotate(this->position, radians, direction);
     this->direction = glm::rotate(this->direction, radians, direction);
 }
 
-void L3DLight::lookAt(const L3DVec3& targetPosition)
+void L3DLight::lookAt(const L3DVec3 &targetPosition)
 {
     this->direction = glm::normalize(this->position - targetPosition);
 }
 
-L3DLight* L3DLight::createDirectionalLight(
-    L3DRenderer* renderer,
-    const L3DVec3& direction,
-    const L3DVec4& color,
-    unsigned int renderLayerMask
-)
+L3DLight *L3DLight::createDirectionalLight(
+    L3DRenderer *renderer,
+    const L3DVec3 &direction,
+    const L3DVec4 &color,
+    unsigned int renderLayerMask)
 {
     return new L3DLight(
         renderer,
@@ -83,17 +81,15 @@ L3DLight* L3DLight::createDirectionalLight(
         glm::normalize(direction),
         color,
         L3DLightAttenuation(0, 0, 0),
-        renderLayerMask
-    );
+        renderLayerMask);
 }
 
-L3DLight* L3DLight::createPointLight(
-    L3DRenderer* renderer,
-    const L3DVec3& position,
-    const L3DVec4& color,
-    const L3DLightAttenuation& attenuation,
-    unsigned int renderLayerMask
-)
+L3DLight *L3DLight::createPointLight(
+    L3DRenderer *renderer,
+    const L3DVec3 &position,
+    const L3DVec4 &color,
+    const L3DLightAttenuation &attenuation,
+    unsigned int renderLayerMask)
 {
     return new L3DLight(
         renderer,
@@ -102,18 +98,16 @@ L3DLight* L3DLight::createPointLight(
         L3DVec3(0, 0, 0),
         color,
         attenuation,
-        renderLayerMask
-    );
+        renderLayerMask);
 }
 
-L3DLight* L3DLight::createSpotLight(
-    L3DRenderer* renderer,
-    const L3DVec3& position,
-    const L3DVec3& direction,
-    const L3DVec4& color,
-    const L3DLightAttenuation& attenuation,
-    unsigned int renderLayerMask
-)
+L3DLight *L3DLight::createSpotLight(
+    L3DRenderer *renderer,
+    const L3DVec3 &position,
+    const L3DVec3 &direction,
+    const L3DVec4 &color,
+    const L3DLightAttenuation &attenuation,
+    unsigned int renderLayerMask)
 {
     return new L3DLight(
         renderer,
@@ -122,6 +116,5 @@ L3DLight* L3DLight::createSpotLight(
         direction,
         color,
         attenuation,
-        renderLayerMask
-    );
+        renderLayerMask);
 }

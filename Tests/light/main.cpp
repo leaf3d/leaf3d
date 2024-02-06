@@ -24,35 +24,31 @@
 
 using namespace l3d;
 
-TEST_CASE( "Test getting L3DLight type", "[leaf3d][light][get][type]" )
+TEST_CASE("Test getting L3DLight type", "[leaf3d][light][get][type]")
 {
-    L3DLight* dirLight = L3DLight::createDirectionalLight(
-        0, L3DVec3(0, -1, 0)
-    );
+    L3DLight *dirLight = L3DLight::createDirectionalLight(
+        0, L3DVec3(0, -1, 0));
 
     REQUIRE(dirLight->type == L3D_LIGHT_DIRECTIONAL);
 
-    L3DLight* pointLight = L3DLight::createPointLight(
-        0, L3DVec3(0, 0, 0)
-    );
+    L3DLight *pointLight = L3DLight::createPointLight(
+        0, L3DVec3(0, 0, 0));
 
     REQUIRE(pointLight->type == L3D_LIGHT_POINT);
 
-    L3DLight* spotLight = L3DLight::createSpotLight(
-        0, L3DVec3(0, 0, 0)
-    );
+    L3DLight *spotLight = L3DLight::createSpotLight(
+        0, L3DVec3(0, 0, 0));
 
     REQUIRE(spotLight->type == L3D_LIGHT_SPOT);
 }
 
-TEST_CASE( "Test L3DLight active status", "[leaf3d][light][get][isOn]" )
+TEST_CASE("Test L3DLight active status", "[leaf3d][light][get][isOn]")
 {
     L3DVec4 lightColor = L3DVec4(1, 1, 1, 1);
 
-    L3DLight* light = L3DLight::createPointLight(
+    L3DLight *light = L3DLight::createPointLight(
         0, L3DVec3(0, 0, 0),
-        lightColor
-    );
+        lightColor);
 
     REQUIRE(light->isOn() == true);
 

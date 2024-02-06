@@ -40,21 +40,20 @@ namespace l3d
 
     protected:
         L3DRenderCommand() : m_type(L3D_INVALID_RENDER_COMMAND) {}
-        L3DRenderCommand(const L3DRenderCommandType& type) : m_type(type) {}
+        L3DRenderCommand(const L3DRenderCommandType &type) : m_type(type) {}
     };
 
-    typedef std::vector<L3DRenderCommand*> L3DRenderCommandList;
+    typedef std::vector<L3DRenderCommand *> L3DRenderCommandList;
 
     class L3DSwitchFrameBufferCommand : public L3DRenderCommand
     {
     public:
-        L3DFrameBuffer* frameBuffer;
+        L3DFrameBuffer *frameBuffer;
 
     public:
         L3DSwitchFrameBufferCommand(
-            L3DFrameBuffer* frameBuffer = 0
-        ) : L3DRenderCommand(L3D_SWITCH_FRAME_BUFFER),
-            frameBuffer(frameBuffer) {}
+            L3DFrameBuffer *frameBuffer = 0) : L3DRenderCommand(L3D_SWITCH_FRAME_BUFFER),
+                                               frameBuffer(frameBuffer) {}
     };
 
     class L3DClearBuffersCommand : public L3DRenderCommand
@@ -70,12 +69,11 @@ namespace l3d
             bool colorBuffer = true,
             bool depthBuffer = true,
             bool stencilBuffer = true,
-            const L3DVec4& clearColor = L3DVec4(1, 1, 1, 1)
-        ) : L3DRenderCommand(L3D_CLEAR_BUFFERS),
-            colorBuffer(colorBuffer),
-            depthBuffer(depthBuffer),
-            stencilBuffer(stencilBuffer),
-            clearColor(clearColor) {}
+            const L3DVec4 &clearColor = L3DVec4(1, 1, 1, 1)) : L3DRenderCommand(L3D_CLEAR_BUFFERS),
+                                                               colorBuffer(colorBuffer),
+                                                               depthBuffer(depthBuffer),
+                                                               stencilBuffer(stencilBuffer),
+                                                               clearColor(clearColor) {}
     };
 
     class L3DSetDepthTestCommand : public L3DRenderCommand
@@ -87,10 +85,9 @@ namespace l3d
     public:
         L3DSetDepthTestCommand(
             bool enable = true,
-            const L3DDepthFactor& factor = L3D_LESS
-        ) : L3DRenderCommand(L3D_SET_DEPTH_TEST),
-            enable(enable),
-            factor(factor) {}
+            const L3DDepthFactor &factor = L3D_LESS) : L3DRenderCommand(L3D_SET_DEPTH_TEST),
+                                                       enable(enable),
+                                                       factor(factor) {}
     };
 
     class L3DSetDepthMaskCommand : public L3DRenderCommand
@@ -100,9 +97,8 @@ namespace l3d
 
     public:
         L3DSetDepthMaskCommand(
-            bool enable = true
-        ) : L3DRenderCommand(L3D_SET_DEPTH_MASK),
-            enable(enable) {}
+            bool enable = true) : L3DRenderCommand(L3D_SET_DEPTH_MASK),
+                                  enable(enable) {}
     };
 
     class L3DSetStencilTestCommand : public L3DRenderCommand
@@ -112,9 +108,8 @@ namespace l3d
 
     public:
         L3DSetStencilTestCommand(
-            bool enable = true
-        ) : L3DRenderCommand(L3D_SET_STENCIL_TEST),
-            enable(enable) {}
+            bool enable = true) : L3DRenderCommand(L3D_SET_STENCIL_TEST),
+                                  enable(enable) {}
     };
 
     class L3DSetBlendCommand : public L3DRenderCommand
@@ -127,12 +122,11 @@ namespace l3d
     public:
         L3DSetBlendCommand(
             bool enable = true,
-            const L3DBlendFactor& srcFactor = L3D_SRC_ALPHA,
-            const L3DBlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
-        ) : L3DRenderCommand(L3D_SET_BLEND),
-            enable(enable),
-            srcFactor(srcFactor),
-            dstFactor(dstFactor) {}
+            const L3DBlendFactor &srcFactor = L3D_SRC_ALPHA,
+            const L3DBlendFactor &dstFactor = L3D_ONE_MINUS_SRC_ALPHA) : L3DRenderCommand(L3D_SET_BLEND),
+                                                                         enable(enable),
+                                                                         srcFactor(srcFactor),
+                                                                         dstFactor(dstFactor) {}
     };
 
     class L3DSetCullFaceCommand : public L3DRenderCommand
@@ -144,10 +138,9 @@ namespace l3d
     public:
         L3DSetCullFaceCommand(
             bool enable = true,
-            const L3DCullFace& cullFace = L3D_BACK_FACE
-        ) : L3DRenderCommand(L3D_SET_BLEND),
-            enable(enable),
-            cullFace(cullFace) {}
+            const L3DCullFace &cullFace = L3D_BACK_FACE) : L3DRenderCommand(L3D_SET_BLEND),
+                                                           enable(enable),
+                                                           cullFace(cullFace) {}
     };
 
     class L3DDrawMeshesCommand : public L3DRenderCommand
@@ -157,58 +150,49 @@ namespace l3d
 
     public:
         L3DDrawMeshesCommand(
-            unsigned char renderLayer = 0
-        ) : L3DRenderCommand(L3D_DRAW_MESHES),
-            renderLayer(renderLayer) {}
+            unsigned char renderLayer = 0) : L3DRenderCommand(L3D_DRAW_MESHES),
+                                             renderLayer(renderLayer) {}
     };
 
     class L3DRenderQueue : public L3DResource
     {
     protected:
-        const char* m_name;
+        const char *m_name;
         L3DRenderCommandList m_commands;
 
     public:
         L3DRenderQueue(
-            L3DRenderer* renderer,
-            const char* name
-        );
+            L3DRenderer *renderer,
+            const char *name);
         ~L3DRenderQueue();
 
-        const char* name() const { return m_name; }
+        const char *name() const { return m_name; }
         unsigned int commandCount() const { return m_commands.size(); }
-        const L3DRenderCommandList& commands() const { return m_commands; }
+        const L3DRenderCommandList &commands() const { return m_commands; }
 
-        void appendCommands(const L3DRenderCommandList& commands);
+        void appendCommands(const L3DRenderCommandList &commands);
 
         void addSwitchFrameBufferCommand(
-            L3DFrameBuffer* frameBuffer = 0
-        );
+            L3DFrameBuffer *frameBuffer = 0);
         void addClearBuffersCommand(
             bool colorBuffer = true,
             bool depthBuffer = true,
             bool stencilBuffer = true,
-            const L3DVec4& clearColor = L3DVec4(1, 1, 1, 1)
-        );
+            const L3DVec4 &clearColor = L3DVec4(1, 1, 1, 1));
         void addSetDepthTestCommand(
             bool enable = true,
-            const L3DDepthFactor& factor = L3D_LESS
-        );
+            const L3DDepthFactor &factor = L3D_LESS);
         void addSetDepthMaskCommand(
-            bool enable = true
-        );
+            bool enable = true);
         void addSetStencilTestCommand(
-            bool enable = true
-        );
+            bool enable = true);
         void addSetBlendCommand(
             bool enable = true,
-            const L3DBlendFactor& srcFactor = L3D_SRC_ALPHA,
-            const L3DBlendFactor& dstFactor = L3D_ONE_MINUS_SRC_ALPHA
-        );
+            const L3DBlendFactor &srcFactor = L3D_SRC_ALPHA,
+            const L3DBlendFactor &dstFactor = L3D_ONE_MINUS_SRC_ALPHA);
         void addSetCullFaceCommand(
             bool enable = true,
-            const L3DCullFace& cullFace = L3D_BACK_FACE
-        );
+            const L3DCullFace &cullFace = L3D_BACK_FACE);
         void addDrawMeshesCommand(unsigned char renderLayer = 0);
     };
 }

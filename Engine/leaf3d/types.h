@@ -36,7 +36,7 @@
 #define L3D_FALSE 0
 #define L3D_NULLPTR 0
 
-#define L3D_BIT(pos) (1<<(pos))
+#define L3D_BIT(pos) (1 << (pos))
 #define L3D_SET_BIT(var, pos, enable) (enable ? var | L3D_BIT(pos) : var & ~L3D_BIT(pos))
 #define L3D_TEST_BIT(var, pos) (((var) & L3D_BIT(pos)) > 0)
 
@@ -98,14 +98,14 @@ namespace l3d
 
     enum L3D_API L3DInstanceFormat
     {
-      L3D_INVALID_INSTANCE_FORMAT = 0,
-      L3D_INSTANCE_POS2 = 2,
-      L3D_INSTANCE_POS3 = 3,
-      L3D_INSTANCE_POS2_UV2 = 4,
-      L3D_INSTANCE_POS3_UV2 = 5,
-      L3D_INSTANCE_TRANS4_TRANS4_TRANS4_TRANS4 = 16,
-      L3D_INSTANCE_TRANS4_TRANS4_TRANS4_TRANS4_UV2 = 18,
-      L3D_MAX_INSTANCE_FORMAT
+        L3D_INVALID_INSTANCE_FORMAT = 0,
+        L3D_INSTANCE_POS2 = 2,
+        L3D_INSTANCE_POS3 = 3,
+        L3D_INSTANCE_POS2_UV2 = 4,
+        L3D_INSTANCE_POS3_UV2 = 5,
+        L3D_INSTANCE_TRANS4_TRANS4_TRANS4_TRANS4 = 16,
+        L3D_INSTANCE_TRANS4_TRANS4_TRANS4_TRANS4_UV2 = 18,
+        L3D_MAX_INSTANCE_FORMAT
     };
 
     enum L3D_API L3DImageFormat
@@ -201,11 +201,11 @@ namespace l3d
         int valueI;
         unsigned int valueUI;
         bool valueB;
-        float* valueVec2;
-        float* valueVec3;
-        float* valueVec4;
-        float* valueMat3;
-        float* valueMat4;
+        float *valueVec2;
+        float *valueVec3;
+        float *valueVec4;
+        float *valueMat3;
+        float *valueMat4;
     };
 
     enum L3D_API L3DDepthFactor
@@ -234,9 +234,9 @@ namespace l3d
 
     enum L3D_API L3DCullFace
     {
-      L3D_FRONT_FACE = 0,
-      L3D_BACK_FACE,
-      L3D_BOTH_FACES
+        L3D_FRONT_FACE = 0,
+        L3D_BACK_FACE,
+        L3D_BOTH_FACES
     };
 
     enum L3D_API L3DResourceType
@@ -299,8 +299,7 @@ namespace l3d
         L3DLightAttenuation(
             float kc,
             float kl,
-            float kq
-        ) : kc(kc), kl(kl), kq(kq) {}
+            float kq) : kc(kc), kl(kl), kq(kq) {}
 
         float kc;
         float kl;

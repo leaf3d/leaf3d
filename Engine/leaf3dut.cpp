@@ -45,9 +45,10 @@ static std::string _defaultRootPath = "Resources/";
 
 static std::string _rootPath = _defaultRootPath;
 
-int l3dutInit(const char* rootPath)
+int l3dutInit(const char *rootPath)
 {
-    if (rootPath) {
+    if (rootPath)
+    {
         _rootPath = rootPath;
     }
 
@@ -61,22 +62,22 @@ int l3dutTerminate()
     return L3D_TRUE;
 }
 
-void l3dutPrintVec2(const L3DVec2& vec)
+void l3dutPrintVec2(const L3DVec2 &vec)
 {
     printf("( % .3f, % .3f  )\n", vec.x, vec.y);
 }
 
-void l3dutPrintVec3(const L3DVec3& vec)
+void l3dutPrintVec3(const L3DVec3 &vec)
 {
     printf("( % .3f, % .3f, % .3f  )\n", vec.x, vec.y, vec.z);
 }
 
-void l3dutPrintVec4(const L3DVec4& vec)
+void l3dutPrintVec4(const L3DVec4 &vec)
 {
     printf("( % .3f, % .3f, % .3f, % .3f  )\n", vec.x, vec.y, vec.z, vec.w);
 }
 
-void l3dutPrintMat3(const L3DMat3& mat)
+void l3dutPrintMat3(const L3DMat3 &mat)
 {
     printf(" % .3f", mat[0][0]);
     printf(" % .3f", mat[1][0]);
@@ -96,7 +97,7 @@ void l3dutPrintMat3(const L3DMat3& mat)
     printf("\n");
 }
 
-void l3dutPrintMat4(const L3DMat4& mat)
+void l3dutPrintMat4(const L3DMat4 &mat)
 {
     printf(" % .3f", mat[0][0]);
     printf(" % .3f", mat[1][0]);
@@ -139,15 +140,14 @@ int l3dutPrintFrameStats(double frameTime)
 }
 
 L3DHandle l3dutLoadTexture2D(
-    const char* filename,
-    const L3DImageFormat& desiredFormat
-)
+    const char *filename,
+    const L3DImageFormat &desiredFormat)
 {
     if (!filename)
         return L3D_INVALID_HANDLE;
 
     int width, height, comp = 0;
-    unsigned char* img = stbi_load((_rootPath + filename).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *img = stbi_load((_rootPath + filename).c_str(), &width, &height, &comp, desiredFormat);
     L3DHandle texture = l3dLoadTexture(L3D_TEXTURE_2D, comp == 4 ? L3D_RGBA : L3D_RGB, img, width, height, 0);
     stbi_image_free(img);
 
@@ -155,33 +155,32 @@ L3DHandle l3dutLoadTexture2D(
 }
 
 L3DHandle l3dutLoadTextureCube(
-    const char* filenameRight,
-    const char* filenameLeft,
-    const char* filenameTop,
-    const char* filenameBottom,
-    const char* filenameBack,
-    const char* filenameFront,
-    const L3DImageFormat& desiredFormat
-)
+    const char *filenameRight,
+    const char *filenameLeft,
+    const char *filenameTop,
+    const char *filenameBottom,
+    const char *filenameBack,
+    const char *filenameFront,
+    const L3DImageFormat &desiredFormat)
 {
     if (!filenameRight || !filenameLeft || !filenameTop || !filenameBottom || !filenameBack || !filenameFront)
         return L3D_INVALID_HANDLE;
 
     int width, height, comp, size = 0;
-    unsigned char* imgRight = stbi_load((_rootPath + filenameRight).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *imgRight = stbi_load((_rootPath + filenameRight).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char* imgLeft = stbi_load((_rootPath + filenameLeft).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *imgLeft = stbi_load((_rootPath + filenameLeft).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char* imgTop = stbi_load((_rootPath + filenameTop).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *imgTop = stbi_load((_rootPath + filenameTop).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char* imgBottom = stbi_load((_rootPath + filenameBottom).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *imgBottom = stbi_load((_rootPath + filenameBottom).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char* imgBack = stbi_load((_rootPath + filenameBack).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *imgBack = stbi_load((_rootPath + filenameBack).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
-    unsigned char* imgFront = stbi_load((_rootPath + filenameFront).c_str(), &width, &height, &comp, desiredFormat);
+    unsigned char *imgFront = stbi_load((_rootPath + filenameFront).c_str(), &width, &height, &comp, desiredFormat);
     size += width * height * comp;
 
-    unsigned char* img = (unsigned char*)malloc(size);
+    unsigned char *img = (unsigned char *)malloc(size);
     unsigned int faceSize = size / 6;
     memcpy(img, imgRight, faceSize);
     memcpy(img + faceSize, imgLeft, faceSize);
@@ -204,7 +203,7 @@ L3DHandle l3dutLoadTextureCube(
     return texture;
 }
 
-L3DHandle l3dutLoadShader(const L3DShaderType& type, const char* filename)
+L3DHandle l3dutLoadShader(const L3DShaderType &type, const char *filename)
 {
     if (!filename)
         return L3D_INVALID_HANDLE;
@@ -228,10 +227,9 @@ L3DHandle l3dutLoadShader(const L3DShaderType& type, const char* filename)
 }
 
 L3DHandle l3dutLoadShaderProgram(
-    const char* vertexShaderFilename,
-    const char* fragmentShaderFilename,
-    const char* geometryShaderFilename
-)
+    const char *vertexShaderFilename,
+    const char *fragmentShaderFilename,
+    const char *geometryShaderFilename)
 {
     if (!vertexShaderFilename || !fragmentShaderFilename)
         return L3D_INVALID_HANDLE;
@@ -243,12 +241,11 @@ L3DHandle l3dutLoadShaderProgram(
     return l3dLoadShaderProgram(vertexShader, fragmentShader, geometryShader);
 }
 
-L3DHandle* l3dutLoadMeshes(
-    const char* filename,
-    const L3DHandle& shaderProgram,
-    unsigned int* meshCount,
-    unsigned int renderLayer
-)
+L3DHandle *l3dutLoadMeshes(
+    const char *filename,
+    const L3DHandle &shaderProgram,
+    unsigned int *meshCount,
+    unsigned int renderLayer)
 {
     if (!filename)
     {
@@ -262,7 +259,7 @@ L3DHandle* l3dutLoadMeshes(
 
     Assimp::Importer importer;
 
-    const aiScene* scene = importer.ReadFile(_rootPath + filename, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+    const aiScene *scene = importer.ReadFile(_rootPath + filename, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
     if (!scene)
     {
@@ -274,7 +271,7 @@ L3DHandle* l3dutLoadMeshes(
 
     for (unsigned int i = 0; i < scene->mNumMeshes; ++i)
     {
-        const aiMesh* mesh = scene->mMeshes[i];
+        const aiMesh *mesh = scene->mMeshes[i];
 
         std::vector<float> vertices;
         std::vector<unsigned int> indices;
@@ -326,7 +323,7 @@ L3DHandle* l3dutLoadMeshes(
             }
         }
 
-        for(unsigned int j = 0; j < mesh->mNumFaces; ++j)
+        for (unsigned int j = 0; j < mesh->mNumFaces; ++j)
         {
             indices.push_back(mesh->mFaces[j].mIndices[0]);
             indices.push_back(mesh->mFaces[j].mIndices[1]);
@@ -334,9 +331,9 @@ L3DHandle* l3dutLoadMeshes(
         }
 
         L3DHandle material;
-        if(mesh->mMaterialIndex >= 0)
+        if (mesh->mMaterialIndex >= 0)
         {
-            aiMaterial* mat = scene->mMaterials[mesh->mMaterialIndex];
+            aiMaterial *mat = scene->mMaterials[mesh->mMaterialIndex];
 
             aiString materialName;
             mat->Get(AI_MATKEY_NAME, materialName);
@@ -359,8 +356,7 @@ L3DHandle* l3dutLoadMeshes(
                 L3DVec3(diffuse.r, diffuse.g, diffuse.b),
                 L3DVec3(ambient.r, ambient.g, ambient.b),
                 L3DVec3(specular.r, specular.g, specular.b),
-                shininess
-            );
+                shininess);
 
             if (mat->GetTextureCount(aiTextureType_DIFFUSE) > 0)
             {
@@ -405,8 +401,7 @@ L3DHandle* l3dutLoadMeshes(
             material,
             vertexFormat,
             L3DMat4(), L3D_DRAW_STATIC, L3D_DRAW_TRIANGLES,
-            renderLayer
-        );
+            renderLayer);
 
         if (loadedMesh.repr)
             meshes.push_back(loadedMesh);
@@ -416,8 +411,8 @@ L3DHandle* l3dutLoadMeshes(
         *meshCount = meshes.size();
 
     unsigned int vecSize = meshes.size() * sizeof(L3DHandle);
-    void* retPtr = malloc(vecSize);
+    void *retPtr = malloc(vecSize);
     memcpy(retPtr, meshes.data(), vecSize);
 
-    return (L3DHandle*)retPtr;
+    return (L3DHandle *)retPtr;
 }

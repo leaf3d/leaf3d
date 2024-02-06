@@ -34,29 +34,26 @@ namespace l3d
         L3DMat4 proj;
 
     protected:
-        const char* m_name;
+        const char *m_name;
 
     public:
         L3DCamera(
-            L3DRenderer* renderer,
-            const char* name = "Default",
-            const L3DMat4& view = glm::lookAt(
+            L3DRenderer *renderer,
+            const char *name = "Default",
+            const L3DMat4 &view = glm::lookAt(
                 glm::vec3(0.0f, 0.0f, 8.0f),
                 glm::vec3(0.0f, 0.0f, 0.0f),
-                glm::vec3(0.0f, 1.0f, 0.0f)
-            ),
-            const L3DMat4& proj = glm::perspective(45.0f, 1.333333333f, 1.0f, 100.0f)
-        );
+                glm::vec3(0.0f, 1.0f, 0.0f)),
+            const L3DMat4 &proj = glm::perspective(45.0f, 1.333333333f, 1.0f, 100.0f));
         ~L3DCamera() {}
 
-        const char* name() const { return m_name; }
+        const char *name() const { return m_name; }
         L3DVec3 position() const;
 
-        void translate(const L3DVec3& movement);
+        void translate(const L3DVec3 &movement);
         void rotate(
             float radians,
-            const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
-        );
+            const L3DVec3 &direction = glm::vec3(0.0f, 1.0f, 0.0f));
     };
 }
 

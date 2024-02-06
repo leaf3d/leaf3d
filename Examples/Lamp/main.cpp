@@ -25,8 +25,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#define WINDOW_WIDTH    1024
-#define WINDOW_HEIGHT   768
+#define WINDOW_WIDTH 1024
+#define WINDOW_HEIGHT 768
 
 using namespace l3d;
 
@@ -35,7 +35,8 @@ int main()
     // -------------------------------- INIT ------------------------------- //
 
     // Init GLFW.
-    if (glfwInit() != GL_TRUE) {
+    if (glfwInit() != GL_TRUE)
+    {
         fprintf(stderr, "Failed to initialize GLFW\n");
         return -1;
     }
@@ -46,17 +47,19 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "leaf3d", L3D_NULLPTR, L3D_NULLPTR);
+    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "leaf3d", L3D_NULLPTR, L3D_NULLPTR);
     glfwMakeContextCurrent(window);
 
     // Init leaf3d.
-    if (l3dInit() != L3D_TRUE) {
+    if (l3dInit() != L3D_TRUE)
+    {
         fprintf(stderr, "Failed to initialize leaf3d\n");
         return -2;
     }
 
     // Init leaf3dut.
-    if (l3dutInit() != L3D_TRUE) {
+    if (l3dutInit() != L3D_TRUE)
+    {
         fprintf(stderr, "Failed to initialize leaf3dut\n");
         return -3;
     }
@@ -83,8 +86,8 @@ int main()
 
     // Load a lamp.
     unsigned int meshCount = 0;
-    L3DHandle* lamp = l3dutLoadMeshes("lamp.obj", blinnPhongShaderProgram, &meshCount);
-    for (int i=0; i<meshCount; ++i)
+    L3DHandle *lamp = l3dutLoadMeshes("lamp.obj", blinnPhongShaderProgram, &meshCount);
+    for (int i = 0; i < meshCount; ++i)
     {
         l3dTranslateMesh(lamp[i], L3DVec3(-8, 0, 0));
         l3dScaleMesh(lamp[i], L3DVec3(8, 8, 8));
@@ -145,12 +148,10 @@ int main()
     L3DHandle camera = l3dLoadCamera(
         "Default",
         glm::lookAt(
-           glm::vec3(0.0f, 10.0f, 22.0f),
-           glm::vec3(0.0f, 5.0f, 0.0f),
-           glm::vec3(0.0f, 1.0f, 0.0f)
-        ),
-        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH/(GLfloat)WINDOW_HEIGHT, 1.0f, 100.0f)
-    );
+            glm::vec3(0.0f, 10.0f, 22.0f),
+            glm::vec3(0.0f, 5.0f, 0.0f),
+            glm::vec3(0.0f, 1.0f, 0.0f)),
+        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 1.0f, 100.0f));
 
     // Create a forward rendering pipeline.
     L3DHandle renderQueue = l3dLoadForwardRenderQueue(WINDOW_WIDTH, WINDOW_HEIGHT, L3DVec4(0, 0, 0.05f, 1));
@@ -159,7 +160,7 @@ int main()
 
     double lastTime = glfwGetTime();
 
-    while(!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window))
     {
         double now = glfwGetTime();
         double dt = now - lastTime;
@@ -178,7 +179,8 @@ int main()
         float sinOfTime = sin(now) * dt;
         L3DVec3 dy2(L3DVec3(0, 1, 1) * sinOfTime * 4.0f);
         l3dTranslateLight(light2, dy2);
-        l3dTranslateMesh(light2Bulb, dy2);;
+        l3dTranslateMesh(light2Bulb, dy2);
+        ;
         L3DVec3 dy3(L3DVec3(1, 0.5f, 0) * sinOfTime * 6.0f);
         l3dTranslateLight(light3, dy3);
         l3dTranslateMesh(light3Bulb, dy3);

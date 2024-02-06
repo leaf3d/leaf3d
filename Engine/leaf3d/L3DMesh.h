@@ -33,82 +33,77 @@ namespace l3d
     class L3DMesh : public L3DResource
     {
     public:
-        L3DMat4             transMatrix;
+        L3DMat4 transMatrix;
 
     private:
-        L3DBuffer*          m_vertexBuffer;
-        L3DBuffer*          m_indexBuffer;
-        L3DBuffer*          m_instanceBuffer;
-        L3DMaterial*        m_material;
-        L3DVertexFormat     m_vertexFormat;
-        L3DInstanceFormat   m_instanceFormat;
-        L3DDrawPrimitive    m_drawPrimitive;
-        unsigned char       m_renderLayer;
-        unsigned int        m_sortKey;
+        L3DBuffer *m_vertexBuffer;
+        L3DBuffer *m_indexBuffer;
+        L3DBuffer *m_instanceBuffer;
+        L3DMaterial *m_material;
+        L3DVertexFormat m_vertexFormat;
+        L3DInstanceFormat m_instanceFormat;
+        L3DDrawPrimitive m_drawPrimitive;
+        unsigned char m_renderLayer;
+        unsigned int m_sortKey;
 
     public:
         L3DMesh(
-            L3DRenderer* renderer,
-            float* vertices,
+            L3DRenderer *renderer,
+            float *vertices,
             unsigned int vertexCount,
-            unsigned int* indices,
+            unsigned int *indices,
             unsigned int indexCount,
-            L3DMaterial* material,
-            const L3DVertexFormat& vertexFormat,
-            const L3DMat4& transMatrix = L3DMat4(),
-            const L3DDrawType& drawType = L3D_DRAW_STATIC,
-            const L3DDrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES,
-            unsigned char renderLayer = L3D_OPAQUE_MESH_RENDERLAYER
-        );
+            L3DMaterial *material,
+            const L3DVertexFormat &vertexFormat,
+            const L3DMat4 &transMatrix = L3DMat4(),
+            const L3DDrawType &drawType = L3D_DRAW_STATIC,
+            const L3DDrawPrimitive &drawPrimitive = L3D_DRAW_TRIANGLES,
+            unsigned char renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
         L3DMesh(
             L3DRenderer *renderer,
-            L3DBuffer* vertexBuffer,
-            L3DBuffer* indexBuffer,
-            L3DMaterial* material,
-            const L3DVertexFormat& vertexFormat,
-            const L3DMat4& transMatrix = L3DMat4(),
-            const L3DDrawType& drawType = L3D_DRAW_STATIC,
-            const L3DDrawPrimitive& drawPrimitive = L3D_DRAW_TRIANGLES,
-            unsigned char renderLayer = L3D_OPAQUE_MESH_RENDERLAYER
-        );
+            L3DBuffer *vertexBuffer,
+            L3DBuffer *indexBuffer,
+            L3DMaterial *material,
+            const L3DVertexFormat &vertexFormat,
+            const L3DMat4 &transMatrix = L3DMat4(),
+            const L3DDrawType &drawType = L3D_DRAW_STATIC,
+            const L3DDrawPrimitive &drawPrimitive = L3D_DRAW_TRIANGLES,
+            unsigned char renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
         ~L3DMesh() {}
 
-        L3DBuffer*          vertexBuffer() const { return m_vertexBuffer; }
-        L3DBuffer*          indexBuffer() const { return m_indexBuffer; }
-        L3DBuffer*          instanceBuffer() const { return m_instanceBuffer; }
-        L3DMaterial*        material() const { return m_material; }
-        L3DVertexFormat     vertexFormat() const { return m_vertexFormat; }
-        L3DInstanceFormat   instanceFormat() const { return m_instanceFormat; }
-        L3DDrawPrimitive    drawPrimitive() const { return m_drawPrimitive; }
-        unsigned char       renderLayer() const { return m_renderLayer; }
-        unsigned int        sortKey() const { return m_sortKey; }
+        L3DBuffer *vertexBuffer() const { return m_vertexBuffer; }
+        L3DBuffer *indexBuffer() const { return m_indexBuffer; }
+        L3DBuffer *instanceBuffer() const { return m_instanceBuffer; }
+        L3DMaterial *material() const { return m_material; }
+        L3DVertexFormat vertexFormat() const { return m_vertexFormat; }
+        L3DInstanceFormat instanceFormat() const { return m_instanceFormat; }
+        L3DDrawPrimitive drawPrimitive() const { return m_drawPrimitive; }
+        unsigned char renderLayer() const { return m_renderLayer; }
+        unsigned int sortKey() const { return m_sortKey; }
 
-        L3DMat3             normalMatrix() const;
-        unsigned int        vertexCount() const;
-        unsigned int        indexCount() const;
-        unsigned int        instanceCount() const;
-        unsigned int        primitiveCount() const;
+        L3DMat3 normalMatrix() const;
+        unsigned int vertexCount() const;
+        unsigned int indexCount() const;
+        unsigned int instanceCount() const;
+        unsigned int primitiveCount() const;
 
         void recalculateTangents();
 
-        void translate(const L3DVec3& movement);
+        void translate(const L3DVec3 &movement);
         void rotate(
             float radians,
-            const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
-        );
-        void scale(const L3DVec3& factor);
+            const L3DVec3 &direction = glm::vec3(0.0f, 1.0f, 0.0f));
+        void scale(const L3DVec3 &factor);
 
-        void setMaterial(L3DMaterial* material);
+        void setMaterial(L3DMaterial *material);
         void setRenderLayer(unsigned char renderLayer);
         void setInstances(
-            L3DBuffer* instanceBuffer,
-            const L3DInstanceFormat& instanceFormat
-        );
+            L3DBuffer *instanceBuffer,
+            const L3DInstanceFormat &instanceFormat);
         void setInstances(
-            void* instances,
+            void *instances,
             unsigned int instanceCount,
-            const L3DInstanceFormat& instanceFormat
-        );
+            const L3DInstanceFormat &instanceFormat);
 
     protected:
         void updateSortKey();

@@ -36,13 +36,14 @@
 
 using namespace l3d;
 
-typedef std::list<L3DMesh*> L3DRenderBucket;
+typedef std::list<L3DMesh *> L3DRenderBucket;
 
-struct _l3dMeshSortFunctor {
-    bool operator() (L3DMesh* i, L3DMesh* j) { return i->sortKey() < j->sortKey(); }
+struct _l3dMeshSortFunctor
+{
+    bool operator()(L3DMesh *i, L3DMesh *j) { return i->sortKey() < j->sortKey(); }
 };
 
-static GLenum _toOpenGL(const L3DBufferType& orig)
+static GLenum _toOpenGL(const L3DBufferType &orig)
 {
     switch (orig)
     {
@@ -58,7 +59,7 @@ static GLenum _toOpenGL(const L3DBufferType& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DDrawType& orig)
+static GLenum _toOpenGL(const L3DDrawType &orig)
 {
     switch (orig)
     {
@@ -73,7 +74,7 @@ static GLenum _toOpenGL(const L3DDrawType& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DTextureType& orig)
+static GLenum _toOpenGL(const L3DTextureType &orig)
 {
     switch (orig)
     {
@@ -92,7 +93,7 @@ static GLenum _toOpenGL(const L3DTextureType& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DImageFormat& orig)
+static GLenum _toOpenGL(const L3DImageFormat &orig)
 {
     switch (orig)
     {
@@ -109,7 +110,7 @@ static GLenum _toOpenGL(const L3DImageFormat& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DPixelFormat& orig)
+static GLenum _toOpenGL(const L3DPixelFormat &orig)
 {
     switch (orig)
     {
@@ -124,7 +125,7 @@ static GLenum _toOpenGL(const L3DPixelFormat& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DAttachmentType& orig)
+static GLenum _toOpenGL(const L3DAttachmentType &orig)
 {
     switch (orig)
     {
@@ -201,7 +202,7 @@ static GLenum _toOpenGL(const L3DAttachmentType& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DImageWrapMethod& orig)
+static GLenum _toOpenGL(const L3DImageWrapMethod &orig)
 {
     switch (orig)
     {
@@ -222,7 +223,7 @@ static GLenum _toOpenGL(const L3DImageWrapMethod& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DImageMinFilter& orig)
+static GLenum _toOpenGL(const L3DImageMinFilter &orig)
 {
     switch (orig)
     {
@@ -236,7 +237,7 @@ static GLenum _toOpenGL(const L3DImageMinFilter& orig)
         return GL_LINEAR_MIPMAP_NEAREST;
     case L3D_MIN_NEAREST_MIPMAP_LINEAR:
         return GL_NEAREST_MIPMAP_LINEAR;
-    case  L3D_MIN_LINEAR_MIPMAP_LINEAR:
+    case L3D_MIN_LINEAR_MIPMAP_LINEAR:
         return GL_LINEAR_MIPMAP_LINEAR;
     default:
         break;
@@ -245,7 +246,7 @@ static GLenum _toOpenGL(const L3DImageMinFilter& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DImageMagFilter& orig)
+static GLenum _toOpenGL(const L3DImageMagFilter &orig)
 {
     switch (orig)
     {
@@ -260,7 +261,7 @@ static GLenum _toOpenGL(const L3DImageMagFilter& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DDrawPrimitive& orig)
+static GLenum _toOpenGL(const L3DDrawPrimitive &orig)
 {
     switch (orig)
     {
@@ -277,7 +278,7 @@ static GLenum _toOpenGL(const L3DDrawPrimitive& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DDepthFactor& orig)
+static GLenum _toOpenGL(const L3DDepthFactor &orig)
 {
     switch (orig)
     {
@@ -292,7 +293,7 @@ static GLenum _toOpenGL(const L3DDepthFactor& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DBlendFactor& orig)
+static GLenum _toOpenGL(const L3DBlendFactor &orig)
 {
     switch (orig)
     {
@@ -331,7 +332,7 @@ static GLenum _toOpenGL(const L3DBlendFactor& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DCullFace& orig)
+static GLenum _toOpenGL(const L3DCullFace &orig)
 {
     switch (orig)
     {
@@ -348,7 +349,7 @@ static GLenum _toOpenGL(const L3DCullFace& orig)
     return 0;
 }
 
-static GLenum _toOpenGL(const L3DShaderType& orig)
+static GLenum _toOpenGL(const L3DShaderType &orig)
 {
     switch (orig)
     {
@@ -370,24 +371,23 @@ static void _enableVertexAttribute(
     GLint size,
     GLenum type,
     GLsizei stride,
-    void* startPtr = 0,
+    void *startPtr = 0,
     GLboolean normalized = GL_FALSE,
-    unsigned int divisor = 0
-)
+    unsigned int divisor = 0)
 {
     if (attrib > -1)
     {
         glEnableVertexAttribArray(attrib);
         glVertexAttribPointer(attrib, size, type, normalized, stride, startPtr);
-        if (divisor > 0) glVertexAttribDivisor(attrib, divisor);
+        if (divisor > 0)
+            glVertexAttribDivisor(attrib, divisor);
     }
 }
 
 static void _setUniform(
     GLuint shaderProgram,
-    const char* name,
-    const L3DUniform& uniform
-)
+    const char *name,
+    const L3DUniform &uniform)
 {
     GLint gl_location = glGetUniformLocation(shaderProgram, name);
 
@@ -437,7 +437,8 @@ L3DRenderer::~L3DRenderer()
 int L3DRenderer::init()
 {
     // Load OpenGL extensions.
-    if (!gladLoadGL()) {
+    if (!gladLoadGL())
+    {
         fprintf(stderr, "Failed to initialize OpenGL\n");
         return -1;
     }
@@ -490,22 +491,22 @@ int L3DRenderer::terminate()
     return L3D_TRUE;
 }
 
-void L3DRenderer::renderFrame(L3DCamera* camera, L3DRenderQueue* renderQueue)
+void L3DRenderer::renderFrame(L3DCamera *camera, L3DRenderQueue *renderQueue)
 {
     if (!camera || !renderQueue)
         return;
 
-    const L3DRenderCommandList& commands = renderQueue->commands();
+    const L3DRenderCommandList &commands = renderQueue->commands();
 
     for (L3DRenderCommandList::const_iterator it = commands.begin(); it != commands.end(); ++it)
     {
-        const L3DRenderCommand* command = *it;
+        const L3DRenderCommand *command = *it;
 
         switch (command->type())
         {
         case L3D_SWITCH_FRAME_BUFFER:
         {
-            const L3DSwitchFrameBufferCommand* cmd = static_cast<const L3DSwitchFrameBufferCommand*>(command);
+            const L3DSwitchFrameBufferCommand *cmd = static_cast<const L3DSwitchFrameBufferCommand *>(command);
             if (cmd)
                 this->switchFrameBuffer(cmd->frameBuffer);
         }
@@ -513,7 +514,7 @@ void L3DRenderer::renderFrame(L3DCamera* camera, L3DRenderQueue* renderQueue)
 
         case L3D_CLEAR_BUFFERS:
         {
-            const L3DClearBuffersCommand* cmd = static_cast<const L3DClearBuffersCommand*>(command);
+            const L3DClearBuffersCommand *cmd = static_cast<const L3DClearBuffersCommand *>(command);
             if (cmd)
                 this->clearBuffers(cmd->colorBuffer, cmd->depthBuffer, cmd->stencilBuffer, cmd->clearColor);
         }
@@ -521,7 +522,7 @@ void L3DRenderer::renderFrame(L3DCamera* camera, L3DRenderQueue* renderQueue)
 
         case L3D_SET_DEPTH_TEST:
         {
-            const L3DSetDepthTestCommand* cmd = static_cast<const L3DSetDepthTestCommand*>(command);
+            const L3DSetDepthTestCommand *cmd = static_cast<const L3DSetDepthTestCommand *>(command);
             if (cmd)
                 this->setDepthTest(cmd->enable, cmd->factor);
         }
@@ -529,7 +530,7 @@ void L3DRenderer::renderFrame(L3DCamera* camera, L3DRenderQueue* renderQueue)
 
         case L3D_SET_DEPTH_MASK:
         {
-            const L3DSetDepthMaskCommand* cmd = static_cast<const L3DSetDepthMaskCommand*>(command);
+            const L3DSetDepthMaskCommand *cmd = static_cast<const L3DSetDepthMaskCommand *>(command);
             if (cmd)
                 this->setDepthMask(cmd->enable);
         }
@@ -537,7 +538,7 @@ void L3DRenderer::renderFrame(L3DCamera* camera, L3DRenderQueue* renderQueue)
 
         case L3D_SET_STENCIL_TEST:
         {
-            const L3DSetStencilTestCommand* cmd = static_cast<const L3DSetStencilTestCommand*>(command);
+            const L3DSetStencilTestCommand *cmd = static_cast<const L3DSetStencilTestCommand *>(command);
             if (cmd)
                 this->setStencilTest(cmd->enable);
         }
@@ -545,7 +546,7 @@ void L3DRenderer::renderFrame(L3DCamera* camera, L3DRenderQueue* renderQueue)
 
         case L3D_SET_BLEND:
         {
-            const L3DSetBlendCommand* cmd = static_cast<const L3DSetBlendCommand*>(command);
+            const L3DSetBlendCommand *cmd = static_cast<const L3DSetBlendCommand *>(command);
             if (cmd)
                 this->setBlend(cmd->enable, cmd->srcFactor, cmd->dstFactor);
         }
@@ -553,53 +554,53 @@ void L3DRenderer::renderFrame(L3DCamera* camera, L3DRenderQueue* renderQueue)
 
         case L3D_DRAW_MESHES:
         {
-            const L3DDrawMeshesCommand* cmd = static_cast<const L3DDrawMeshesCommand*>(command);
+            const L3DDrawMeshesCommand *cmd = static_cast<const L3DDrawMeshesCommand *>(command);
             if (cmd)
                 this->drawMeshes(camera, cmd->renderLayer);
         }
         break;
 
         default:
-        break;
+            break;
         }
     }
 }
 
-void L3DRenderer::addResource(L3DResource* resource)
+void L3DRenderer::addResource(L3DResource *resource)
 {
     if (resource)
     {
-        switch(resource->resourceType())
+        switch (resource->resourceType())
         {
         case L3D_BUFFER:
-            this->addBuffer(static_cast<L3DBuffer*>(resource));
+            this->addBuffer(static_cast<L3DBuffer *>(resource));
             break;
         case L3D_TEXTURE:
-            this->addTexture(static_cast<L3DTexture*>(resource));
+            this->addTexture(static_cast<L3DTexture *>(resource));
             break;
         case L3D_SHADER:
-            this->addShader(static_cast<L3DShader*>(resource));
+            this->addShader(static_cast<L3DShader *>(resource));
             break;
         case L3D_SHADER_PROGRAM:
-            this->addShaderProgram(static_cast<L3DShaderProgram*>(resource));
+            this->addShaderProgram(static_cast<L3DShaderProgram *>(resource));
             break;
         case L3D_FRAME_BUFFER:
-            this->addFrameBuffer(static_cast<L3DFrameBuffer*>(resource));
+            this->addFrameBuffer(static_cast<L3DFrameBuffer *>(resource));
             break;
         case L3D_MATERIAL:
-            this->addMaterial(static_cast<L3DMaterial*>(resource));
+            this->addMaterial(static_cast<L3DMaterial *>(resource));
             break;
         case L3D_CAMERA:
-            this->addCamera(static_cast<L3DCamera*>(resource));
+            this->addCamera(static_cast<L3DCamera *>(resource));
             break;
         case L3D_LIGHT:
-            this->addLight(static_cast<L3DLight*>(resource));
+            this->addLight(static_cast<L3DLight *>(resource));
             break;
         case L3D_MESH:
-            this->addMesh(static_cast<L3DMesh*>(resource));
+            this->addMesh(static_cast<L3DMesh *>(resource));
             break;
         case L3D_RENDER_QUEUE:
-            this->addRenderQueue(static_cast<L3DRenderQueue*>(resource));
+            this->addRenderQueue(static_cast<L3DRenderQueue *>(resource));
             break;
         default:
             break;
@@ -607,7 +608,7 @@ void L3DRenderer::addResource(L3DResource* resource)
     }
 }
 
-void L3DRenderer::addBuffer(L3DBuffer* buffer)
+void L3DRenderer::addBuffer(L3DBuffer *buffer)
 {
     if (buffer && m_buffers.find(buffer->id()) == m_buffers.end())
     {
@@ -632,7 +633,7 @@ void L3DRenderer::addBuffer(L3DBuffer* buffer)
     }
 }
 
-void L3DRenderer::addTexture(L3DTexture* texture)
+void L3DRenderer::addTexture(L3DTexture *texture)
 {
     if (texture && m_textures.find(texture->id()) == m_textures.end())
     {
@@ -648,7 +649,7 @@ void L3DRenderer::addTexture(L3DTexture* texture)
         GLenum gl_wrap_r = _toOpenGL(texture->wrapR());
         GLenum gl_min_filter = _toOpenGL(texture->minFilter());
         GLenum gl_mag_filter = _toOpenGL(texture->magFilter());
-        bool   use_mipmaps = texture->useMipmap();
+        bool use_mipmaps = texture->useMipmap();
 
         if (gl_format == GL_DEPTH24_STENCIL8)
             gl_internal_format = GL_DEPTH_STENCIL;
@@ -671,7 +672,7 @@ void L3DRenderer::addTexture(L3DTexture* texture)
             unsigned int faceSize = texture->size() / 6;
             unsigned int faceWidth = texture->width();
             unsigned int faceHeight = texture->height();
-            unsigned char* data = texture->data();
+            unsigned char *data = texture->data();
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl_format, faceWidth, faceHeight, 0, gl_internal_format, gl_pixel_format, data);
             glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl_format, faceWidth, faceHeight, 0, gl_internal_format, gl_pixel_format, data + faceSize);
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl_format, faceWidth, faceHeight, 0, gl_internal_format, gl_pixel_format, data + faceSize * 2);
@@ -710,7 +711,7 @@ void L3DRenderer::addTexture(L3DTexture* texture)
 
         // Generate mipmaps.
         if (use_mipmaps)
-          glGenerateMipmap(gl_type);
+            glGenerateMipmap(gl_type);
 
         glBindTexture(gl_type, 0);
 
@@ -722,13 +723,13 @@ void L3DRenderer::addTexture(L3DTexture* texture)
     }
 }
 
-void L3DRenderer::addShader(L3DShader* shader)
+void L3DRenderer::addShader(L3DShader *shader)
 {
     if (shader && m_shaders.find(shader->id()) == m_shaders.end())
     {
         GLuint gl_type = _toOpenGL(shader->type());
 
-        const char* code = shader->code();
+        const char *code = shader->code();
 
         GLuint id = glCreateShader(gl_type);
         glShaderSource(id, 1, &code, L3D_NULLPTR);
@@ -751,7 +752,7 @@ void L3DRenderer::addShader(L3DShader* shader)
     }
 }
 
-void L3DRenderer::addShaderProgram(L3DShaderProgram* shaderProgram)
+void L3DRenderer::addShaderProgram(L3DShaderProgram *shaderProgram)
 {
     if (shaderProgram && m_shaderPrograms.find(shaderProgram->id()) == m_shaderPrograms.end())
     {
@@ -785,7 +786,7 @@ void L3DRenderer::addShaderProgram(L3DShaderProgram* shaderProgram)
     }
 }
 
-void L3DRenderer::addFrameBuffer(L3DFrameBuffer* frameBuffer)
+void L3DRenderer::addFrameBuffer(L3DFrameBuffer *frameBuffer)
 {
     if (frameBuffer && m_frameBuffers.find(frameBuffer->id()) == m_frameBuffers.end())
     {
@@ -798,7 +799,7 @@ void L3DRenderer::addFrameBuffer(L3DFrameBuffer* frameBuffer)
         for (L3DTextureAttachments::iterator tex_it = textures.begin(); tex_it != textures.end(); ++tex_it)
         {
             GLenum gl_attachment_type = _toOpenGL(tex_it->first);
-            L3DTexture* texture = tex_it->second;
+            L3DTexture *texture = tex_it->second;
 
             if (texture)
             {
@@ -844,7 +845,7 @@ void L3DRenderer::addFrameBuffer(L3DFrameBuffer* frameBuffer)
     }
 }
 
-void L3DRenderer::addMaterial(L3DMaterial* material)
+void L3DRenderer::addMaterial(L3DMaterial *material)
 {
     if (material && m_materials.find(material->id()) == m_materials.end())
     {
@@ -860,7 +861,7 @@ void L3DRenderer::addMaterial(L3DMaterial* material)
     }
 }
 
-void L3DRenderer::addCamera(L3DCamera* camera)
+void L3DRenderer::addCamera(L3DCamera *camera)
 {
     if (camera && m_cameras.find(camera->id()) == m_cameras.end())
     {
@@ -876,7 +877,7 @@ void L3DRenderer::addCamera(L3DCamera* camera)
     }
 }
 
-void L3DRenderer::addLight(L3DLight* light)
+void L3DRenderer::addLight(L3DLight *light)
 {
     if (light && m_lights.find(light->id()) == m_lights.end())
     {
@@ -892,7 +893,7 @@ void L3DRenderer::addLight(L3DLight* light)
     }
 }
 
-void L3DRenderer::addMesh(L3DMesh* mesh)
+void L3DRenderer::addMesh(L3DMesh *mesh)
 {
     if (mesh && m_meshes.find(mesh->id()) == m_meshes.end())
     {
@@ -909,90 +910,90 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
 
             if (mesh->material() && mesh->material()->shaderProgram())
             {
-                L3DMaterial* material = mesh->material();
-                L3DShaderProgram* shaderProgram = material->shaderProgram();
+                L3DMaterial *material = mesh->material();
+                L3DShaderProgram *shaderProgram = material->shaderProgram();
                 L3DAttributeMap shaderAttributes = shaderProgram->attributes();
 
                 // Enables vertex attributes.
-                GLint posAttrib     = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_POSITION].c_str());
-                GLint norAttrib     = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_NORMAL].c_str());
-                GLint tanAttrib     = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_TANGENT].c_str());
-                GLint tex0Attrib    = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_UV0].c_str());
-                GLint tex1Attrib    = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_UV1].c_str());
-                GLint tex2Attrib    = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_UV2].c_str());
-                GLint tex3Attrib    = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_UV3].c_str());
+                GLint posAttrib = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_POSITION].c_str());
+                GLint norAttrib = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_NORMAL].c_str());
+                GLint tanAttrib = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_TANGENT].c_str());
+                GLint tex0Attrib = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_UV0].c_str());
+                GLint tex1Attrib = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_UV1].c_str());
+                GLint tex2Attrib = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_UV2].c_str());
+                GLint tex3Attrib = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_VERTEX_UV3].c_str());
 
-                switch(mesh->vertexFormat())
+                switch (mesh->vertexFormat())
                 {
                 case L3D_VERTEX_POS2:
-                    _enableVertexAttribute(posAttrib, 2, GL_FLOAT, 2*sizeof(GLfloat), 0);
+                    _enableVertexAttribute(posAttrib, 2, GL_FLOAT, 2 * sizeof(GLfloat), 0);
                     break;
                 case L3D_VERTEX_POS3:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 3*sizeof(GLfloat), 0);
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 3 * sizeof(GLfloat), 0);
                     break;
                 case L3D_VERTEX_POS2_UV2:
-                    _enableVertexAttribute(posAttrib, 2, GL_FLOAT, 4*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 4*sizeof(GLfloat), (void*)(2*sizeof(GLfloat)));
+                    _enableVertexAttribute(posAttrib, 2, GL_FLOAT, 4 * sizeof(GLfloat), 0);
+                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 4 * sizeof(GLfloat), (void *)(2 * sizeof(GLfloat)));
                     break;
                 case L3D_VERTEX_POS3_UV2:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 5*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 5*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 5 * sizeof(GLfloat), 0);
+                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 5 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
                     break;
                 case L3D_VERTEX_POS3_UV3:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 6*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(tex0Attrib, 3, GL_FLOAT, 6*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 6 * sizeof(GLfloat), 0);
+                    _enableVertexAttribute(tex0Attrib, 3, GL_FLOAT, 6 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
                     break;
                 case L3D_VERTEX_POS3_NOR3_UV2:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 8*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 8*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 8*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 8 * sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 8 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 8 * sizeof(GLfloat), (void *)(6 * sizeof(GLfloat)));
                     break;
                 case L3D_VERTEX_POS3_NOR3_UV3:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 9*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 9*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 3, GL_FLOAT, 9*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 9 * sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 9 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 3, GL_FLOAT, 9 * sizeof(GLfloat), (void *)(6 * sizeof(GLfloat)));
                     break;
                 case L3D_VERTEX_POS3_NOR3_UV2_UV2:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 10*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 10*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 10*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 10*sizeof(GLfloat), (void*)(8*sizeof(GLfloat)));
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 10 * sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 10 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 10 * sizeof(GLfloat), (void *)(6 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 10 * sizeof(GLfloat), (void *)(8 * sizeof(GLfloat)));
                     break;
                 case L3D_VERTEX_POS3_NOR3_TAN3_UV2:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 11*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 11*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 11*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 11*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 11 * sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 11 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 11 * sizeof(GLfloat), (void *)(6 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 11 * sizeof(GLfloat), (void *)(9 * sizeof(GLfloat)));
                     break;
                 case L3D_VERTEX_POS3_NOR3_TAN3_UV3:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 12*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 12*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 12*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 3, GL_FLOAT, 12*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 12 * sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 12 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 12 * sizeof(GLfloat), (void *)(6 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 3, GL_FLOAT, 12 * sizeof(GLfloat), (void *)(9 * sizeof(GLfloat)));
                     break;
                 case L3D_VERTEX_POS3_NOR3_TAN3_UV2_UV2:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 13*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 13*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 13*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 13*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 13*sizeof(GLfloat), (void*)(11*sizeof(GLfloat)));
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 13 * sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 13 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 13 * sizeof(GLfloat), (void *)(6 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 13 * sizeof(GLfloat), (void *)(9 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 13 * sizeof(GLfloat), (void *)(11 * sizeof(GLfloat)));
                     break;
                 case L3D_VERTEX_POS3_NOR3_TAN3_UV2_UV2_UV2:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 15*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 15*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 15*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 15*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 15*sizeof(GLfloat), (void*)(11*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex2Attrib, 2, GL_FLOAT, 15*sizeof(GLfloat), (void*)(13*sizeof(GLfloat)));
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 15 * sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 15 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 15 * sizeof(GLfloat), (void *)(6 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 15 * sizeof(GLfloat), (void *)(9 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 15 * sizeof(GLfloat), (void *)(11 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex2Attrib, 2, GL_FLOAT, 15 * sizeof(GLfloat), (void *)(13 * sizeof(GLfloat)));
                     break;
                 case L3D_VERTEX_POS3_NOR3_TAN3_UV2_UV2_UV2_UV2:
-                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 17*sizeof(GLfloat), 0);
-                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 17*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)));
-                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 17*sizeof(GLfloat), (void*)(6*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 17*sizeof(GLfloat), (void*)(9*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 17*sizeof(GLfloat), (void*)(11*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex2Attrib, 2, GL_FLOAT, 17*sizeof(GLfloat), (void*)(13*sizeof(GLfloat)));
-                    _enableVertexAttribute(tex3Attrib, 2, GL_FLOAT, 17*sizeof(GLfloat), (void*)(15*sizeof(GLfloat)));
+                    _enableVertexAttribute(posAttrib, 3, GL_FLOAT, 17 * sizeof(GLfloat), 0);
+                    _enableVertexAttribute(norAttrib, 3, GL_FLOAT, 17 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tanAttrib, 3, GL_FLOAT, 17 * sizeof(GLfloat), (void *)(6 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex0Attrib, 2, GL_FLOAT, 17 * sizeof(GLfloat), (void *)(9 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex1Attrib, 2, GL_FLOAT, 17 * sizeof(GLfloat), (void *)(11 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex2Attrib, 2, GL_FLOAT, 17 * sizeof(GLfloat), (void *)(13 * sizeof(GLfloat)));
+                    _enableVertexAttribute(tex3Attrib, 2, GL_FLOAT, 17 * sizeof(GLfloat), (void *)(15 * sizeof(GLfloat)));
                     break;
                 default:
                     glDeleteVertexArrays(1, &id);
@@ -1018,43 +1019,43 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
 
             if (mesh->material() && mesh->material()->shaderProgram())
             {
-                L3DMaterial* material = mesh->material();
-                L3DShaderProgram* shaderProgram = material->shaderProgram();
+                L3DMaterial *material = mesh->material();
+                L3DShaderProgram *shaderProgram = material->shaderProgram();
                 L3DAttributeMap shaderAttributes = shaderProgram->attributes();
 
                 // Enables instanced attributes.
-                GLint iposAttrib   = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_INSTANCE_POSITION].c_str());
-                GLint itexAttrib   = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_INSTANCE_UV].c_str());
+                GLint iposAttrib = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_INSTANCE_POSITION].c_str());
+                GLint itexAttrib = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_INSTANCE_UV].c_str());
                 GLint itransAttrib = glGetAttribLocation(shaderProgram->id(), shaderAttributes[L3D_INSTANCE_MATRIX].c_str());
 
-                switch(mesh->instanceFormat())
+                switch (mesh->instanceFormat())
                 {
                 case L3D_INSTANCE_POS2:
-                    _enableVertexAttribute(iposAttrib, 2, GL_FLOAT, 2*sizeof(GLfloat), (void*)0, GL_FALSE, 1);
+                    _enableVertexAttribute(iposAttrib, 2, GL_FLOAT, 2 * sizeof(GLfloat), (void *)0, GL_FALSE, 1);
                     break;
                 case L3D_INSTANCE_POS3:
-                    _enableVertexAttribute(iposAttrib, 3, GL_FLOAT, 3*sizeof(GLfloat), (void*)0, GL_FALSE, 1);
+                    _enableVertexAttribute(iposAttrib, 3, GL_FLOAT, 3 * sizeof(GLfloat), (void *)0, GL_FALSE, 1);
                     break;
                 case L3D_INSTANCE_POS2_UV2:
-                    _enableVertexAttribute(iposAttrib, 2, GL_FLOAT, 4*sizeof(GLfloat), (void*)0, GL_FALSE, 1);
-                    _enableVertexAttribute(itexAttrib, 2, GL_FLOAT, 4*sizeof(GLfloat), (void*)(2*sizeof(GLfloat)), GL_FALSE, 1);
+                    _enableVertexAttribute(iposAttrib, 2, GL_FLOAT, 4 * sizeof(GLfloat), (void *)0, GL_FALSE, 1);
+                    _enableVertexAttribute(itexAttrib, 2, GL_FLOAT, 4 * sizeof(GLfloat), (void *)(2 * sizeof(GLfloat)), GL_FALSE, 1);
                     break;
                 case L3D_INSTANCE_POS3_UV2:
-                    _enableVertexAttribute(iposAttrib, 3, GL_FLOAT, 5*sizeof(GLfloat), (void*)0, GL_FALSE, 1);
-                    _enableVertexAttribute(itexAttrib, 2, GL_FLOAT, 5*sizeof(GLfloat), (void*)(3*sizeof(GLfloat)), GL_FALSE, 1);
+                    _enableVertexAttribute(iposAttrib, 3, GL_FLOAT, 5 * sizeof(GLfloat), (void *)0, GL_FALSE, 1);
+                    _enableVertexAttribute(itexAttrib, 2, GL_FLOAT, 5 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)), GL_FALSE, 1);
                     break;
                 case L3D_INSTANCE_TRANS4_TRANS4_TRANS4_TRANS4:
-                    _enableVertexAttribute(itransAttrib + 0, 4, GL_FLOAT, 16*sizeof(GLfloat), (void*)0, GL_FALSE, 1);
-                    _enableVertexAttribute(itransAttrib + 1, 4, GL_FLOAT, 16*sizeof(GLfloat), (void*)(4*sizeof(GLfloat)), GL_FALSE, 1);
-                    _enableVertexAttribute(itransAttrib + 2, 4, GL_FLOAT, 16*sizeof(GLfloat), (void*)(8*sizeof(GLfloat)), GL_FALSE, 1);
-                    _enableVertexAttribute(itransAttrib + 3, 4, GL_FLOAT, 16*sizeof(GLfloat), (void*)(12*sizeof(GLfloat)), GL_FALSE, 1);
+                    _enableVertexAttribute(itransAttrib + 0, 4, GL_FLOAT, 16 * sizeof(GLfloat), (void *)0, GL_FALSE, 1);
+                    _enableVertexAttribute(itransAttrib + 1, 4, GL_FLOAT, 16 * sizeof(GLfloat), (void *)(4 * sizeof(GLfloat)), GL_FALSE, 1);
+                    _enableVertexAttribute(itransAttrib + 2, 4, GL_FLOAT, 16 * sizeof(GLfloat), (void *)(8 * sizeof(GLfloat)), GL_FALSE, 1);
+                    _enableVertexAttribute(itransAttrib + 3, 4, GL_FLOAT, 16 * sizeof(GLfloat), (void *)(12 * sizeof(GLfloat)), GL_FALSE, 1);
                     break;
                 case L3D_INSTANCE_TRANS4_TRANS4_TRANS4_TRANS4_UV2:
-                    _enableVertexAttribute(itransAttrib + 0, 4, GL_FLOAT, 18*sizeof(GLfloat), (void*)0, GL_FALSE, 1);
-                    _enableVertexAttribute(itransAttrib + 1, 4, GL_FLOAT, 18*sizeof(GLfloat), (void*)(4*sizeof(GLfloat)), GL_FALSE, 1);
-                    _enableVertexAttribute(itransAttrib + 2, 4, GL_FLOAT, 18*sizeof(GLfloat), (void*)(8*sizeof(GLfloat)), GL_FALSE, 1);
-                    _enableVertexAttribute(itransAttrib + 3, 4, GL_FLOAT, 18*sizeof(GLfloat), (void*)(12*sizeof(GLfloat)), GL_FALSE, 1);
-                    _enableVertexAttribute(itexAttrib, 2, GL_FLOAT, 18*sizeof(GLfloat), (void*)(16*sizeof(GLfloat)), GL_FALSE, 1);
+                    _enableVertexAttribute(itransAttrib + 0, 4, GL_FLOAT, 18 * sizeof(GLfloat), (void *)0, GL_FALSE, 1);
+                    _enableVertexAttribute(itransAttrib + 1, 4, GL_FLOAT, 18 * sizeof(GLfloat), (void *)(4 * sizeof(GLfloat)), GL_FALSE, 1);
+                    _enableVertexAttribute(itransAttrib + 2, 4, GL_FLOAT, 18 * sizeof(GLfloat), (void *)(8 * sizeof(GLfloat)), GL_FALSE, 1);
+                    _enableVertexAttribute(itransAttrib + 3, 4, GL_FLOAT, 18 * sizeof(GLfloat), (void *)(12 * sizeof(GLfloat)), GL_FALSE, 1);
+                    _enableVertexAttribute(itexAttrib, 2, GL_FLOAT, 18 * sizeof(GLfloat), (void *)(16 * sizeof(GLfloat)), GL_FALSE, 1);
                     break;
                 default:
                     break;
@@ -1072,7 +1073,7 @@ void L3DRenderer::addMesh(L3DMesh* mesh)
     }
 }
 
-void L3DRenderer::addRenderQueue(L3DRenderQueue* renderQueue)
+void L3DRenderer::addRenderQueue(L3DRenderQueue *renderQueue)
 {
     if (renderQueue && m_renderQueues.find(renderQueue->id()) == m_renderQueues.end())
     {
@@ -1088,41 +1089,41 @@ void L3DRenderer::addRenderQueue(L3DRenderQueue* renderQueue)
     }
 }
 
-void L3DRenderer::removeResource(L3DResource* resource)
+void L3DRenderer::removeResource(L3DResource *resource)
 {
     if (resource)
     {
-        switch(resource->resourceType())
+        switch (resource->resourceType())
         {
         case L3D_BUFFER:
-            this->removeBuffer(static_cast<L3DBuffer*>(resource));
+            this->removeBuffer(static_cast<L3DBuffer *>(resource));
             break;
         case L3D_TEXTURE:
-            this->removeTexture(static_cast<L3DTexture*>(resource));
+            this->removeTexture(static_cast<L3DTexture *>(resource));
             break;
         case L3D_SHADER:
-            this->removeShader(static_cast<L3DShader*>(resource));
+            this->removeShader(static_cast<L3DShader *>(resource));
             break;
         case L3D_SHADER_PROGRAM:
-            this->removeShaderProgram(static_cast<L3DShaderProgram*>(resource));
+            this->removeShaderProgram(static_cast<L3DShaderProgram *>(resource));
             break;
         case L3D_FRAME_BUFFER:
-            this->removeFrameBuffer(static_cast<L3DFrameBuffer*>(resource));
+            this->removeFrameBuffer(static_cast<L3DFrameBuffer *>(resource));
             break;
         case L3D_MATERIAL:
-            this->removeMaterial(static_cast<L3DMaterial*>(resource));
+            this->removeMaterial(static_cast<L3DMaterial *>(resource));
             break;
         case L3D_CAMERA:
-            this->removeCamera(static_cast<L3DCamera*>(resource));
+            this->removeCamera(static_cast<L3DCamera *>(resource));
             break;
         case L3D_LIGHT:
-            this->removeLight(static_cast<L3DLight*>(resource));
+            this->removeLight(static_cast<L3DLight *>(resource));
             break;
         case L3D_MESH:
-            this->removeMesh(static_cast<L3DMesh*>(resource));
+            this->removeMesh(static_cast<L3DMesh *>(resource));
             break;
         case L3D_RENDER_QUEUE:
-            this->removeRenderQueue(static_cast<L3DRenderQueue*>(resource));
+            this->removeRenderQueue(static_cast<L3DRenderQueue *>(resource));
             break;
         default:
             break;
@@ -1130,7 +1131,7 @@ void L3DRenderer::removeResource(L3DResource* resource)
     }
 }
 
-void L3DRenderer::removeBuffer(L3DBuffer* buffer)
+void L3DRenderer::removeBuffer(L3DBuffer *buffer)
 {
     if (buffer)
     {
@@ -1143,7 +1144,7 @@ void L3DRenderer::removeBuffer(L3DBuffer* buffer)
     }
 }
 
-void L3DRenderer::removeTexture(L3DTexture* texture)
+void L3DRenderer::removeTexture(L3DTexture *texture)
 {
     if (texture)
     {
@@ -1156,7 +1157,7 @@ void L3DRenderer::removeTexture(L3DTexture* texture)
     }
 }
 
-void L3DRenderer::removeShader(L3DShader* shader)
+void L3DRenderer::removeShader(L3DShader *shader)
 {
     if (shader)
     {
@@ -1169,7 +1170,7 @@ void L3DRenderer::removeShader(L3DShader* shader)
     }
 }
 
-void L3DRenderer::removeShaderProgram(L3DShaderProgram* shaderProgram)
+void L3DRenderer::removeShaderProgram(L3DShaderProgram *shaderProgram)
 {
     if (shaderProgram)
     {
@@ -1182,7 +1183,7 @@ void L3DRenderer::removeShaderProgram(L3DShaderProgram* shaderProgram)
     }
 }
 
-void L3DRenderer::removeFrameBuffer(L3DFrameBuffer* frameBuffer)
+void L3DRenderer::removeFrameBuffer(L3DFrameBuffer *frameBuffer)
 {
     if (frameBuffer)
     {
@@ -1196,7 +1197,7 @@ void L3DRenderer::removeFrameBuffer(L3DFrameBuffer* frameBuffer)
     }
 }
 
-void L3DRenderer::removeMaterial(L3DMaterial* material)
+void L3DRenderer::removeMaterial(L3DMaterial *material)
 {
     if (material)
     {
@@ -1209,7 +1210,7 @@ void L3DRenderer::removeMaterial(L3DMaterial* material)
     }
 }
 
-void L3DRenderer::removeCamera(L3DCamera* camera)
+void L3DRenderer::removeCamera(L3DCamera *camera)
 {
     if (camera)
     {
@@ -1222,7 +1223,7 @@ void L3DRenderer::removeCamera(L3DCamera* camera)
     }
 }
 
-void L3DRenderer::removeLight(L3DLight* light)
+void L3DRenderer::removeLight(L3DLight *light)
 {
     if (light)
     {
@@ -1235,7 +1236,7 @@ void L3DRenderer::removeLight(L3DLight* light)
     }
 }
 
-void L3DRenderer::removeMesh(L3DMesh* mesh)
+void L3DRenderer::removeMesh(L3DMesh *mesh)
 {
     if (mesh)
     {
@@ -1248,7 +1249,7 @@ void L3DRenderer::removeMesh(L3DMesh* mesh)
     }
 }
 
-void L3DRenderer::removeRenderQueue(L3DRenderQueue* renderQueue)
+void L3DRenderer::removeRenderQueue(L3DRenderQueue *renderQueue)
 {
     if (renderQueue)
     {
@@ -1261,9 +1262,9 @@ void L3DRenderer::removeRenderQueue(L3DRenderQueue* renderQueue)
     }
 }
 
-L3DResource* L3DRenderer::getResource(const L3DHandle& handle) const
+L3DResource *L3DRenderer::getResource(const L3DHandle &handle) const
 {
-    switch(handle.data.type)
+    switch (handle.data.type)
     {
     case L3D_BUFFER:
         return m_buffers.find(handle.data.id)->second;
@@ -1290,7 +1291,7 @@ L3DResource* L3DRenderer::getResource(const L3DHandle& handle) const
     }
 }
 
-L3DBuffer* L3DRenderer::getBuffer(const L3DHandle& handle) const
+L3DBuffer *L3DRenderer::getBuffer(const L3DHandle &handle) const
 {
     if (handle.data.type == L3D_BUFFER)
         return m_buffers.find(handle.data.id)->second;
@@ -1298,7 +1299,7 @@ L3DBuffer* L3DRenderer::getBuffer(const L3DHandle& handle) const
     return L3D_NULLPTR;
 }
 
-L3DTexture* L3DRenderer::getTexture(const L3DHandle& handle) const
+L3DTexture *L3DRenderer::getTexture(const L3DHandle &handle) const
 {
     if (handle.data.type == L3D_TEXTURE)
         return m_textures.find(handle.data.id)->second;
@@ -1306,7 +1307,7 @@ L3DTexture* L3DRenderer::getTexture(const L3DHandle& handle) const
     return L3D_NULLPTR;
 }
 
-L3DShader* L3DRenderer::getShader(const L3DHandle& handle) const
+L3DShader *L3DRenderer::getShader(const L3DHandle &handle) const
 {
     if (handle.data.type == L3D_SHADER)
         return m_shaders.find(handle.data.id)->second;
@@ -1314,7 +1315,7 @@ L3DShader* L3DRenderer::getShader(const L3DHandle& handle) const
     return L3D_NULLPTR;
 }
 
-L3DShaderProgram* L3DRenderer::getShaderProgram(const L3DHandle& handle) const
+L3DShaderProgram *L3DRenderer::getShaderProgram(const L3DHandle &handle) const
 {
     if (handle.data.type == L3D_SHADER_PROGRAM)
         return m_shaderPrograms.find(handle.data.id)->second;
@@ -1322,7 +1323,7 @@ L3DShaderProgram* L3DRenderer::getShaderProgram(const L3DHandle& handle) const
     return L3D_NULLPTR;
 }
 
-L3DFrameBuffer* L3DRenderer::getFrameBuffer(const L3DHandle& handle) const
+L3DFrameBuffer *L3DRenderer::getFrameBuffer(const L3DHandle &handle) const
 {
     if (handle.data.type == L3D_FRAME_BUFFER)
         return m_frameBuffers.find(handle.data.id)->second;
@@ -1330,7 +1331,7 @@ L3DFrameBuffer* L3DRenderer::getFrameBuffer(const L3DHandle& handle) const
     return L3D_NULLPTR;
 }
 
-L3DMaterial* L3DRenderer::getMaterial(const L3DHandle& handle) const
+L3DMaterial *L3DRenderer::getMaterial(const L3DHandle &handle) const
 {
     if (handle.data.type == L3D_MATERIAL)
         return m_materials.find(handle.data.id)->second;
@@ -1338,7 +1339,7 @@ L3DMaterial* L3DRenderer::getMaterial(const L3DHandle& handle) const
     return L3D_NULLPTR;
 }
 
-L3DCamera* L3DRenderer::getCamera(const L3DHandle& handle) const
+L3DCamera *L3DRenderer::getCamera(const L3DHandle &handle) const
 {
     if (handle.data.type == L3D_CAMERA)
         return m_cameras.find(handle.data.id)->second;
@@ -1346,7 +1347,7 @@ L3DCamera* L3DRenderer::getCamera(const L3DHandle& handle) const
     return L3D_NULLPTR;
 }
 
-L3DLight* L3DRenderer::getLight(const L3DHandle& handle) const
+L3DLight *L3DRenderer::getLight(const L3DHandle &handle) const
 {
     if (handle.data.type == L3D_LIGHT)
         return m_lights.find(handle.data.id)->second;
@@ -1354,7 +1355,7 @@ L3DLight* L3DRenderer::getLight(const L3DHandle& handle) const
     return L3D_NULLPTR;
 }
 
-L3DMesh* L3DRenderer::getMesh(const L3DHandle& handle) const
+L3DMesh *L3DRenderer::getMesh(const L3DHandle &handle) const
 {
     if (handle.data.type == L3D_MESH)
         return m_meshes.find(handle.data.id)->second;
@@ -1362,7 +1363,7 @@ L3DMesh* L3DRenderer::getMesh(const L3DHandle& handle) const
     return L3D_NULLPTR;
 }
 
-L3DRenderQueue* L3DRenderer::getRenderQueue(const L3DHandle& handle) const
+L3DRenderQueue *L3DRenderer::getRenderQueue(const L3DHandle &handle) const
 {
     if (handle.data.type == L3D_RENDER_QUEUE)
         return m_renderQueues.find(handle.data.id)->second;
@@ -1370,16 +1371,16 @@ L3DRenderQueue* L3DRenderer::getRenderQueue(const L3DHandle& handle) const
     return L3D_NULLPTR;
 }
 
-void L3DRenderer::switchFrameBuffer(L3DFrameBuffer* frameBuffer)
+void L3DRenderer::switchFrameBuffer(L3DFrameBuffer *frameBuffer)
 {
     // At every framebuffer switch, update mipmaps of attached textures.
-    for (L3DFrameBufferPool::iterator fb_it = m_frameBuffers.begin(); fb_it!=m_frameBuffers.end(); ++fb_it)
+    for (L3DFrameBufferPool::iterator fb_it = m_frameBuffers.begin(); fb_it != m_frameBuffers.end(); ++fb_it)
     {
-        L3DFrameBuffer* fb = fb_it->second;
+        L3DFrameBuffer *fb = fb_it->second;
         L3DTextureAttachments fb_textures = fb->textureAttachments();
-        for (L3DTextureAttachments::iterator tex_it = fb_textures.begin(); tex_it!=fb_textures.end(); ++tex_it)
+        for (L3DTextureAttachments::iterator tex_it = fb_textures.begin(); tex_it != fb_textures.end(); ++tex_it)
         {
-            L3DTexture* texture = tex_it->second;
+            L3DTexture *texture = tex_it->second;
             if (texture && texture->useMipmap())
             {
                 GLenum gl_type = _toOpenGL(texture->type());
@@ -1387,7 +1388,6 @@ void L3DRenderer::switchFrameBuffer(L3DFrameBuffer* frameBuffer)
                 glGenerateMipmap(gl_type);
                 glBindTexture(gl_type, 0);
             }
-
         }
     }
 
@@ -1406,13 +1406,15 @@ void L3DRenderer::clearBuffers(
     bool colorBuffer,
     bool depthBuffer,
     bool stencilBuffer,
-    const L3DVec4& clearColor
-)
+    const L3DVec4 &clearColor)
 {
     unsigned int clearMask = 0;
-    if (colorBuffer) clearMask |= GL_COLOR_BUFFER_BIT;
-    if (depthBuffer) clearMask |= GL_DEPTH_BUFFER_BIT;
-    if (stencilBuffer) clearMask |= GL_STENCIL_BUFFER_BIT;
+    if (colorBuffer)
+        clearMask |= GL_COLOR_BUFFER_BIT;
+    if (depthBuffer)
+        clearMask |= GL_DEPTH_BUFFER_BIT;
+    if (stencilBuffer)
+        clearMask |= GL_STENCIL_BUFFER_BIT;
 
     glClearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     glClear(clearMask);
@@ -1420,11 +1422,11 @@ void L3DRenderer::clearBuffers(
 
 void L3DRenderer::setDepthTest(
     bool enable,
-    const L3DDepthFactor& factor
-)
+    const L3DDepthFactor &factor)
 {
     enable ? glEnable(GL_DEPTH_TEST) : glDisable(GL_DEPTH_TEST);
-    if (enable) glDepthFunc(_toOpenGL(factor));
+    if (enable)
+        glDepthFunc(_toOpenGL(factor));
 }
 
 void L3DRenderer::setDepthMask(bool enable)
@@ -1439,27 +1441,26 @@ void L3DRenderer::setStencilTest(bool enable)
 
 void L3DRenderer::setBlend(
     bool enable,
-    const L3DBlendFactor& srcFactor,
-    const L3DBlendFactor& dstFactor
-)
+    const L3DBlendFactor &srcFactor,
+    const L3DBlendFactor &dstFactor)
 {
     enable ? glEnable(GL_BLEND) : glDisable(GL_BLEND);
-    if (enable) glBlendFunc(_toOpenGL(srcFactor), _toOpenGL(dstFactor));
+    if (enable)
+        glBlendFunc(_toOpenGL(srcFactor), _toOpenGL(dstFactor));
 }
 
 void L3DRenderer::setCullFace(
     bool enable,
-    const L3DCullFace& cullFace
-)
+    const L3DCullFace &cullFace)
 {
     enable ? glEnable(GL_CULL_FACE) : glDisable(GL_CULL_FACE);
-    if (enable) glCullFace(_toOpenGL(cullFace));
+    if (enable)
+        glCullFace(_toOpenGL(cullFace));
 }
 
 void L3DRenderer::drawMeshes(
-    L3DCamera* camera,
-    unsigned int renderLayer
-)
+    L3DCamera *camera,
+    unsigned int renderLayer)
 {
     if (!camera)
         return;
@@ -1472,7 +1473,7 @@ void L3DRenderer::drawMeshes(
     // Iterate over all meshes, putting all with correct render layer to bucket.
     for (L3DMeshPool::iterator it = m_meshes.begin(); it != m_meshes.end(); ++it)
     {
-        L3DMesh* mesh = it->second;
+        L3DMesh *mesh = it->second;
 
         if (mesh && mesh->renderLayer() == renderLayer && mesh->material() && mesh->material()->shaderProgram())
         {
@@ -1489,9 +1490,9 @@ void L3DRenderer::drawMeshes(
     // Meshes in bucket are ordered now by material to reduce context changes.
     for (L3DRenderBucket::iterator it = renderBucket.begin(); it != renderBucket.end(); ++it)
     {
-        L3DMesh* mesh = *it;
-        L3DMaterial* material = mesh->material();
-        L3DShaderProgram* shaderProgram = material->shaderProgram();
+        L3DMesh *mesh = *it;
+        L3DMaterial *material = mesh->material();
+        L3DShaderProgram *shaderProgram = material->shaderProgram();
         GLenum gl_draw_primitive = _toOpenGL(mesh->drawPrimitive());
         unsigned int index_count = mesh->indexCount();
         unsigned int instance_count = mesh->instanceCount();
@@ -1504,7 +1505,7 @@ void L3DRenderer::drawMeshes(
 
         // Binds uniforms.
         L3DUniformMap uniforms = shaderProgram->uniforms();
-        for (L3DUniformMap::iterator unif_it = uniforms.begin(); unif_it!=uniforms.end(); ++unif_it)
+        for (L3DUniformMap::iterator unif_it = uniforms.begin(); unif_it != uniforms.end(); ++unif_it)
             _setUniform(shaderProgram->id(), unif_it->first.c_str(), unif_it->second);
 
         // Binds matrices and vectors.
@@ -1519,11 +1520,11 @@ void L3DRenderer::drawMeshes(
         std::string materialName = "u_material.";
 
         // 1. Colors.
-        for (L3DColorRegistry::iterator col_it = material->colors.begin(); col_it!=material->colors.end(); ++col_it)
+        for (L3DColorRegistry::iterator col_it = material->colors.begin(); col_it != material->colors.end(); ++col_it)
             _setUniform(shaderProgram->id(), (materialName + col_it->first).c_str(), col_it->second);
 
         // 2. Parameters.
-        for (L3DParameterRegistry::iterator par_it = material->params.begin(); par_it!=material->params.end(); ++par_it)
+        for (L3DParameterRegistry::iterator par_it = material->params.begin(); par_it != material->params.end(); ++par_it)
             _setUniform(shaderProgram->id(), (materialName + par_it->first).c_str(), par_it->second);
 
         // 3. Textures.
@@ -1532,9 +1533,9 @@ void L3DRenderer::drawMeshes(
             std::string samplerName = "u_";
 
             unsigned int i = 0;
-            for (L3DTextureRegistry::iterator tex_it = material->textures.begin(); tex_it!=material->textures.end(); ++tex_it)
+            for (L3DTextureRegistry::iterator tex_it = material->textures.begin(); tex_it != material->textures.end(); ++tex_it)
             {
-                L3DTexture* texture = tex_it->second;
+                L3DTexture *texture = tex_it->second;
 
                 if (texture)
                 {
@@ -1562,9 +1563,9 @@ void L3DRenderer::drawMeshes(
 
         // Binds lights.
         int activeLightCount = 0;
-        for (L3DLightPool::iterator light_it = m_lights.begin(); light_it!=m_lights.end(); ++light_it)
+        for (L3DLightPool::iterator light_it = m_lights.begin(); light_it != m_lights.end(); ++light_it)
         {
-            L3DLight* light = light_it->second;
+            L3DLight *light = light_it->second;
 
             if (light && light->isOn() && L3D_TEST_BIT(light->renderLayerMask(), renderLayer))
             {

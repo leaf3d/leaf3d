@@ -25,13 +25,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#define WINDOW_WIDTH            1024
-#define WINDOW_HEIGHT           768
-#define ASTEROID_COUNT          8000
-#define ASTEROID_INSTANCE_SIZE  16
-#define ASTEROID_BUFFER_SIZE    ASTEROID_COUNT * ASTEROID_INSTANCE_SIZE
-#define ORBIT_RADIUS            250.0f
-#define ORBIT_OFFSET            30.0f
+#define WINDOW_WIDTH 1024
+#define WINDOW_HEIGHT 768
+#define ASTEROID_COUNT 8000
+#define ASTEROID_INSTANCE_SIZE 16
+#define ASTEROID_BUFFER_SIZE ASTEROID_COUNT *ASTEROID_INSTANCE_SIZE
+#define ORBIT_RADIUS 250.0f
+#define ORBIT_OFFSET 30.0f
 
 using namespace l3d;
 
@@ -40,7 +40,8 @@ int main()
     // -------------------------------- INIT ------------------------------- //
 
     // Init GLFW.
-    if (glfwInit() != GL_TRUE) {
+    if (glfwInit() != GL_TRUE)
+    {
         fprintf(stderr, "Failed to initialize GLFW\n");
         return -1;
     }
@@ -51,17 +52,19 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "leaf3d", L3D_NULLPTR, L3D_NULLPTR);
+    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "leaf3d", L3D_NULLPTR, L3D_NULLPTR);
     glfwMakeContextCurrent(window);
 
     // Init leaf3d.
-    if (l3dInit() != L3D_TRUE) {
+    if (l3dInit() != L3D_TRUE)
+    {
         fprintf(stderr, "Failed to initialize leaf3d\n");
         return -2;
     }
 
     // Init leaf3dut.
-    if (l3dutInit() != L3D_TRUE) {
+    if (l3dutInit() != L3D_TRUE)
+    {
         fprintf(stderr, "Failed to initialize leaf3dut\n");
         return -3;
     }
@@ -84,15 +87,14 @@ int main()
         "skybox3_top.jpg",
         "skybox3_bottom.jpg",
         "skybox3_back.jpg",
-        "skybox3_front.jpg"
-    );
+        "skybox3_front.jpg");
     L3DHandle skyBoxMaterial = l3dLoadMaterial("skyBoxMaterial", skyBoxShaderProgram);
     l3dAddTextureToMaterial(skyBoxMaterial, "cubeMap", skyBoxCubeMap);
     L3DHandle skyBox = l3dLoadSkyBox(skyBoxMaterial);
 
     // Load a planet.
     unsigned int meshCount = 0;
-    L3DHandle* planet = l3dutLoadMeshes("planet.obj", shaderProgram, &meshCount);
+    L3DHandle *planet = l3dutLoadMeshes("planet.obj", shaderProgram, &meshCount);
     l3dTranslateMesh(planet[0], L3DVec3(0.0f, -20.0f, 0.0f));
     l3dScaleMesh(planet[0], L3DVec3(20.0f, 20.0f, 20.0f));
 
@@ -101,45 +103,42 @@ int main()
     srand(glfwGetTime()); // Initialize random seed.
     for (unsigned int i = 0; i < ASTEROID_COUNT; ++i)
     {
-      // 1. Translation: displace along circle wORBIT_RADIUS' in range [-ORBIT_OFFSET, ORBIT_OFFSET]
-      float angle = (float)i / (float)ASTEROID_COUNT * 360.0f;
-      float displacement = (rand() % (int)(2 * ORBIT_OFFSET * 100)) / 100.0f - ORBIT_OFFSET;
-      float x = sin(angle) * ORBIT_RADIUS + displacement;
-      displacement = (rand() % (int)(2 * ORBIT_OFFSET * 100)) / 100.0f - ORBIT_OFFSET;
-      float y = displacement * 0.4f; // keep height of field smaller compared to width of x and z
-      displacement = (rand() % (int)(2 * ORBIT_OFFSET * 100)) / 100.0f - ORBIT_OFFSET;
-      float z = cos(angle) * ORBIT_RADIUS + displacement;
-      asteroidMats[i] = glm::translate(asteroidMats[i], glm::vec3(x, y, z));
+        // 1. Translation: displace along circle wORBIT_RADIUS' in range [-ORBIT_OFFSET, ORBIT_OFFSET]
+        float angle = (float)i / (float)ASTEROID_COUNT * 360.0f;
+        float displacement = (rand() % (int)(2 * ORBIT_OFFSET * 100)) / 100.0f - ORBIT_OFFSET;
+        float x = sin(angle) * ORBIT_RADIUS + displacement;
+        displacement = (rand() % (int)(2 * ORBIT_OFFSET * 100)) / 100.0f - ORBIT_OFFSET;
+        float y = displacement * 0.4f; // keep height of field smaller compared to width of x and z
+        displacement = (rand() % (int)(2 * ORBIT_OFFSET * 100)) / 100.0f - ORBIT_OFFSET;
+        float z = cos(angle) * ORBIT_RADIUS + displacement;
+        asteroidMats[i] = glm::translate(asteroidMats[i], glm::vec3(x, y, z));
 
-      // 2. Scale: add scale variation
-      float scale = (rand() % 100) / 100.0f;
-      asteroidMats[i] = glm::scale(asteroidMats[i], glm::vec3(scale));
+        // 2. Scale: add scale variation
+        float scale = (rand() % 100) / 100.0f;
+        asteroidMats[i] = glm::scale(asteroidMats[i], glm::vec3(scale));
 
-      // 3. Rotation: add random rotation around a (semi)randomly picked rotation axis vector
-      float rotAngle = (rand() % 360);
-      asteroidMats[i] = glm::rotate(asteroidMats[i], rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+        // 3. Rotation: add random rotation around a (semi)randomly picked rotation axis vector
+        float rotAngle = (rand() % 360);
+        asteroidMats[i] = glm::rotate(asteroidMats[i], rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
     }
 
-    L3DHandle* asteroid = l3dutLoadMeshes("rock.obj", instancingShaderProgram, &meshCount);
+    L3DHandle *asteroid = l3dutLoadMeshes("rock.obj", instancingShaderProgram, &meshCount);
 
     // Add instancing to mesh.
     l3dSetMeshInstances(
-      asteroid[0],
-      asteroidMats,
-      ASTEROID_COUNT,
-      L3D_INSTANCE_TRANS4_TRANS4_TRANS4_TRANS4
-    );
+        asteroid[0],
+        asteroidMats,
+        ASTEROID_COUNT,
+        L3D_INSTANCE_TRANS4_TRANS4_TRANS4_TRANS4);
 
     // Create a camera.
     L3DHandle camera = l3dLoadCamera(
         "Default",
         glm::lookAt(
-           glm::vec3(0.0f, 100.0f, 400.0f),
-           glm::vec3(0.0f, -15.0f, 0.0f),
-           glm::vec3(0.0f, 1.0f, 0.0f)
-        ),
-        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH/(GLfloat)WINDOW_HEIGHT, 1.0f, 1000.0f)
-    );
+            glm::vec3(0.0f, 100.0f, 400.0f),
+            glm::vec3(0.0f, -15.0f, 0.0f),
+            glm::vec3(0.0f, 1.0f, 0.0f)),
+        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 1.0f, 1000.0f));
 
     // Create a forward rendering pipeline.
     L3DHandle renderQueue = l3dLoadForwardRenderQueue(WINDOW_WIDTH, WINDOW_HEIGHT, L3DVec4(0, 0, 0.05f, 1));
@@ -148,7 +147,7 @@ int main()
 
     double lastTime = glfwGetTime();
 
-    while(!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window))
     {
         double now = glfwGetTime();
         double dt = now - lastTime;

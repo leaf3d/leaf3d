@@ -25,8 +25,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#define WINDOW_WIDTH    1024
-#define WINDOW_HEIGHT   768
+#define WINDOW_WIDTH 1024
+#define WINDOW_HEIGHT 768
 
 using namespace l3d;
 
@@ -35,7 +35,8 @@ int main()
     // -------------------------------- INIT ------------------------------- //
 
     // Init GLFW.
-    if (glfwInit() != GL_TRUE) {
+    if (glfwInit() != GL_TRUE)
+    {
         fprintf(stderr, "Failed to initialize GLFW\n");
         return -1;
     }
@@ -46,17 +47,19 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "leaf3d", L3D_NULLPTR, L3D_NULLPTR);
+    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "leaf3d", L3D_NULLPTR, L3D_NULLPTR);
     glfwMakeContextCurrent(window);
 
     // Init leaf3d.
-    if (l3dInit() != L3D_TRUE) {
+    if (l3dInit() != L3D_TRUE)
+    {
         fprintf(stderr, "Failed to initialize leaf3d\n");
         return -2;
     }
 
     // Init leaf3dut.
-    if (l3dutInit() != L3D_TRUE) {
+    if (l3dutInit() != L3D_TRUE)
+    {
         fprintf(stderr, "Failed to initialize leaf3dut\n");
         return -3;
     }
@@ -68,18 +71,16 @@ int main()
 
     // Load a model.
     unsigned int meshCount = 0;
-    L3DHandle* meshes = l3dutLoadMeshes("frankie.obj", shaderProgram, &meshCount);
+    L3DHandle *meshes = l3dutLoadMeshes("frankie.obj", shaderProgram, &meshCount);
 
     // Create a camera.
     L3DHandle camera = l3dLoadCamera(
         "Default",
         glm::lookAt(
-           glm::vec3(0.0f, 5.0f, 20.0f),
-           glm::vec3(0.0f, 5.0f, 0.0f),
-           glm::vec3(0.0f, 1.0f, 0.0f)
-        ),
-        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH/(GLfloat)WINDOW_HEIGHT, 1.0f, 100.0f)
-    );
+            glm::vec3(0.0f, 5.0f, 20.0f),
+            glm::vec3(0.0f, 5.0f, 0.0f),
+            glm::vec3(0.0f, 1.0f, 0.0f)),
+        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 1.0f, 100.0f));
 
     // Create a forward rendering pipeline.
     L3DHandle renderQueue = l3dLoadForwardRenderQueue(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -88,7 +89,7 @@ int main()
 
     double lastTime = glfwGetTime();
 
-    while(!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window))
     {
         double now = glfwGetTime();
         double dt = now - lastTime;

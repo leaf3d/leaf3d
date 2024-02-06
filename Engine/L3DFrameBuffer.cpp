@@ -25,24 +25,26 @@
 using namespace l3d;
 
 L3DFrameBuffer::L3DFrameBuffer(
-    L3DRenderer* renderer,
-    const L3DTextureAttachments& textures
-) : L3DResource(L3D_FRAME_BUFFER, renderer),
-    m_textures(textures)
+    L3DRenderer *renderer,
+    const L3DTextureAttachments &textures) : L3DResource(L3D_FRAME_BUFFER, renderer),
+                                             m_textures(textures)
 {
-    if (renderer) renderer->addFrameBuffer(this);
+    if (renderer)
+        renderer->addFrameBuffer(this);
 }
 
 L3DFrameBuffer::L3DFrameBuffer(
-    L3DRenderer* renderer,
-    L3DTexture* textureDepthStencilAttachment,
-    L3DTexture* textureColorAttachment0
-) : L3DResource(L3D_FRAME_BUFFER, renderer)
+    L3DRenderer *renderer,
+    L3DTexture *textureDepthStencilAttachment,
+    L3DTexture *textureColorAttachment0) : L3DResource(L3D_FRAME_BUFFER, renderer)
 {
-    if (textureDepthStencilAttachment) m_textures[L3D_DEPTH_STENCIL_ATTACHMENT] = textureDepthStencilAttachment;
-    if (textureColorAttachment0) m_textures[L3D_COLOR_ATTACHMENT0] = textureColorAttachment0;
+    if (textureDepthStencilAttachment)
+        m_textures[L3D_DEPTH_STENCIL_ATTACHMENT] = textureDepthStencilAttachment;
+    if (textureColorAttachment0)
+        m_textures[L3D_COLOR_ATTACHMENT0] = textureColorAttachment0;
 
-    if (renderer) renderer->addFrameBuffer(this);
+    if (renderer)
+        renderer->addFrameBuffer(this);
 }
 
 L3DFrameBuffer::~L3DFrameBuffer()

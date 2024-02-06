@@ -25,23 +25,23 @@
 using namespace l3d;
 
 L3DBuffer::L3DBuffer(
-    L3DRenderer* renderer,
-    const L3DBufferType& type,
-    void* data,
+    L3DRenderer *renderer,
+    const L3DBufferType &type,
+    void *data,
     unsigned int size,
     unsigned int stride,
-    const L3DDrawType& drawType
-) : L3DResource(L3D_BUFFER, renderer),
-    m_type(type),
-    m_data(0),
-    m_size(size),
-    m_stride(stride),
-    m_drawType(drawType)
+    const L3DDrawType &drawType) : L3DResource(L3D_BUFFER, renderer),
+                                   m_type(type),
+                                   m_data(0),
+                                   m_size(size),
+                                   m_stride(stride),
+                                   m_drawType(drawType)
 {
     if (data)
         m_data = memcpy(malloc(size), data, size);
 
-    if (renderer) renderer->addBuffer(this);
+    if (renderer)
+        renderer->addBuffer(this);
 }
 
 L3DBuffer::~L3DBuffer()

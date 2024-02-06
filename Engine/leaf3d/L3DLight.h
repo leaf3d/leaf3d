@@ -30,62 +30,57 @@ namespace l3d
     class L3DLight : public L3DResource
     {
     public:
-        L3DLightType        type;
-        L3DVec3             position;
-        L3DVec3             direction;
-        L3DVec4             color;
+        L3DLightType type;
+        L3DVec3 position;
+        L3DVec3 direction;
+        L3DVec4 color;
         L3DLightAttenuation attenuation;
 
     protected:
-        unsigned int        m_renderLayerMask;
+        unsigned int m_renderLayerMask;
 
     public:
         L3DLight(
-            L3DRenderer* renderer,
-            const L3DLightType& type,
-            const L3DVec3& position,
-            const L3DVec3& direction,
-            const L3DVec4& color = L3DVec4(1, 1, 1, 1),
-            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
-            unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
-        );
+            L3DRenderer *renderer,
+            const L3DLightType &type,
+            const L3DVec3 &position,
+            const L3DVec3 &direction,
+            const L3DVec4 &color = L3DVec4(1, 1, 1, 1),
+            const L3DLightAttenuation &attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
+            unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK);
         ~L3DLight() {}
 
-        unsigned int  renderLayerMask() const { return m_renderLayerMask; }
-        bool          isOn() const { return (this->color.a > 0.0f); }
+        unsigned int renderLayerMask() const { return m_renderLayerMask; }
+        bool isOn() const { return (this->color.a > 0.0f); }
 
         void setRenderLayerMask(unsigned int renderLayerMask);
 
-        void translate(const L3DVec3& movement);
+        void translate(const L3DVec3 &movement);
         void rotate(
             float radians,
-            const L3DVec3& direction = glm::vec3(0.0f, 1.0f, 0.0f)
-        );
-        void lookAt(const L3DVec3& targetPosition);
+            const L3DVec3 &direction = glm::vec3(0.0f, 1.0f, 0.0f));
+        void lookAt(const L3DVec3 &targetPosition);
 
-        static L3DLight* createDirectionalLight(
-            L3DRenderer* renderer,
-            const L3DVec3& direction,
-            const L3DVec4& color = L3DVec4(1, 1, 1, 1),
-            unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
-        );
+        static L3DLight *createDirectionalLight(
+            L3DRenderer *renderer,
+            const L3DVec3 &direction,
+            const L3DVec4 &color = L3DVec4(1, 1, 1, 1),
+            unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK);
 
-        static L3DLight* createPointLight(
-            L3DRenderer* renderer,
-            const L3DVec3& position,
-            const L3DVec4& color = L3DVec4(1, 1, 1, 1),
-            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
-            unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
-        );
+        static L3DLight *createPointLight(
+            L3DRenderer *renderer,
+            const L3DVec3 &position,
+            const L3DVec4 &color = L3DVec4(1, 1, 1, 1),
+            const L3DLightAttenuation &attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
+            unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK);
 
-        static L3DLight* createSpotLight(
-            L3DRenderer* renderer,
-            const L3DVec3& position,
-            const L3DVec3& direction = L3DVec3(0, -1, 0),
-            const L3DVec4& color = L3DVec4(1, 1, 1, 1),
-            const L3DLightAttenuation& attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
-            unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK
-        );
+        static L3DLight *createSpotLight(
+            L3DRenderer *renderer,
+            const L3DVec3 &position,
+            const L3DVec3 &direction = L3DVec3(0, -1, 0),
+            const L3DVec4 &color = L3DVec4(1, 1, 1, 1),
+            const L3DLightAttenuation &attenuation = L3DLightAttenuation(1, 0.045f, 0.0075f),
+            unsigned int renderLayerMask = L3D_DEFAULT_LIGHT_RENDERLAYER_MASK);
     };
 }
 

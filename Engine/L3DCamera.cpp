@@ -25,16 +25,16 @@
 using namespace l3d;
 
 L3DCamera::L3DCamera(
-    L3DRenderer* renderer,
-    const char* name,
-    const L3DMat4& view,
-    const L3DMat4& proj
-) : L3DResource(L3D_CAMERA, renderer),
-    m_name(name),
-    view(view),
-    proj(proj)
+    L3DRenderer *renderer,
+    const char *name,
+    const L3DMat4 &view,
+    const L3DMat4 &proj) : L3DResource(L3D_CAMERA, renderer),
+                           m_name(name),
+                           view(view),
+                           proj(proj)
 {
-    if (renderer) renderer->addCamera(this);
+    if (renderer)
+        renderer->addCamera(this);
 }
 
 L3DVec3 L3DCamera::position() const
@@ -42,15 +42,14 @@ L3DVec3 L3DCamera::position() const
     return -glm::transpose(L3DMat3(this->view)) * L3DVec3(this->view[3]);
 }
 
-void L3DCamera::translate(const L3DVec3& movement)
+void L3DCamera::translate(const L3DVec3 &movement)
 {
     this->view = glm::translate(this->view, movement);
 }
 
 void L3DCamera::rotate(
     float radians,
-    const L3DVec3& direction
-)
+    const L3DVec3 &direction)
 {
     this->view = glm::rotate(this->view, radians, direction);
 }

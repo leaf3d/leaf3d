@@ -50,42 +50,42 @@ L3DUniform::L3DUniform(bool value)
     this->type = L3D_UNIFORM_BOOL;
 }
 
-L3DUniform::L3DUniform(const L3DVec2& value)
+L3DUniform::L3DUniform(const L3DVec2 &value)
 {
     int size = value.length() * sizeof(float);
-    this->value.valueVec2 = (float*)malloc(size);
+    this->value.valueVec2 = (float *)malloc(size);
     memcpy(this->value.valueVec2, glm::value_ptr(value), size);
     this->type = L3D_UNIFORM_VEC2;
 }
 
-L3DUniform::L3DUniform(const L3DVec3& value)
+L3DUniform::L3DUniform(const L3DVec3 &value)
 {
     int size = value.length() * sizeof(float);
-    this->value.valueVec3 = (float*)malloc(size);
+    this->value.valueVec3 = (float *)malloc(size);
     memcpy(this->value.valueVec3, glm::value_ptr(value), size);
     this->type = L3D_UNIFORM_VEC3;
 }
 
-L3DUniform::L3DUniform(const L3DVec4& value)
+L3DUniform::L3DUniform(const L3DVec4 &value)
 {
     int size = value.length() * sizeof(float);
-    this->value.valueVec4 = (float*)malloc(size);
+    this->value.valueVec4 = (float *)malloc(size);
     memcpy(this->value.valueVec4, glm::value_ptr(value), size);
     this->type = L3D_UNIFORM_VEC4;
 }
 
-L3DUniform::L3DUniform(const L3DMat3& value)
+L3DUniform::L3DUniform(const L3DMat3 &value)
 {
     int size = value.length() * sizeof(float);
-    this->value.valueMat3 = (float*)malloc(size);
+    this->value.valueMat3 = (float *)malloc(size);
     memcpy(this->value.valueMat3, glm::value_ptr(value), size);
     this->type = L3D_UNIFORM_MAT3;
 }
 
-L3DUniform::L3DUniform(const L3DMat4& value)
+L3DUniform::L3DUniform(const L3DMat4 &value)
 {
     int size = value.length() * sizeof(float);
-    this->value.valueMat4 = (float*)malloc(size);
+    this->value.valueMat4 = (float *)malloc(size);
     memcpy(this->value.valueMat4, glm::value_ptr(value), size);
     this->type = L3D_UNIFORM_MAT4;
 }
@@ -115,20 +115,20 @@ L3DUniform::L3DUniform(const L3DMat4& value)
 }*/
 
 L3DShaderProgram::L3DShaderProgram(
-    L3DRenderer* renderer,
-    L3DShader* vertexShader,
-    L3DShader* fragmentShader,
-    L3DShader* geometryShader,
-    const L3DUniformMap& uniforms,
-    const L3DAttributeMap& attributes
-) : L3DResource(L3D_SHADER_PROGRAM, renderer),
-    m_vertexShader(vertexShader),
-    m_fragmentShader(fragmentShader),
-    m_geometryShader(geometryShader),
-    m_uniforms(uniforms),
-    m_attributes(attributes)
+    L3DRenderer *renderer,
+    L3DShader *vertexShader,
+    L3DShader *fragmentShader,
+    L3DShader *geometryShader,
+    const L3DUniformMap &uniforms,
+    const L3DAttributeMap &attributes) : L3DResource(L3D_SHADER_PROGRAM, renderer),
+                                         m_vertexShader(vertexShader),
+                                         m_fragmentShader(fragmentShader),
+                                         m_geometryShader(geometryShader),
+                                         m_uniforms(uniforms),
+                                         m_attributes(attributes)
 {
-    if (renderer) renderer->addShaderProgram(this);
+    if (renderer)
+        renderer->addShaderProgram(this);
 
     if (m_attributes.empty())
     {
@@ -145,17 +145,17 @@ L3DShaderProgram::L3DShaderProgram(
     }
 }
 
-void L3DShaderProgram::setUniform(const char* name, const L3DUniform& value)
+void L3DShaderProgram::setUniform(const char *name, const L3DUniform &value)
 {
     m_uniforms[name] = value;
 }
 
-void L3DShaderProgram::removeUniform(const char* name)
+void L3DShaderProgram::removeUniform(const char *name)
 {
     m_uniforms.erase(name);
 }
 
-void L3DShaderProgram::addAttribute(int attribute, const char* name)
+void L3DShaderProgram::addAttribute(int attribute, const char *name)
 {
     m_attributes[attribute] = name;
 }

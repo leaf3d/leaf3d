@@ -26,34 +26,33 @@
 using namespace l3d;
 
 L3DMaterial::L3DMaterial(
-    L3DRenderer* renderer,
-    const char* name,
-    L3DShaderProgram* shaderProgram,
-    const L3DColorRegistry& colors,
-    const L3DParameterRegistry& params,
-    const L3DTextureRegistry& textures
-) : L3DResource(L3D_MATERIAL, renderer),
-    m_name(name),
-    m_shaderProgram(shaderProgram),
-    colors(colors),
-    params(params),
-    textures(textures)
+    L3DRenderer *renderer,
+    const char *name,
+    L3DShaderProgram *shaderProgram,
+    const L3DColorRegistry &colors,
+    const L3DParameterRegistry &params,
+    const L3DTextureRegistry &textures) : L3DResource(L3D_MATERIAL, renderer),
+                                          m_name(name),
+                                          m_shaderProgram(shaderProgram),
+                                          colors(colors),
+                                          params(params),
+                                          textures(textures)
 {
-    if (renderer) renderer->addMaterial(this);
+    if (renderer)
+        renderer->addMaterial(this);
 }
 
-L3DMaterial* L3DMaterial::createBlinnPhongMaterial(
-    L3DRenderer* renderer,
-    const char* name,
-    L3DShaderProgram* shaderProgram,
-    const L3DVec3& diffuse,
-    const L3DVec3& ambient,
-    const L3DVec3& specular,
+L3DMaterial *L3DMaterial::createBlinnPhongMaterial(
+    L3DRenderer *renderer,
+    const char *name,
+    L3DShaderProgram *shaderProgram,
+    const L3DVec3 &diffuse,
+    const L3DVec3 &ambient,
+    const L3DVec3 &specular,
     float shininess,
-    L3DTexture* diffuseMap,
-    L3DTexture* specularMap,
-    L3DTexture* normalMap
-)
+    L3DTexture *diffuseMap,
+    L3DTexture *specularMap,
+    L3DTexture *normalMap)
 {
     L3DColorRegistry colors;
     L3DParameterRegistry params;
@@ -75,7 +74,5 @@ L3DMaterial* L3DMaterial::createBlinnPhongMaterial(
         shaderProgram,
         colors,
         params,
-        textures
-    );
+        textures);
 }
-

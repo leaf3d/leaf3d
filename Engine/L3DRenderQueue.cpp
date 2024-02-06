@@ -25,12 +25,12 @@
 using namespace l3d;
 
 L3DRenderQueue::L3DRenderQueue(
-    L3DRenderer* renderer,
-    const char* name
-) : L3DResource(L3D_RENDER_QUEUE, renderer),
-    m_name(name)
+    L3DRenderer *renderer,
+    const char *name) : L3DResource(L3D_RENDER_QUEUE, renderer),
+                        m_name(name)
 {
-    if (renderer) renderer->addRenderQueue(this);
+    if (renderer)
+        renderer->addRenderQueue(this);
 }
 
 L3DRenderQueue::~L3DRenderQueue()
@@ -40,83 +40,69 @@ L3DRenderQueue::~L3DRenderQueue()
     m_commands.clear();
 }
 
-void L3DRenderQueue::appendCommands(const L3DRenderCommandList& commands)
+void L3DRenderQueue::appendCommands(const L3DRenderCommandList &commands)
 {
     m_commands.reserve(commands.size());
     m_commands.insert(m_commands.end(), commands.begin(), commands.end());
 }
 
-void L3DRenderQueue::addSwitchFrameBufferCommand(L3DFrameBuffer* frameBuffer)
+void L3DRenderQueue::addSwitchFrameBufferCommand(L3DFrameBuffer *frameBuffer)
 {
     m_commands.push_back(
-        new L3DSwitchFrameBufferCommand(frameBuffer)
-    );
+        new L3DSwitchFrameBufferCommand(frameBuffer));
 }
 
 void L3DRenderQueue::addClearBuffersCommand(
     bool colorBuffer,
     bool depthBuffer,
     bool stencilBuffer,
-    const L3DVec4& clearColor
-)
+    const L3DVec4 &clearColor)
 {
     m_commands.push_back(
-        new L3DClearBuffersCommand(colorBuffer, depthBuffer, stencilBuffer, clearColor)
-    );
+        new L3DClearBuffersCommand(colorBuffer, depthBuffer, stencilBuffer, clearColor));
 }
 
 void L3DRenderQueue::addSetDepthTestCommand(
     bool enable,
-    const L3DDepthFactor& factor
-)
+    const L3DDepthFactor &factor)
 {
     m_commands.push_back(
-        new L3DSetDepthTestCommand(enable, factor)
-    );
+        new L3DSetDepthTestCommand(enable, factor));
 }
 
 void L3DRenderQueue::addSetDepthMaskCommand(
-    bool enable
-)
+    bool enable)
 {
     m_commands.push_back(
-        new L3DSetDepthMaskCommand(enable)
-    );
+        new L3DSetDepthMaskCommand(enable));
 }
 
 void L3DRenderQueue::addSetStencilTestCommand(
-    bool enable
-)
+    bool enable)
 {
     m_commands.push_back(
-        new L3DSetStencilTestCommand(enable)
-    );
+        new L3DSetStencilTestCommand(enable));
 }
 
 void L3DRenderQueue::addSetBlendCommand(
     bool enable,
-    const L3DBlendFactor& srcFactor,
-    const L3DBlendFactor& dstFactor
-)
+    const L3DBlendFactor &srcFactor,
+    const L3DBlendFactor &dstFactor)
 {
     m_commands.push_back(
-        new L3DSetBlendCommand(enable, srcFactor, dstFactor)
-    );
+        new L3DSetBlendCommand(enable, srcFactor, dstFactor));
 }
 
 void L3DRenderQueue::addSetCullFaceCommand(
     bool enable,
-    const L3DCullFace& cullFace
-)
+    const L3DCullFace &cullFace)
 {
     m_commands.push_back(
-        new L3DSetCullFaceCommand(enable, cullFace)
-    );
+        new L3DSetCullFaceCommand(enable, cullFace));
 }
 
 void L3DRenderQueue::addDrawMeshesCommand(unsigned char renderLayer)
 {
     m_commands.push_back(
-        new L3DDrawMeshesCommand(renderLayer)
-    );
+        new L3DDrawMeshesCommand(renderLayer));
 }

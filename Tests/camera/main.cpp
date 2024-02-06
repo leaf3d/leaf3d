@@ -24,18 +24,16 @@
 
 using namespace l3d;
 
-TEST_CASE( "Test getting camera position from View matrix", "[leaf3d][camera][get][position][from][view][matrix]" )
+TEST_CASE("Test getting camera position from View matrix", "[leaf3d][camera][get][position][from][view][matrix]")
 {
     L3DVec3 camPos(0, 5, -6.5f);
 
-    L3DCamera* camera = new L3DCamera(
+    L3DCamera *camera = new L3DCamera(
         0, "Default",
         glm::lookAt(
             camPos,
             L3DVec3(0, 0, 0),
-            L3DVec3(0, 1, 0)
-        )
-    );
+            L3DVec3(0, 1, 0)));
 
     L3DVec3 retCamPos = camera->position();
 

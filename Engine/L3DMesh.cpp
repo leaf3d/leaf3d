@@ -29,28 +29,27 @@
 using namespace l3d;
 
 L3DMesh::L3DMesh(
-    L3DRenderer* renderer,
-    float* vertices,
+    L3DRenderer *renderer,
+    float *vertices,
     unsigned int vertexCount,
-    unsigned int* indices,
+    unsigned int *indices,
     unsigned int indexCount,
-    L3DMaterial* material,
-    const L3DVertexFormat& vertexFormat,
-    const L3DMat4& transMatrix,
-    const L3DDrawType& drawType,
-    const L3DDrawPrimitive& drawPrimitive,
-    unsigned char renderLayer
-) : L3DResource(L3D_MESH, renderer),
-    transMatrix(transMatrix),
-    m_vertexBuffer(0),
-    m_indexBuffer(0),
-    m_instanceBuffer(0),
-    m_material(material),
-    m_vertexFormat(vertexFormat),
-    m_instanceFormat(L3D_INVALID_INSTANCE_FORMAT),
-    m_drawPrimitive(drawPrimitive),
-    m_renderLayer(renderLayer),
-    m_sortKey(0)
+    L3DMaterial *material,
+    const L3DVertexFormat &vertexFormat,
+    const L3DMat4 &transMatrix,
+    const L3DDrawType &drawType,
+    const L3DDrawPrimitive &drawPrimitive,
+    unsigned char renderLayer) : L3DResource(L3D_MESH, renderer),
+                                 transMatrix(transMatrix),
+                                 m_vertexBuffer(0),
+                                 m_indexBuffer(0),
+                                 m_instanceBuffer(0),
+                                 m_material(material),
+                                 m_vertexFormat(vertexFormat),
+                                 m_instanceFormat(L3D_INVALID_INSTANCE_FORMAT),
+                                 m_drawPrimitive(drawPrimitive),
+                                 m_renderLayer(renderLayer),
+                                 m_sortKey(0)
 {
     if (vertices && vertexCount)
         m_vertexBuffer = new L3DBuffer(renderer, L3D_BUFFER_VERTEX, vertices, vertexCount * vertexFormat * sizeof(float), vertexFormat * sizeof(float), drawType);
@@ -60,44 +59,41 @@ L3DMesh::L3DMesh(
 
     this->updateSortKey();
 
-    if (renderer) renderer->addMesh(this);
+    if (renderer)
+        renderer->addMesh(this);
 }
 
 L3DMesh::L3DMesh(
-    L3DRenderer* renderer,
-    L3DBuffer* vertexBuffer,
-    L3DBuffer* indexBuffer,
-    L3DMaterial* material,
-    const L3DVertexFormat& vertexFormat,
-    const L3DMat4& transMatrix,
-    const L3DDrawType& drawType,
-    const L3DDrawPrimitive& drawPrimitive,
-    unsigned char renderLayer
-) : L3DResource(L3D_MESH, renderer),
-    transMatrix(transMatrix),
-    m_vertexBuffer(0),
-    m_indexBuffer(0),
-    m_instanceBuffer(0),
-    m_material(material),
-    m_vertexFormat(vertexFormat),
-    m_instanceFormat(L3D_INVALID_INSTANCE_FORMAT),
-    m_drawPrimitive(drawPrimitive),
-    m_renderLayer(renderLayer),
-    m_sortKey(0)
+    L3DRenderer *renderer,
+    L3DBuffer *vertexBuffer,
+    L3DBuffer *indexBuffer,
+    L3DMaterial *material,
+    const L3DVertexFormat &vertexFormat,
+    const L3DMat4 &transMatrix,
+    const L3DDrawType &drawType,
+    const L3DDrawPrimitive &drawPrimitive,
+    unsigned char renderLayer) : L3DResource(L3D_MESH, renderer),
+                                 transMatrix(transMatrix),
+                                 m_vertexBuffer(0),
+                                 m_indexBuffer(0),
+                                 m_instanceBuffer(0),
+                                 m_material(material),
+                                 m_vertexFormat(vertexFormat),
+                                 m_instanceFormat(L3D_INVALID_INSTANCE_FORMAT),
+                                 m_drawPrimitive(drawPrimitive),
+                                 m_renderLayer(renderLayer),
+                                 m_sortKey(0)
 {
-    if (vertexBuffer
-        && vertexBuffer->stride() == vertexFormat * sizeof(float)
-        && vertexBuffer->drawType() == drawType)
+    if (vertexBuffer && vertexBuffer->stride() == vertexFormat * sizeof(float) && vertexBuffer->drawType() == drawType)
         m_vertexBuffer = vertexBuffer;
 
-    if (indexBuffer
-        && indexBuffer->stride() == sizeof(unsigned int)
-        && indexBuffer->drawType() == drawType)
+    if (indexBuffer && indexBuffer->stride() == sizeof(unsigned int) && indexBuffer->drawType() == drawType)
         m_indexBuffer = indexBuffer;
 
     this->updateSortKey();
 
-    if (renderer) renderer->addMesh(this);
+    if (renderer)
+        renderer->addMesh(this);
 }
 
 L3DMat3 L3DMesh::normalMatrix() const
@@ -132,30 +128,30 @@ void L3DMesh::recalculateTangents()
 
     std::map<unsigned int, L3DVec3> tans;
 
-    unsigned int* indices = m_indexBuffer->data<unsigned int>();
-    float* vertices = m_vertexBuffer->data<float>();
+    unsigned int *indices = m_indexBuffer->data<unsigned int>();
+    float *vertices = m_vertexBuffer->data<float>();
 
     for (unsigned int a = 0; a < this->primitiveCount(); ++a)
     {
         unsigned int primitiveOffset = a * m_drawPrimitive;
 
-        unsigned int i1 = indices[primitiveOffset+0];
-        unsigned int i2 = indices[primitiveOffset+1];
-        unsigned int i3 = indices[primitiveOffset+2];
+        unsigned int i1 = indices[primitiveOffset + 0];
+        unsigned int i2 = indices[primitiveOffset + 1];
+        unsigned int i3 = indices[primitiveOffset + 2];
 
         unsigned i1Offset = i1 * m_vertexFormat;
         unsigned i2Offset = i2 * m_vertexFormat;
         unsigned i3Offset = i3 * m_vertexFormat;
 
         // Position.
-        const L3DVec3 v1(vertices[i1Offset+0], vertices[i1Offset+1], vertices[i1Offset+2]);
-        const L3DVec3 v2(vertices[i2Offset+0], vertices[i2Offset+1], vertices[i2Offset+2]);
-        const L3DVec3 v3(vertices[i3Offset+0], vertices[i3Offset+1], vertices[i3Offset+2]);
+        const L3DVec3 v1(vertices[i1Offset + 0], vertices[i1Offset + 1], vertices[i1Offset + 2]);
+        const L3DVec3 v2(vertices[i2Offset + 0], vertices[i2Offset + 1], vertices[i2Offset + 2]);
+        const L3DVec3 v3(vertices[i3Offset + 0], vertices[i3Offset + 1], vertices[i3Offset + 2]);
 
         // UV.
-        const L3DVec2 w1(vertices[i1Offset+9], vertices[i1Offset+10]);
-        const L3DVec2 w2(vertices[i2Offset+9], vertices[i2Offset+10]);
-        const L3DVec2 w3(vertices[i3Offset+9], vertices[i3Offset+10]);
+        const L3DVec2 w1(vertices[i1Offset + 9], vertices[i1Offset + 10]);
+        const L3DVec2 w2(vertices[i2Offset + 9], vertices[i2Offset + 10]);
+        const L3DVec2 w3(vertices[i3Offset + 9], vertices[i3Offset + 10]);
 
         // Calculate tangent.
         glm::vec3 tangent1;
@@ -181,37 +177,35 @@ void L3DMesh::recalculateTangents()
     {
         unsigned int vertexOffset = v * m_vertexFormat;
 
-        L3DVec3 norm(vertices[vertexOffset+3], vertices[vertexOffset+4], vertices[vertexOffset+5]);
+        L3DVec3 norm(vertices[vertexOffset + 3], vertices[vertexOffset + 4], vertices[vertexOffset + 5]);
         L3DVec3 tan = glm::normalize(tans[v] - glm::dot(tans[v], norm) * norm);
 
         // Updates vertex tangent (XYZ).
-        vertices[vertexOffset+6] = tan.x;
-        vertices[vertexOffset+7] = tan.y;
-        vertices[vertexOffset+8] = tan.z;
+        vertices[vertexOffset + 6] = tan.x;
+        vertices[vertexOffset + 7] = tan.y;
+        vertices[vertexOffset + 8] = tan.z;
     }
 }
 
-void L3DMesh::translate(const L3DVec3& movement)
+void L3DMesh::translate(const L3DVec3 &movement)
 {
     transMatrix = glm::translate(this->transMatrix, movement);
 }
 
 void L3DMesh::rotate(
     float radians,
-    const L3DVec3& direction
-)
+    const L3DVec3 &direction)
 {
     this->transMatrix = glm::rotate(this->transMatrix, radians, direction);
 }
 
 void L3DMesh::scale(
-    const L3DVec3& factor
-)
+    const L3DVec3 &factor)
 {
     this->transMatrix = glm::scale(this->transMatrix, factor);
 }
 
-void L3DMesh::setMaterial(L3DMaterial* material)
+void L3DMesh::setMaterial(L3DMaterial *material)
 {
     if (m_material != material)
     {
@@ -230,9 +224,8 @@ void L3DMesh::setRenderLayer(unsigned char renderLayer)
 }
 
 void L3DMesh::setInstances(
-    L3DBuffer* instanceBuffer,
-    const L3DInstanceFormat& instanceFormat
-)
+    L3DBuffer *instanceBuffer,
+    const L3DInstanceFormat &instanceFormat)
 {
     if (instanceBuffer && instanceFormat)
     {
@@ -241,28 +234,26 @@ void L3DMesh::setInstances(
         m_instanceFormat = instanceFormat;
         this->updateSortKey();
 
-        L3DRenderer* renderer = this->renderer();
+        L3DRenderer *renderer = this->renderer();
         renderer->removeMesh(this);
         renderer->addMesh(this);
     }
 }
 
 void L3DMesh::setInstances(
-    void* instances,
+    void *instances,
     unsigned int instanceCount,
-    const L3DInstanceFormat& instanceFormat
-)
+    const L3DInstanceFormat &instanceFormat)
 {
     if (instances && instanceCount && instanceFormat)
     {
-        L3DBuffer* instanceBuffer = new L3DBuffer(
-          this->renderer(),
-          L3D_BUFFER_INSTANCE,
-          instances,
-          instanceCount * instanceFormat * sizeof(float),
-          instanceFormat * sizeof(float),
-          L3D_DRAW_STATIC
-        );
+        L3DBuffer *instanceBuffer = new L3DBuffer(
+            this->renderer(),
+            L3D_BUFFER_INSTANCE,
+            instances,
+            instanceCount * instanceFormat * sizeof(float),
+            instanceFormat * sizeof(float),
+            L3D_DRAW_STATIC);
 
         this->setInstances(instanceBuffer, instanceFormat);
     }

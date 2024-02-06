@@ -25,42 +25,42 @@
 using namespace l3d;
 
 L3DTexture::L3DTexture(
-    L3DRenderer* renderer,
-    const L3DTextureType& type,
-    const L3DImageFormat& format,
-    unsigned char* data,
+    L3DRenderer *renderer,
+    const L3DTextureType &type,
+    const L3DImageFormat &format,
+    unsigned char *data,
     unsigned int width,
     unsigned int height,
     unsigned int depth,
     bool mipmap,
-    const L3DPixelFormat& pixelFormat,
-    const L3DImageMinFilter& minFilter,
-    const L3DImageMagFilter& magFilter,
-    const L3DImageWrapMethod& wrapS,
-    const L3DImageWrapMethod& wrapT,
-    const L3DImageWrapMethod& wrapR
-) : L3DResource(L3D_TEXTURE, renderer),
-    m_type(type),
-    m_format(format),
-    m_pixelFormat(pixelFormat),
-    m_data(data),
-    m_width(width),
-    m_height(height),
-    m_depth(depth),
-    m_useMipmap(mipmap),
-    m_minFilter(minFilter),
-    m_magFilter(magFilter),
-    m_wrapS(wrapS),
-    m_wrapT(wrapT),
-    m_wrapR(wrapR)
+    const L3DPixelFormat &pixelFormat,
+    const L3DImageMinFilter &minFilter,
+    const L3DImageMagFilter &magFilter,
+    const L3DImageWrapMethod &wrapS,
+    const L3DImageWrapMethod &wrapT,
+    const L3DImageWrapMethod &wrapR) : L3DResource(L3D_TEXTURE, renderer),
+                                       m_type(type),
+                                       m_format(format),
+                                       m_pixelFormat(pixelFormat),
+                                       m_data(data),
+                                       m_width(width),
+                                       m_height(height),
+                                       m_depth(depth),
+                                       m_useMipmap(mipmap),
+                                       m_minFilter(minFilter),
+                                       m_magFilter(magFilter),
+                                       m_wrapS(wrapS),
+                                       m_wrapT(wrapT),
+                                       m_wrapR(wrapR)
 {
     if (data)
     {
         unsigned int size = this->size();
-        m_data = (unsigned char*)memcpy(malloc(size), data, size);
+        m_data = (unsigned char *)memcpy(malloc(size), data, size);
     }
 
-    if (renderer) renderer->addTexture(this);
+    if (renderer)
+        renderer->addTexture(this);
 }
 
 L3DTexture::~L3DTexture()
@@ -72,10 +72,12 @@ unsigned int L3DTexture::size() const
 {
     unsigned int size = m_width * sizeof(unsigned char);
 
-    if (m_height) size *= m_height;
-    if (m_depth) size *= m_depth;
+    if (m_height)
+        size *= m_height;
+    if (m_depth)
+        size *= m_depth;
 
-    switch(this->format())
+    switch (this->format())
     {
     case L3D_RGB:
     case L3D_DEPTH24_STENCIL8:

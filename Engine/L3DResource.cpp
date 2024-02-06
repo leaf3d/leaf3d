@@ -26,19 +26,19 @@ using namespace l3d;
 
 L3DResource::~L3DResource()
 {
-    if (m_renderer) m_renderer->removeResource(this);
+    if (m_renderer)
+        m_renderer->removeResource(this);
 }
 
-L3DResource::L3DResource(L3DRenderer* renderer)
-  : m_renderer(renderer)
+L3DResource::L3DResource(L3DRenderer *renderer)
+    : m_renderer(renderer)
 {
     m_handle.repr = 0;
 }
 
 L3DResource::L3DResource(
-    const L3DResourceType& type,
-    L3DRenderer* renderer
-) : m_renderer(renderer)
+    const L3DResourceType &type,
+    L3DRenderer *renderer) : m_renderer(renderer)
 {
     m_handle.data.type = type;
     m_handle.data.flags = 0;

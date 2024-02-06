@@ -25,19 +25,19 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#define WINDOW_WIDTH        1024
-#define WINDOW_HEIGHT       768
-#define GRASS_DENSITY       200
-#define GRASS_COLOR         L3DVec3(0.85f,0.85f,0.55f)
-#define GRASS_COLOR_VAR     L3DVec3(0.2f,0.2f,0.3f)
-#define GRASS_HEIGHT        0.75f
-#define GRASS_HEIGHT_VAR    5.0f
-#define GRASS_FIELD_SIZE    1000.0f
+#define WINDOW_WIDTH 1024
+#define WINDOW_HEIGHT 768
+#define GRASS_DENSITY 200
+#define GRASS_COLOR L3DVec3(0.85f, 0.85f, 0.55f)
+#define GRASS_COLOR_VAR L3DVec3(0.2f, 0.2f, 0.3f)
+#define GRASS_HEIGHT 0.75f
+#define GRASS_HEIGHT_VAR 5.0f
+#define GRASS_FIELD_SIZE 1000.0f
 #define GRASS_DISTANCE_LOD3 GRASS_FIELD_SIZE * 0.5 * 1.0f
 #define GRASS_DISTANCE_LOD2 GRASS_FIELD_SIZE * 0.5 * 0.6f
 #define GRASS_DISTANCE_LOD1 GRASS_FIELD_SIZE * 0.5 * 0.3f
-#define AMBIENT_COLOR       L3DVec4(0.8f, 0.8f, 1, 0.6f)
-#define SUN_LIGHT_COLOR     L3DVec4(0.8f, 0.7f, 0.6f, 1)
+#define AMBIENT_COLOR L3DVec4(0.8f, 0.8f, 1, 0.6f)
+#define SUN_LIGHT_COLOR L3DVec4(0.8f, 0.7f, 0.6f, 1)
 
 using namespace l3d;
 
@@ -46,7 +46,8 @@ int main()
     // -------------------------------- INIT ------------------------------- //
 
     // Init GLFW.
-    if (glfwInit() != GL_TRUE) {
+    if (glfwInit() != GL_TRUE)
+    {
         fprintf(stderr, "Failed to initialize GLFW\n");
         return -1;
     }
@@ -57,17 +58,19 @@ int main()
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
-    GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "leaf3d", L3D_NULLPTR, L3D_NULLPTR);
+    GLFWwindow *window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "leaf3d", L3D_NULLPTR, L3D_NULLPTR);
     glfwMakeContextCurrent(window);
 
     // Init leaf3d.
-    if (l3dInit() != L3D_TRUE) {
+    if (l3dInit() != L3D_TRUE)
+    {
         fprintf(stderr, "Failed to initialize leaf3d\n");
         return -2;
     }
 
     // Init leaf3dut.
-    if (l3dutInit() != L3D_TRUE) {
+    if (l3dutInit() != L3D_TRUE)
+    {
         fprintf(stderr, "Failed to initialize leaf3dut\n");
         return -3;
     }
@@ -93,8 +96,7 @@ int main()
         "skybox2_top.jpg",
         "skybox2_bottom.jpg",
         "skybox2_back.jpg",
-        "skybox2_front.jpg"
-    );
+        "skybox2_front.jpg");
     L3DHandle skyBoxMaterial = l3dLoadMaterial("skyBoxMaterial", skyBoxShaderProgram);
     l3dAddTextureToMaterial(skyBoxMaterial, "cubeMap", skyBoxCubeMap);
     L3DHandle skyBox = l3dLoadSkyBox(skyBoxMaterial);
@@ -146,12 +148,12 @@ int main()
 
     // Load a tree.
     unsigned int meshCount = 0;
-    L3DHandle* tree = l3dutLoadMeshes("tree1.obj", blinnPhongShaderProgram, &meshCount);
-    for (int i=0; i<meshCount; ++i)
+    L3DHandle *tree = l3dutLoadMeshes("tree1.obj", blinnPhongShaderProgram, &meshCount);
+    for (int i = 0; i < meshCount; ++i)
     {
-      l3dRotateMesh(tree[i], 0.75f);
-      l3dTranslateMesh(tree[i], L3DVec3(-45, 0, 20));
-      l3dScaleMesh(tree[i], L3DVec3(10, 10, 10));
+        l3dRotateMesh(tree[i], 0.75f);
+        l3dTranslateMesh(tree[i], L3DVec3(-45, 0, 20));
+        l3dScaleMesh(tree[i], L3DVec3(10, 10, 10));
     }
 
     // Load a directional light.
@@ -164,12 +166,10 @@ int main()
     L3DHandle camera = l3dLoadCamera(
         "Default",
         glm::lookAt(
-           glm::vec3(0.0f, 15.0f, 40.0f),
-           glm::vec3(0.0f, 5.0f, 0.0f),
-           glm::vec3(0.0f, 1.0f, 0.0f)
-        ),
-        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH/(GLfloat)WINDOW_HEIGHT, 10.0f, GRASS_FIELD_SIZE)
-    );
+            glm::vec3(0.0f, 15.0f, 40.0f),
+            glm::vec3(0.0f, 5.0f, 0.0f),
+            glm::vec3(0.0f, 1.0f, 0.0f)),
+        glm::perspective(45.0f, (GLfloat)WINDOW_WIDTH / (GLfloat)WINDOW_HEIGHT, 10.0f, GRASS_FIELD_SIZE));
 
     // Create a forward rendering pipeline.
     L3DHandle renderQueue = l3dLoadForwardRenderQueue(WINDOW_WIDTH, WINDOW_HEIGHT, L3DVec4(0, 0, 0.05f, 1));
@@ -178,7 +178,7 @@ int main()
 
     double lastTime = glfwGetTime();
 
-    while(!glfwWindowShouldClose(window))
+    while (!glfwWindowShouldClose(window))
     {
         double now = glfwGetTime();
         double dt = now - lastTime;

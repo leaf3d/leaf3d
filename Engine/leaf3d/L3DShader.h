@@ -30,19 +30,18 @@ namespace l3d
     class L3DShader : public L3DResource
     {
     protected:
-        L3DShaderType  m_type;
-        const char* m_code;
+        L3DShaderType m_type;
+        const char *m_code;
 
     public:
         L3DShader(
-            L3DRenderer* renderer,
-            const L3DShaderType& type,
-            const char* code
-        );
+            L3DRenderer *renderer,
+            const L3DShaderType &type,
+            const char *code);
         ~L3DShader() {}
 
-        L3DShaderType  type() const { return m_type; }
-        const char* code() const { return m_code; }
+        L3DShaderType type() const { return m_type; }
+        const char *code() const { return m_code; }
     };
 }
 

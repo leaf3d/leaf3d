@@ -29,53 +29,48 @@ using namespace l3d;
 
 /* Init & terminate ***********************************************************/
 
-L3D_API int l3dutInit(const char* rootPath = 0);
+L3D_API int l3dutInit(const char *rootPath = 0);
 
 L3D_API int l3dutTerminate();
 
 /* Debug helpers **************************************************************/
 
-L3D_API void l3dutPrintVec2(const L3DVec2& vec);
-L3D_API void l3dutPrintVec3(const L3DVec3& vec);
-L3D_API void l3dutPrintVec4(const L3DVec4& vec);
-L3D_API void l3dutPrintMat3(const L3DMat3& mat);
-L3D_API void l3dutPrintMat4(const L3DMat4& mat);
+L3D_API void l3dutPrintVec2(const L3DVec2 &vec);
+L3D_API void l3dutPrintVec3(const L3DVec3 &vec);
+L3D_API void l3dutPrintVec4(const L3DVec4 &vec);
+L3D_API void l3dutPrintMat3(const L3DMat3 &mat);
+L3D_API void l3dutPrintMat4(const L3DMat4 &mat);
 
 L3D_API int l3dutPrintFrameStats(double frameTime);
 
 /* Resource loading ***********************************************************/
 
 L3D_API L3DHandle l3dutLoadTexture2D(
-    const char* filename,
-    const L3DImageFormat& desiredFormat = L3D_UNKNOWN
-);
+    const char *filename,
+    const L3DImageFormat &desiredFormat = L3D_UNKNOWN);
 
 L3D_API L3DHandle l3dutLoadTextureCube(
-    const char* filenameRight,
-    const char* filenameLeft,
-    const char* filenameTop,
-    const char* filenameBottom,
-    const char* filenameBack,
-    const char* filenameFront,
-    const L3DImageFormat& desiredFormat = L3D_UNKNOWN
-);
+    const char *filenameRight,
+    const char *filenameLeft,
+    const char *filenameTop,
+    const char *filenameBottom,
+    const char *filenameBack,
+    const char *filenameFront,
+    const L3DImageFormat &desiredFormat = L3D_UNKNOWN);
 
 L3D_API L3DHandle l3dutLoadShader(
-    const L3DShaderType& type,
-    const char* filename
-);
+    const L3DShaderType &type,
+    const char *filename);
 
 L3D_API L3DHandle l3dutLoadShaderProgram(
-    const char* vertexShaderFilename,
-    const char* fragmentShaderFilename,
-    const char* geometryShaderFilename = 0
-);
+    const char *vertexShaderFilename,
+    const char *fragmentShaderFilename,
+    const char *geometryShaderFilename = 0);
 
-L3D_API L3DHandle* l3dutLoadMeshes(
-    const char* filename,
-    const L3DHandle& shaderProgram,
-    unsigned int* meshCount,
-    unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER
-);
+L3D_API L3DHandle *l3dutLoadMeshes(
+    const char *filename,
+    const L3DHandle &shaderProgram,
+    unsigned int *meshCount,
+    unsigned int renderLayer = L3D_OPAQUE_MESH_RENDERLAYER);
 
 #endif // L3D_LEAF3DUT_H

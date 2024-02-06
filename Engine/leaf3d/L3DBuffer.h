@@ -30,32 +30,31 @@ namespace l3d
     class L3DBuffer : public L3DResource
     {
     private:
-        L3DBufferType   m_type;
-        void*           m_data;
-        unsigned int    m_size;
-        unsigned int    m_stride;
-        L3DDrawType     m_drawType;
+        L3DBufferType m_type;
+        void *m_data;
+        unsigned int m_size;
+        unsigned int m_stride;
+        L3DDrawType m_drawType;
 
     public:
         L3DBuffer(
-            L3DRenderer* renderer,
-            const L3DBufferType& type,
-            void* data,
+            L3DRenderer *renderer,
+            const L3DBufferType &type,
+            void *data,
             unsigned int size,
             unsigned int stride,
-            const L3DDrawType& drawType = L3D_DRAW_STATIC
-        );
+            const L3DDrawType &drawType = L3D_DRAW_STATIC);
         ~L3DBuffer();
 
-        L3DBufferType   type() const { return m_type; }
-        L3DDrawType     drawType() const { return m_drawType; }
-        unsigned int    size() const { return m_size; }
-        unsigned int    stride() const { return m_stride; }
-        unsigned int    count() const { return (m_stride > 0) ? m_size / m_stride : 0; }
-        void*           data() const { return m_data; }
+        L3DBufferType type() const { return m_type; }
+        L3DDrawType drawType() const { return m_drawType; }
+        unsigned int size() const { return m_size; }
+        unsigned int stride() const { return m_stride; }
+        unsigned int count() const { return (m_stride > 0) ? m_size / m_stride : 0; }
+        void *data() const { return m_data; }
 
-        template<typename T>
-        T*              data() const { return static_cast<T*>(m_data); }
+        template <typename T>
+        T *data() const { return static_cast<T *>(m_data); }
     };
 }
 

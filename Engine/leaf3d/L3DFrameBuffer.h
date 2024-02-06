@@ -30,29 +30,26 @@ namespace l3d
 {
     class L3DTexture;
 
-    typedef std::map<L3DAttachmentType, L3DTexture*> L3DTextureAttachments;
+    typedef std::map<L3DAttachmentType, L3DTexture *> L3DTextureAttachments;
 
     class L3DFrameBuffer : public L3DResource
     {
     protected:
-        L3DTextureAttachments       m_textures;
+        L3DTextureAttachments m_textures;
 
     public:
         L3DFrameBuffer(
-            L3DRenderer* renderer,
-            const L3DTextureAttachments& textures = L3DTextureAttachments()
-        );
+            L3DRenderer *renderer,
+            const L3DTextureAttachments &textures = L3DTextureAttachments());
         L3DFrameBuffer(
-            L3DRenderer* renderer,
-            L3DTexture* textureDepthStencilAttachment,
-            L3DTexture* textureColorAttachment0
-        );
+            L3DRenderer *renderer,
+            L3DTexture *textureDepthStencilAttachment,
+            L3DTexture *textureColorAttachment0);
         ~L3DFrameBuffer();
 
-        unsigned int                textureAttachmentCount() const { return m_textures.size(); }
-        L3DTextureAttachments       textureAttachments() const { return m_textures; }
+        unsigned int textureAttachmentCount() const { return m_textures.size(); }
+        L3DTextureAttachments textureAttachments() const { return m_textures; }
     };
 }
 
 #endif // L3D_L3DFRAMEBUFFER_H
-

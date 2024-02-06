@@ -24,7 +24,7 @@
 
 using namespace l3d;
 
-TEST_CASE( "Test L3D_BIT", "[leaf3d][core][L3D_BIT]" )
+TEST_CASE("Test L3D_BIT", "[leaf3d][core][L3D_BIT]")
 {
     REQUIRE(L3D_BIT(0) == 1);
     REQUIRE(L3D_BIT(1) == 2);
@@ -35,7 +35,7 @@ TEST_CASE( "Test L3D_BIT", "[leaf3d][core][L3D_BIT]" )
     REQUIRE(L3D_BIT(6) == 64);
 }
 
-TEST_CASE( "Test L3D_SET_BIT", "[leaf3d][core][L3D_BIT][L3D_SET_BIT]" )
+TEST_CASE("Test L3D_SET_BIT", "[leaf3d][core][L3D_BIT][L3D_SET_BIT]")
 {
     REQUIRE(L3D_SET_BIT(3, 0, false) == 2); // 0...11 -> 0...10
     REQUIRE(L3D_SET_BIT(2, 0, true) == 3);  // 0...10 -> 0...11
@@ -43,10 +43,10 @@ TEST_CASE( "Test L3D_SET_BIT", "[leaf3d][core][L3D_BIT][L3D_SET_BIT]" )
     REQUIRE(L3D_SET_BIT(1, 1, true) == 3);  // 0...01 -> 0...11
 }
 
-TEST_CASE( "Test L3D_TEST_BIT", "[leaf3d][core][L3D_BIT][L3D_TEST_BIT]" )
+TEST_CASE("Test L3D_TEST_BIT", "[leaf3d][core][L3D_BIT][L3D_TEST_BIT]")
 {
-    REQUIRE(L3D_TEST_BIT(3, 0) == true);   // 0...TT
-    REQUIRE(L3D_TEST_BIT(2, 0) == false);  // 0...TF
-    REQUIRE(L3D_TEST_BIT(1, 1) == false);  // 0...FT
-    REQUIRE(L3D_TEST_BIT(3, 1) == true);   // 0...TT
+    REQUIRE(L3D_TEST_BIT(3, 0) == true);  // 0...TT
+    REQUIRE(L3D_TEST_BIT(2, 0) == false); // 0...TF
+    REQUIRE(L3D_TEST_BIT(1, 1) == false); // 0...FT
+    REQUIRE(L3D_TEST_BIT(3, 1) == true);  // 0...TT
 }

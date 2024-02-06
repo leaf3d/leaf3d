@@ -25,18 +25,18 @@
 using namespace l3d;
 
 L3DShader::L3DShader(
-    L3DRenderer* renderer,
-    const L3DShaderType& type,
-    const char* code
-) : L3DResource(L3D_SHADER, renderer),
-    m_type(type),
-    m_code(0)
+    L3DRenderer *renderer,
+    const L3DShaderType &type,
+    const char *code) : L3DResource(L3D_SHADER, renderer),
+                        m_type(type),
+                        m_code(0)
 {
     if (code)
     {
         unsigned int size = strlen(code) + 1;
-        m_code = (const char*)memcpy(malloc(size), code, size);
+        m_code = (const char *)memcpy(malloc(size), code, size);
     }
 
-    if (renderer) renderer->addShader(this);
+    if (renderer)
+        renderer->addShader(this);
 }

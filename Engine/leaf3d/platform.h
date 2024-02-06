@@ -30,76 +30,66 @@
  */
 
 // Detect platform.
-#if defined( WIN32 ) || defined( _WINDOWS ) || defined( _WIN32 )
-#	if !defined( L3D_PLATFORM_WIN )
-#		define L3D_PLATFORM_WIN
-#	endif
-#elif defined( __APPLE__ ) || defined( __APPLE_CC__ )
-#   if !defined( L3D_PLATFORM_MAC )
-#      define L3D_PLATFORM_MAC
-#   endif
+#if defined(WIN32) || defined(_WINDOWS) || defined(_WIN32)
+#if !defined(L3D_PLATFORM_WIN)
+#define L3D_PLATFORM_WIN
+#endif
+#elif defined(__APPLE__) || defined(__APPLE_CC__)
+#if !defined(L3D_PLATFORM_MAC)
+#define L3D_PLATFORM_MAC
+#endif
 #else
-#	if !defined( L3D_PLATFORM_LINUX )
-#		define L3D_PLATFORM_LINUX
-#	endif
+#if !defined(L3D_PLATFORM_LINUX)
+#define L3D_PLATFORM_LINUX
+#endif
 #endif
 
 // Endianess.
-#if defined (__GLIBC__)
-#   include <endian.h>
-#   if __BYTE_ORDER == __LITTLE_ENDIAN
-#       define L3D_PLATFORM_LITTLE_ENDIAN
-#   elif __BYTE_ORDER == __BIG_ENDIAN
-#       define L3D_PLATFORM_BIG_ENDIAN
-#   else
-#       error Unknown __BYTE_ORDER on endian.h
-#   endif
-#elif defined(_BIG_ENDIAN) && !defined(_LITTLE_ENDIAN) ||\
-      defined(__BIG_ENDIAN__) && !defined(__LITTLE_ENDIAN__) ||\
-      defined(_STLP_BIG_ENDIAN) && !defined(_STLP_LITTLE_ENDIAN)
-#       define L3D_PLATFORM_BIG_ENDIAN
-#elif defined(_LITTLE_ENDIAN) && !defined(_BIG_ENDIAN) ||\
-      defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) ||\
-      defined(_STLP_LITTLE_ENDIAN) && !defined(_STLP_BIG_ENDIAN)
-#       define L3D_PLATFORM_LITTLE_ENDIAN
-#elif defined(__sparc) || defined(__sparc__) \
-   || defined(_POWER) || defined(__powerpc__) \
-   || defined(__ppc__) || defined(__hpux) || defined(__hppa) \
-   || defined(_MIPSEB) || defined(_POWER) \
-   || defined(__s390__)
-#       define L3D_PLATFORM_BIG_ENDIAN
-#elif defined(__i386__) || defined(__alpha__) \
-   || defined(__ia64) || defined(__ia64__) \
-   || defined(_M_IX86) || defined(_M_IA64) \
-   || defined(_M_ALPHA) || defined(__amd64) \
-   || defined(__amd64__) || defined(_M_AMD64) \
-   || defined(__x86_64) || defined(__x86_64__) \
-   || defined(_M_X64) || defined(__bfin__)
-#       define L3D_PLATFORM_LITTLE_ENDIAN
+#if defined(__GLIBC__)
+#include <endian.h>
+#if __BYTE_ORDER == __LITTLE_ENDIAN
+#define L3D_PLATFORM_LITTLE_ENDIAN
+#elif __BYTE_ORDER == __BIG_ENDIAN
+#define L3D_PLATFORM_BIG_ENDIAN
 #else
-#   error Unknown endianess.
+#error Unknown __BYTE_ORDER on endian.h
+#endif
+#elif defined(_BIG_ENDIAN) && !defined(_LITTLE_ENDIAN) ||     \
+    defined(__BIG_ENDIAN__) && !defined(__LITTLE_ENDIAN__) || \
+    defined(_STLP_BIG_ENDIAN) && !defined(_STLP_LITTLE_ENDIAN)
+#define L3D_PLATFORM_BIG_ENDIAN
+#elif defined(_LITTLE_ENDIAN) && !defined(_BIG_ENDIAN) ||     \
+    defined(__LITTLE_ENDIAN__) && !defined(__BIG_ENDIAN__) || \
+    defined(_STLP_LITTLE_ENDIAN) && !defined(_STLP_BIG_ENDIAN)
+#define L3D_PLATFORM_LITTLE_ENDIAN
+#elif defined(__sparc) || defined(__sparc__) || defined(_POWER) || defined(__powerpc__) || defined(__ppc__) || defined(__hpux) || defined(__hppa) || defined(_MIPSEB) || defined(_POWER) || defined(__s390__)
+#define L3D_PLATFORM_BIG_ENDIAN
+#elif defined(__i386__) || defined(__alpha__) || defined(__ia64) || defined(__ia64__) || defined(_M_IX86) || defined(_M_IA64) || defined(_M_ALPHA) || defined(__amd64) || defined(__amd64__) || defined(_M_AMD64) || defined(__x86_64) || defined(__x86_64__) || defined(_M_X64) || defined(__bfin__)
+#define L3D_PLATFORM_LITTLE_ENDIAN
+#else
+#error Unknown endianess.
 #endif
 
 // Build type.
-#if defined (NDEBUG)
-# define L3D_RELEASE
+#if defined(NDEBUG)
+#define L3D_RELEASE
 #else
-# define L3D_DEBUG
+#define L3D_DEBUG
 #endif
 
 // Runtime assertion.
-#if defined (L3D_DEBUG)
-# include <assert.h>
-#	define L3D_ASSERT( exp ) assert( exp );
+#if defined(L3D_DEBUG)
+#include <assert.h>
+#define L3D_ASSERT(exp) assert(exp);
 #else
-#	define L3D_ASSERT( exp )
+#define L3D_ASSERT(exp)
 #endif
 
 // API export.
-#if defined (L3D_PLATFORM_WIN)
-# define L3D_API
+#if defined(L3D_PLATFORM_WIN)
+#define L3D_API
 #else
-# define L3D_API
+#define L3D_API
 #endif
 
 #endif // L3D_PLATFORM_H

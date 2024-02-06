@@ -35,7 +35,7 @@ namespace l3d
     {
     public:
         L3DUniformValue value;
-        L3DUniformType  type;
+        L3DUniformType type;
 
     public:
         L3DUniform() : type(L3D_UNIFORM_INVALID) { this->value.valueUI = 0; }
@@ -43,50 +43,49 @@ namespace l3d
         L3DUniform(int value);
         L3DUniform(unsigned int value);
         L3DUniform(bool value);
-        L3DUniform(const L3DVec2& value);
-        L3DUniform(const L3DVec3& value);
-        L3DUniform(const L3DVec4& value);
-        L3DUniform(const L3DMat3& value);
-        L3DUniform(const L3DMat4& value);
+        L3DUniform(const L3DVec2 &value);
+        L3DUniform(const L3DVec3 &value);
+        L3DUniform(const L3DVec4 &value);
+        L3DUniform(const L3DMat3 &value);
+        L3DUniform(const L3DMat4 &value);
 
-        bool is(const L3DUniformType& type) const { return this->type == type; }
+        bool is(const L3DUniformType &type) const { return this->type == type; }
     };
 
-    typedef std::map<std::string,L3DUniform> L3DUniformMap;
-    typedef std::map<int,std::string> L3DAttributeMap;
+    typedef std::map<std::string, L3DUniform> L3DUniformMap;
+    typedef std::map<int, std::string> L3DAttributeMap;
 
     class L3DShaderProgram : public L3DResource
     {
     protected:
-        L3DShader*      m_vertexShader;
-        L3DShader*      m_fragmentShader;
-        L3DShader*      m_geometryShader;
-        L3DUniformMap   m_uniforms;
+        L3DShader *m_vertexShader;
+        L3DShader *m_fragmentShader;
+        L3DShader *m_geometryShader;
+        L3DUniformMap m_uniforms;
         L3DAttributeMap m_attributes;
 
     public:
         L3DShaderProgram(
-            L3DRenderer* renderer,
-            L3DShader* vertexShader,
-            L3DShader* fragmentShader,
-            L3DShader* geometryShader = L3D_NULLPTR,
-            const L3DUniformMap& uniforms = L3DUniformMap(),
-            const L3DAttributeMap& attributeMap = L3DAttributeMap()
-        );
+            L3DRenderer *renderer,
+            L3DShader *vertexShader,
+            L3DShader *fragmentShader,
+            L3DShader *geometryShader = L3D_NULLPTR,
+            const L3DUniformMap &uniforms = L3DUniformMap(),
+            const L3DAttributeMap &attributeMap = L3DAttributeMap());
         ~L3DShaderProgram() {}
 
-        L3DShader* vertexShader() const { return m_vertexShader; }
-        L3DShader* fragmentShader() const { return m_fragmentShader; }
-        L3DShader* geometryShader() const { return m_geometryShader; }
+        L3DShader *vertexShader() const { return m_vertexShader; }
+        L3DShader *fragmentShader() const { return m_fragmentShader; }
+        L3DShader *geometryShader() const { return m_geometryShader; }
         L3DUniformMap uniforms() const { return m_uniforms; }
         unsigned int uniformCount() const { return m_uniforms.size(); }
         L3DAttributeMap attributes() const { return m_attributes; }
         unsigned int attributeCount() const { return m_attributes.size(); }
 
-        void setUniform(const char* name, const L3DUniform& value);
-        void removeUniform(const char* name);
+        void setUniform(const char *name, const L3DUniform &value);
+        void removeUniform(const char *name);
 
-        void addAttribute(int attribute, const char* name);
+        void addAttribute(int attribute, const char *name);
         void removeAttribute(int attribute);
     };
 }
